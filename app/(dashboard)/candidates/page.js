@@ -86,7 +86,7 @@ export default function CandidatesPage() {
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Candidates</h1>
       </div>
-      <p className="text-body-lg mb-8">Manage your candidate pool and track their progress</p>
+      <p className="text-body-lg mb-6">Manage your candidate pool and track their progress</p>
 
       {/* Search + Filter + Actions row */}
       <div className="flex items-center gap-3 mb-6">

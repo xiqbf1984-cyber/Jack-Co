@@ -17,9 +17,9 @@ export default function CompanySettingsPage() {
   return (
     <div className="page-container" style={{ maxWidth: 720 }}>
       <h1 className="text-display-page mb-2">Company Profile</h1>
-      <p className="text-body-lg mb-8">Update your company information.</p>
+      <p className="text-body-lg mb-6">Update your company information.</p>
 
-      <div className="rounded-xl border" style={{ padding: '28px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+      <div className="rounded-xl border" style={{ padding: '24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
         {/* Logo */}
         <div className="flex items-center gap-4 mb-8">
           <div

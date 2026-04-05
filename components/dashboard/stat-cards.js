@@ -24,7 +24,7 @@ export default function StatCards() {
   };
 
   return (
-    <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (
@@ -32,7 +32,7 @@ export default function StatCards() {
             key={stat.key}
             className="rounded-xl border transition-all duration-200 hover-shadow-card"
             style={{
-              padding: '28px',
+              padding: '24px',
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
               boxShadow: 'var(--shadow-card)',
