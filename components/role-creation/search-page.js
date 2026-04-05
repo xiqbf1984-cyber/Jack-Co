@@ -2,7 +2,6 @@
 
 import { useState, useRef } from 'react';
 import { ArrowRight } from 'lucide-react';
-import Typewriter from '@/components/landing/typewriter';
 import SemanticPills from './semantic-pills';
 import CategoryDropdown from './category-dropdown';
 
@@ -32,11 +31,9 @@ export default function SearchPage({ onSubmit }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-12 animate-fi">
-      {/* Typewriter title */}
-      <div className="mb-8 text-center">
-        <Typewriter text="Describe your next hire" delay={50} />
-      </div>
+    <div className="flex flex-col items-center justify-center min-h-full px-6 py-12">
+      {/* Title */}
+      <h1 className="text-display-page mb-8 text-center">Describe your next hire</h1>
 
       {/* Search textarea */}
       <form onSubmit={handleSubmit} className="w-full max-w-2xl flex flex-col gap-5">
