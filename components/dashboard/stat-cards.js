@@ -39,7 +39,7 @@ export default function StatCards() {
               animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
             }}
           >
-            <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center justify-between mb-3">
               <span className="text-mono-label">{stat.label}</span>
               <div
                 className="w-10 h-10 rounded-lg flex items-center justify-center"

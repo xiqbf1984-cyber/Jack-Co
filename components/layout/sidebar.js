@@ -62,6 +62,34 @@ export default function Sidebar() {
         overflow: 'hidden',
       }}
     >
+      {/* Collapse toggle — top-right */}
+      <button
+        onClick={toggleSidebar}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        style={{
+          position: 'absolute',
+          top: 14,
+          right: collapsed ? undefined : 8,
+          left: collapsed ? '50%' : undefined,
+          transform: collapsed ? 'translateX(-50%)' : undefined,
+          width: 28,
+          height: 28,
+          borderRadius: 6,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          zIndex: 10,
+          color: 'var(--brown-soft)',
+          transition: 'all 0.15s ease',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+      >
+        {collapsed ? <PanelLeftOpen size={15} strokeWidth={1.5} /> : <PanelLeftClose size={15} strokeWidth={1.5} />}
+      </button>
       {/* ── Workspace Switcher ── */}
       <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
         <button
@@ -71,7 +99,7 @@ export default function Sidebar() {
             alignItems: 'center',
             gap: 10,
             width: '100%',
-            padding: collapsed ? '14px 0' : '14px 16px',
+            padding: collapsed ? '14px 0' : '14px 40px 14px 16px',
             justifyContent: collapsed ? 'center' : 'flex-start',
             border: 'none',
             borderBottom: '1px solid var(--border-light)',
@@ -442,26 +470,6 @@ export default function Sidebar() {
             </button>
           </div>
         )}
-
-        {/* Collapse toggle */}
-        <button
-          onClick={toggleSidebar}
-          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 10,
-            padding: collapsed ? '8px 0' : '7px 10px',
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            borderRadius: 8, fontSize: 12, fontFamily: 'var(--font-body)',
-            color: 'var(--brown-soft)', background: 'transparent', border: 'none',
-            cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.15s ease',
-            marginTop: 4,
-          }}
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
-        >
-          {collapsed ? <PanelLeftOpen size={15} strokeWidth={1.5} /> : <PanelLeftClose size={15} strokeWidth={1.5} />}
-          {!collapsed && <span>Collapse</span>}
-        </button>
 
         {/* User info (Clerk) */}
         <div style={{

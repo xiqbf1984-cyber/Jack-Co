@@ -5,7 +5,7 @@ import StatCards from '@/components/dashboard/stat-cards';
 import QuickActions from '@/components/dashboard/quick-actions';
 import CompanyProfileCard from '@/components/dashboard/company-profile-card';
 import HiringRolesList from '@/components/dashboard/hiring-roles-list';
-import RecentCandidatesList from '@/components/dashboard/recent-candidates-list';
+import RecentAssessmentsList from '@/components/dashboard/recent-assessments-list';
 
 export default function DashboardPage() {
   const company = useAppStore((s) => s.company);
@@ -13,7 +13,7 @@ export default function DashboardPage() {
   return (
     <div style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
       {/* Welcome */}
-      <div className="mb-10 animate-fade-scale">
+      <div className="mb-8 animate-fade-scale">
         <h1 className="text-display-page mb-1">
           Welcome back, {company.name}
         </h1>
@@ -23,20 +23,20 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="mb-10">
+      <div className="mb-8">
         <StatCards />
       </div>
 
       {/* Quick Actions + Company Profile */}
-      <div className="grid gap-6 mb-10" style={{ gridTemplateColumns: '1fr 360px' }}>
+      <div className="grid gap-6 mb-8" style={{ gridTemplateColumns: '1fr 280px', alignItems: 'stretch' }}>
         <QuickActions />
         <CompanyProfileCard />
       </div>
 
-      {/* Hiring Roles + Recent Candidates */}
-      <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+      {/* Hiring Roles + Recent Assessments */}
+      <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)', alignItems: 'stretch' }}>
         <HiringRolesList />
-        <RecentCandidatesList />
+        <RecentAssessmentsList />
       </div>
     </div>
   );

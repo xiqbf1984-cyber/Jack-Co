@@ -5,10 +5,10 @@ import { Plus, Trophy, Users, BarChart3 } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 
 const actions = [
-  { label: 'Add a Role', subtitle: 'Create a new hiring position', icon: Plus, color: '#27825b', href: '/roles/create' },
-  { label: 'New Assessment', subtitle: 'Design an AI assessment', icon: Trophy, color: '#8b6914', href: '/assessment/create' },
-  { label: 'Add Candidate', subtitle: 'Invite to your pool', icon: Users, color: '#0077B5', href: null },
-  { label: 'View Evaluations', subtitle: 'Scores and feedback', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
+  { label: 'Add a Role', icon: Plus, color: '#27825b', href: '/roles/create' },
+  { label: 'Add a Candidate', icon: Users, color: '#0077B5', href: null },
+  { label: 'Create an Assessment', icon: Trophy, color: '#8b6914', href: '/assessment/create' },
+  { label: 'View Evaluation', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
 ];
 
 export default function QuickActions() {
@@ -16,15 +16,15 @@ export default function QuickActions() {
 
   return (
     <div>
-      <h3 className="text-display-section mb-5">Quick Actions</h3>
-      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+      <h3 className="text-display-section mb-3">Quick Actions</h3>
+      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {actions.map((action, i) => {
           const Icon = action.icon;
           const inner = (
             <div
-              className="flex items-center gap-4 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
+              className="flex flex-col items-center gap-2.5 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card text-center"
               style={{
-                padding: '22px 28px',
+                padding: '16px 12px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',
@@ -32,14 +32,13 @@ export default function QuickActions() {
               }}
             >
               <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                 style={{ backgroundColor: action.color + '14' }}
               >
-                <Icon size={18} style={{ color: action.color }} />
+                <Icon size={16} style={{ color: action.color }} />
               </div>
-              <div>
-                <div className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>{action.label}</div>
-                <div className="text-body-xs" style={{ color: 'var(--brown-muted)' }}>{action.subtitle}</div>
+              <div className="text-body-sm font-semibold" style={{ color: 'var(--brown)', lineHeight: '1.3' }}>
+                {action.label}
               </div>
             </div>
           );
