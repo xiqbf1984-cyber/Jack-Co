@@ -42,7 +42,7 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="p-8 max-w-[1000px] animate-fade-scale">
+    <div className="p-8 animate-fade-scale" style={{ maxWidth: 1000 }}>
       <h1 className="text-display-page mb-6">Evaluation</h1>
 
       {/* Stat cards */}

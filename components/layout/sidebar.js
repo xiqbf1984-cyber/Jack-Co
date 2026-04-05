@@ -23,16 +23,16 @@ export default function Sidebar() {
       onMouseEnter={() => setExpanded(true)}
       onMouseLeave={() => setExpanded(false)}
       className={cn(
-        'fixed left-0 top-0 h-screen z-40 flex flex-col border-r transition-all duration-300 ease-in-out',
-        expanded ? 'w-[200px]' : 'w-[60px]'
+        'fixed left-0 top-0 h-screen z-40 flex flex-col border-r transition-all duration-300 ease-in-out'
       )}
       style={{
         backgroundColor: 'var(--cream-sidebar)',
         borderColor: 'var(--border-light)',
+        width: expanded ? 200 : 60,
       }}
     >
       {/* Logo */}
-      <div className="h-[56px] flex items-center px-4 border-b" style={{ borderColor: 'var(--border-light)' }}>
+      <div className="flex items-center px-4 border-b" style={{ borderColor: 'var(--border-light)', height: 56 }}>
         <Link href="/" className="flex items-center gap-2 no-underline">
           <div
             className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold"

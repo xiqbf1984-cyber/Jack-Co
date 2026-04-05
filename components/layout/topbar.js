@@ -28,7 +28,7 @@ export default function Topbar() {
     >
       {/* Left - Logo */}
       <Link href="/" className="font-display text-lg font-bold text-[var(--brown)] no-underline">
-        Jack &amp; Jill
+        WorkTrial
       </Link>
 
       {/* Center - Toggle */}

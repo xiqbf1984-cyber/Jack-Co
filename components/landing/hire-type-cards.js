@@ -5,10 +5,8 @@ import { Users, Bot } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const cardBase = cn(
-  'relative flex flex-col items-center gap-4 p-8 w-[280px]',
-  'bg-[var(--cream-card)] border border-[var(--border-default)]',
-  'rounded-[var(--radius-2xl)]',
-  'shadow-[var(--shadow-card)]',
+  'relative flex flex-col items-center gap-4 p-8',
+  'border',
   'transition-all duration-200'
 );
 
@@ -21,9 +19,15 @@ export default function HireTypeCards() {
           className={cn(
             cardBase,
             'cursor-pointer',
-            'hover:shadow-[var(--shadow-card-hover)] hover:scale-[1.01]',
-            'hover:border-[var(--gold-light)]'
+            'hover:scale-[1.01]'
           )}
+          style={{
+            width: 280,
+            backgroundColor: 'var(--cream-card)',
+            borderColor: 'var(--border-default)',
+            borderRadius: 'var(--radius-2xl)',
+            boxShadow: 'var(--shadow-card)',
+          }}
         >
           <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--border-light)]">
             <Users size={22} className="text-[var(--brown)]" />
@@ -43,6 +47,13 @@ export default function HireTypeCards() {
           cardBase,
           'opacity-50 cursor-default select-none'
         )}
+        style={{
+          width: 280,
+          backgroundColor: 'var(--cream-card)',
+          borderColor: 'var(--border-default)',
+          borderRadius: 'var(--radius-2xl)',
+          boxShadow: 'var(--shadow-card)',
+        }}
       >
         {/* Coming soon badge */}
         <span className="absolute top-3 right-3 text-mono-tag bg-[var(--cream-sidebar)] text-[var(--brown-soft)] px-2 py-0.5 rounded-full border border-[var(--border-light)]">

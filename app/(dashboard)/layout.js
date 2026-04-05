@@ -6,8 +6,8 @@ export default function DashboardLayout({ children }) {
     <div className="min-h-screen flex">
       <Sidebar />
       <main
-        className="flex-1 ml-[60px] min-h-screen"
-        style={{ backgroundColor: 'var(--cream)' }}
+        className="flex-1 min-h-screen"
+        style={{ backgroundColor: 'var(--cream)', marginLeft: 60 }}
       >
         {children}
       </main>

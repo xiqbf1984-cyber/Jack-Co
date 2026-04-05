@@ -89,7 +89,7 @@ export default function StepRole() {
   };
 
   return (
-    <div className="max-w-[640px] mx-auto">
+    <div className="mx-auto" style={{ maxWidth: 640 }}>
       <h1 className="text-display-page mb-2">What role are you hiring for?</h1>
       <p className="text-body-lg mb-6">
         Start with a job description or let us help you write one.

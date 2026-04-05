@@ -238,7 +238,7 @@ export default function StepEnvironment() {
 
   if (loading) {
     return (
-      <div className="max-w-[640px] mx-auto flex flex-col items-center justify-center py-24">
+      <div className="mx-auto flex flex-col items-center justify-center py-24" style={{ maxWidth: 640 }}>
         <Loader2 size={32} className="animate-spin mb-4" style={{ color: 'var(--gold)' }} />
         <p className="text-body-lg text-center">Generating assessment environment...</p>
         <p className="text-body-xs mt-1" style={{ color: 'var(--brown-soft)' }}>
@@ -249,7 +249,7 @@ export default function StepEnvironment() {
   }
 
   return (
-    <div className="max-w-[640px] mx-auto">
+    <div className="mx-auto" style={{ maxWidth: 640 }}>
       <h1 className="text-display-page mb-2">Assessment Environment</h1>
       <p className="text-body-lg mb-6">
         Review and customize the generated assessment document. Click the edit icon to modify any section.

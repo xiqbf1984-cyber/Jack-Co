@@ -4,7 +4,7 @@ import LivePreview from '@/components/assessment/live-preview';
 
 export default function CreateAssessmentLayout({ children }) {
   return (
-    <div className="flex h-[calc(100vh-0px)]" style={{ backgroundColor: 'var(--cream)' }}>
+    <div className="flex h-screen" style={{ backgroundColor: 'var(--cream)' }}>
       {/* Center: wizard content area */}
       <div
         className="flex-1 overflow-y-auto"
