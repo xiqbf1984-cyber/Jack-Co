@@ -22,7 +22,7 @@ export default function QuickActions() {
           const Icon = action.icon;
           const inner = (
             <div
-              className="flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 cursor-pointer hover:shadow-[0_8px_24px_rgba(0,0,0,.07)]"
+              className="flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',

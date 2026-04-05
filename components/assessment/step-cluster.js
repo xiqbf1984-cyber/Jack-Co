@@ -22,7 +22,7 @@ export default function StepCluster() {
   };
 
   return (
-    <div className="max-w-[720px] mx-auto">
+    <div className="mx-auto" style={{ maxWidth: 720 }}>
       <h1 className="text-display-page mb-2">Which industry does this role belong to?</h1>
       {hasJD && (
         <p className="text-body-lg mb-1">

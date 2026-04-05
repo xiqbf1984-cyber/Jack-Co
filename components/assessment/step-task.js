@@ -47,7 +47,7 @@ export default function StepTask() {
 
   if (taskCategories.length === 0) {
     return (
-      <div className="max-w-[720px] mx-auto">
+      <div className="mx-auto" style={{ maxWidth: 720 }}>
         <h1 className="text-display-page mb-2">What type of task should this candidate perform?</h1>
         <p className="text-body-lg">
           Please go back and select a role first.
@@ -57,7 +57,7 @@ export default function StepTask() {
   }
 
   return (
-    <div className="max-w-[720px] mx-auto">
+    <div className="mx-auto" style={{ maxWidth: 720 }}>
       <h1 className="text-display-page mb-2">What type of task should this candidate perform?</h1>
       <p className="text-body-lg mb-6">
         Choose a task for the <strong style={{ color: 'var(--gold)' }}>{selectedRole.name}</strong> assessment.

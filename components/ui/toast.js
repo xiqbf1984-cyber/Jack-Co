@@ -53,7 +53,7 @@ function ToastProvider({ children }) {
     <ToastContext.Provider value={toast}>
       {children}
       {/* Toast container */}
-      <div className="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 max-w-sm">
+      <div className="fixed bottom-4 right-4 flex flex-col gap-2 max-w-sm" style={{ zIndex: 100 }}>
         {toasts.map((t) => {
           const Icon = icons[t.type] || icons.info;
           return (

@@ -298,6 +298,15 @@ body {
   letter-spacing: 0.3px;
 }
 
+/* ==================== HOVER UTILITIES ==================== */
+.hover-bg-dim:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.hover-shadow-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+}
+
 /* ==================== BUTTON BASE ==================== */
 .btn-primary {
   display: inline-flex;

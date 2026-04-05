@@ -52,8 +52,8 @@ export default function CategoryDropdown({ onPreview, onSelect }) {
 
             {isOpen && (
               <div
-                className="absolute top-full left-0 mt-1.5 z-50 min-w-[200px] py-1 rounded-lg border border-[var(--border-default)] bg-[var(--cream-card)] animate-fsd"
-                style={{ boxShadow: 'var(--shadow-dropdown)' }}
+                className="absolute top-full left-0 mt-1.5 z-50 py-1 rounded-lg border border-[var(--border-default)] bg-[var(--cream-card)] animate-fsd"
+                style={{ boxShadow: 'var(--shadow-dropdown)', minWidth: 200 }}
               >
                 {cat.opts.map((opt) => (
                   <button
