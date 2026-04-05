@@ -44,10 +44,10 @@ export default function EvaluationPage() {
   return (
     <div className="page-container">
       <h1 className="text-display-page mb-2">Evaluation</h1>
-      <p className="text-body-lg mb-6">Review scores, grades, and candidate performance.</p>
+      <p className="text-body-lg mb-5">Review scores, grades, and candidate performance.</p>
 
       {/* Stat cards */}
-      <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="grid gap-3 mb-6" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
@@ -55,20 +55,20 @@ export default function EvaluationPage() {
               key={stat.label}
               className="rounded-xl border"
               style={{
-                padding: '24px',
+                padding: '18px 20px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',
                 animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
               }}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-mono-label">{stat.label}</span>
-                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
-                  <Icon size={17} style={{ color: stat.color }} />
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
+                  <Icon size={15} style={{ color: stat.color }} />
                 </div>
               </div>
-              <div className="text-mono-display" style={{ color: 'var(--brown)', fontSize: 28 }}>{stat.value}</div>
+              <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{stat.value}</div>
             </div>
           );
         })}
@@ -76,21 +76,21 @@ export default function EvaluationPage() {
 
       {/* Results by role */}
       {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
-        <div key={roleTitle} className="mb-8">
-          <h3 className="text-display-section mb-4">{roleTitle}</h3>
-          <div className="space-y-4">
+        <div key={roleTitle} className="mb-6">
+          <h3 className="text-display-section mb-3">{roleTitle}</h3>
+          <div className="space-y-3">
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div
                 key={challenge.id}
                 className="rounded-xl border"
                 style={{
-                  padding: '24px',
+                  padding: '18px 20px',
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
                   boxShadow: 'var(--shadow-card)',
                 }}
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-3">
                   <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
                     {challenge.name}
                   </span>

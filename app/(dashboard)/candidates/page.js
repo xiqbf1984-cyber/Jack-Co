@@ -93,12 +93,12 @@ export default function CandidatesPage() {
     <div className="page-container">
       {/* Header */}
       <h1 className="text-display-page mb-2">Candidates</h1>
-      <p className="text-body-lg mb-6">Manage your candidate pool and track their progress</p>
+      <p className="text-body-lg mb-4">Manage your candidate pool and track their progress</p>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <div className="relative" style={{ width: 280 }}>
-          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
           <input
             type="text"
             placeholder="Search candidates..."

@@ -79,7 +79,7 @@ export default function ChallengeDetailPage() {
       {/* Overview Tab */}
       {activeTab === 'overview' && (
         <div className="space-y-4 animate-fsu">
-          <div className="rounded-xl border" style={{ padding: '24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+          <div className="rounded-xl border" style={{ padding: '20px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
             <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
               <div><span className="text-mono-label block mb-2">Role</span><span className="text-body-sm">{challenge.roleTitle}</span></div>
               <div><span className="text-mono-label block mb-2">Skill</span><span className="text-body-sm">{challenge.skill}</span></div>
@@ -97,7 +97,7 @@ export default function ChallengeDetailPage() {
             const cand = candidates.find((c) => c.id === result.candId);
             const grade = getGrade(result.score);
             return (
-              <div key={result.candId} className="rounded-xl border flex items-center gap-4" style={{ padding: '18px 24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+              <div key={result.candId} className="rounded-xl border flex items-center gap-4" style={{ padding: '14px 20px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono font-bold" style={{ background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))', color: 'var(--brown)' }}>
                   {cand?.avatar || '??'}
                 </div>
@@ -124,7 +124,7 @@ export default function ChallengeDetailPage() {
       {/* Settings Tab */}
       {activeTab === 'settings' && (
         <div className="animate-fsu">
-          <div className="rounded-xl border" style={{ padding: '24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+          <div className="rounded-xl border" style={{ padding: '20px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
             <h3 className="text-display-section mb-3">Assessment Settings</h3>
             <p className="text-body-xs mb-6">Manage this assessment's configuration.</p>
             <div className="border-t pt-4" style={{ borderColor: 'var(--border-light)' }}>

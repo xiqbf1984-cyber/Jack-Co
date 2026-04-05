@@ -17,7 +17,7 @@ export default function RecentAssessmentsList() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-3">
         <h3 className="text-display-section">Recent Assessments</h3>
         <Link
           href="/assessment"
@@ -37,7 +37,7 @@ export default function RecentAssessmentsList() {
             href={`/assessment/${challenge.id}`}
             className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover no-underline"
             style={{
-              padding: '16px 20px',
+              padding: '12px 16px',
               borderColor: 'var(--border-light)',
               backgroundColor: undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,

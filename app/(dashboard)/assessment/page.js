@@ -29,31 +29,31 @@ export default function ChallengesPage() {
           <Plus size={14} /> New Assessment
         </Link>
       </div>
-      <p className="text-body-lg mb-6">Create and manage AI-powered assessments for your roles.</p>
+      <p className="text-body-lg mb-4">Create and manage AI-powered assessments for your roles.</p>
 
       {/* Search */}
-      <div className="relative mb-6 max-w-sm">
-        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
+      <div className="relative mb-4" style={{ width: 280 }}>
+        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
         <input
           type="text"
           placeholder="Search assessments..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+          className="w-full pl-9 pr-4 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
         />
       </div>
 
       {/* List */}
       {filtered.length > 0 ? (
-        <div className="space-y-4">
+        <div className="space-y-2.5">
           {filtered.map((challenge, i) => (
             <Link
               key={challenge.id}
               href={`/assessment/${challenge.id}`}
               className="block rounded-xl border transition-all duration-200 no-underline hover-shadow-card"
               style={{
-                padding: '20px 24px',
+                padding: '16px 20px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',

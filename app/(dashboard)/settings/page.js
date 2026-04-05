@@ -25,10 +25,10 @@ export default function SettingsPage() {
   return (
     <div className="page-container" style={{ maxWidth: 720 }}>
       <h1 className="text-display-page mb-2">Settings</h1>
-      <p className="text-body-lg mb-6">Your hiring manager profile.</p>
+      <p className="text-body-lg mb-4">Your hiring manager profile.</p>
 
       {/* Input mode tabs */}
-      <div className="flex gap-3 mb-8">
+      <div className="flex gap-3 mb-5">
         {modes.map((mode) => {
           const Icon = mode.icon;
           return (

@@ -30,13 +30,13 @@ export default function RolesPage() {
           Add Role
         </Link>
       </div>
-      <p className="text-body-lg mb-6">Manage your open positions and hiring pipeline.</p>
+      <p className="text-body-lg mb-4">Manage your open positions and hiring pipeline.</p>
 
       {/* Search */}
-      <div className="relative mb-6 max-w-sm">
+      <div className="relative mb-4" style={{ width: 280 }}>
         <Search
-          size={15}
-          className="absolute left-3.5 top-1/2 -translate-y-1/2"
+          size={14}
+          className="absolute left-3 top-1/2 -translate-y-1/2"
           style={{ color: 'var(--brown-soft)' }}
         />
         <input
@@ -44,7 +44,7 @@ export default function RolesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search roles..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+          className="w-full pl-9 pr-4 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
         />
       </div>
@@ -68,15 +68,15 @@ export default function RolesPage() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2.5">
           {filtered.map((role) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             return (
               <div
                 key={role.id}
-                className="flex items-center gap-5 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
+                className="flex items-center gap-4 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
                 style={{
-                  padding: '20px 24px',
+                  padding: '16px 20px',
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--cream-card)',
                   boxShadow: 'var(--shadow-card)',
@@ -84,10 +84,10 @@ export default function RolesPage() {
               >
                 {/* Icon */}
                 <div
-                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
+                  className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
                   style={{ backgroundColor: 'var(--cream-sidebar)' }}
                 >
-                  <Briefcase size={20} style={{ color: 'var(--brown-muted)' }} />
+                  <Briefcase size={17} style={{ color: 'var(--brown-muted)' }} />
                 </div>
 
                 {/* Info */}
