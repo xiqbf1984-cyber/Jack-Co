@@ -10,7 +10,7 @@ export default function TypingIndicator() {
           color: 'var(--btn-text)',
         }}
       >
-        J
+        AI
       </div>
       <div
         className="flex items-center gap-1 px-4 py-3 rounded-xl"

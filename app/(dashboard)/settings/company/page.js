@@ -37,9 +37,9 @@ export default function CompanySettingsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
           {fields.map((field) => (
-            <div key={field.key} className={field.key === 'name' ? 'col-span-2' : ''}>
+            <div key={field.key} style={field.key === 'name' ? { gridColumn: 'span 2' } : undefined}>
               <label className="text-mono-label block mb-1.5">{field.label}</label>
               <input
                 type="text"

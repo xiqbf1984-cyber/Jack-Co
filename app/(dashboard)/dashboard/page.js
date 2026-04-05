@@ -34,7 +34,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Hiring Roles + Recent Candidates */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
         <HiringRolesList />
         <RecentCandidatesList />
       </div>
