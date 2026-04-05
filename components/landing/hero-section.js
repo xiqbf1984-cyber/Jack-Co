@@ -5,14 +5,14 @@ import { cn } from '@/lib/utils';
 import Typewriter from './typewriter';
 import HireTypeCards from './hire-type-cards';
 
-export default function HeroSection() {
-  const [phase, setPhase] = useState('typing'); // typing | subtitle | cards
+export default function HeroSection({ tab }) {
+  const [phase, setPhase] = useState('typing'); // typing | done
 
   const handleTypewriterComplete = useCallback(() => {
-    setPhase('subtitle');
-    // After subtitle animation, show cards
-    setTimeout(() => setPhase('cards'), 600);
+    setPhase('done');
   }, []);
+
+  const showCards = tab === 'For Companies' && phase === 'done';
 
   return (
     <div className="flex flex-col items-center justify-center gap-6 px-4 text-center">
@@ -34,15 +34,11 @@ export default function HeroSection() {
         In the age of AI, the only thing that matters is what you can do.
       </p>
 
-      <div
-        className={cn(
-          'mt-4',
-          phase !== 'cards' ? 'opacity-0' : 'animate-fsu'
-        )}
-        style={phase === 'cards' ? { animationDelay: '0.1s', animationFillMode: 'backwards' } : undefined}
-      >
-        <HireTypeCards />
-      </div>
+      {showCards && (
+        <div className="mt-4 animate-fsu">
+          <HireTypeCards />
+        </div>
+      )}
     </div>
   );
 }

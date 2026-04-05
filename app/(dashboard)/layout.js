@@ -3,12 +3,9 @@ import AddCandidateModal from '@/components/candidates/add-candidate-modal';
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className="min-h-screen flex">
+    <div style={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar />
-      <main
-        className="flex-1 min-h-screen"
-        style={{ backgroundColor: 'var(--cream)', marginLeft: 60, overflowX: 'hidden' }}
-      >
+      <main style={{ flex: 1, minWidth: 0, backgroundColor: 'var(--cream)' }}>
         {children}
       </main>
       <AddCandidateModal />
