@@ -2,6 +2,10 @@
 
 /* ==================== CUSTOM PROPERTIES ==================== */
 :root {
+  /* Fonts */
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Libre Baskerville', Georgia, serif;
+  --font-mono: 'DM Mono', monospace;
   /* Base Palette */
   --cream: #fcfbf7;
   --cream-sidebar: #F4F0E9;
