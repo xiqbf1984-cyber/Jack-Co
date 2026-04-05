@@ -12,13 +12,13 @@ export const useAppStore = create((set, get) => ({
   },
 
   company: {
-    name: 'Anthropic',
-    logo: 'A',
-    industry: 'AI Safety & Research',
+    name: 'Your Company',
+    logo: 'C',
+    industry: 'Technology',
     location: 'San Francisco, CA',
-    size: '500-1000',
-    website: 'anthropic.com',
-    description: 'AI research company building reliable AI systems.',
+    size: '50-200',
+    website: 'yourcompany.com',
+    description: '',
   },
 
   roles: MOCK_ROLES,

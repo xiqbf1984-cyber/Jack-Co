@@ -1,43 +1,47 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { cn } from '@/lib/utils';
 import Typewriter from './typewriter';
 import HireTypeCards from './hire-type-cards';
 
 export default function HeroSection({ tab }) {
-  const [phase, setPhase] = useState('typing'); // typing | done
+  const [done, setDone] = useState(false);
+  const handleComplete = useCallback(() => setDone(true), []);
 
-  const handleTypewriterComplete = useCallback(() => {
-    setPhase('done');
-  }, []);
-
-  const showCards = tab === 'For Companies' && phase === 'done';
+  const isCompanies = tab === 'For Companies';
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6 px-4 text-center">
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 24px' }}>
       <h1>
         <Typewriter
           text="Who do you want to hire?"
-          delay={60}
-          onComplete={handleTypewriterComplete}
+          delay={55}
+          onComplete={handleComplete}
         />
       </h1>
 
-      <p
-        className={cn(
-          'text-body-lg max-w-md',
-          phase === 'typing' ? 'opacity-0' : 'animate-fsu'
-        )}
-        style={{ color: 'var(--brown-muted)' }}
-      >
-        In the age of AI, the only thing that matters is what you can do.
-      </p>
+      {done && (
+        <p
+          className="animate-fsu text-body-lg"
+          style={{ color: 'var(--brown-muted)', maxWidth: 440, marginTop: 16 }}
+        >
+          In the age of AI, the only thing that matters is what you can do.
+        </p>
+      )}
 
-      {showCards && (
-        <div className="mt-4 animate-fsu">
+      {done && isCompanies && (
+        <div className="animate-fsu" style={{ marginTop: 48 }}>
           <HireTypeCards />
         </div>
+      )}
+
+      {done && !isCompanies && (
+        <p
+          className="animate-fsu text-body-sm"
+          style={{ color: 'var(--brown-light)', marginTop: 48 }}
+        >
+          Candidate features coming soon.
+        </p>
       )}
     </div>
   );

@@ -22,7 +22,7 @@ export default function CandidatesPage() {
   );
 
   return (
-    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 960, padding: '40px 48px' }}>
+    <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-display-page">Candidates</h1>
         <button onClick={openModal} className="btn-primary">

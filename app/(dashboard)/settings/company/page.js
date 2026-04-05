@@ -7,15 +7,15 @@ export default function CompanySettingsPage() {
   const setCompany = useAppStore((s) => s.setCompany);
 
   const fields = [
-    { key: 'name', label: 'Company Name', placeholder: 'Anthropic' },
-    { key: 'industry', label: 'Industry', placeholder: 'AI Safety & Research' },
+    { key: 'name', label: 'Company Name', placeholder: 'Acme Corp' },
+    { key: 'industry', label: 'Industry', placeholder: 'Technology' },
     { key: 'location', label: 'Location', placeholder: 'San Francisco, CA' },
-    { key: 'size', label: 'Company Size', placeholder: '500-1000' },
-    { key: 'website', label: 'Website', placeholder: 'anthropic.com' },
+    { key: 'size', label: 'Company Size', placeholder: '50-200' },
+    { key: 'website', label: 'Website', placeholder: 'acme.com' },
   ];
 
   return (
-    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: '40px 48px' }}>
+    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: '32px 40px' }}>
       <h1 className="text-display-page mb-1">Company Profile</h1>
       <p className="text-body-lg mb-6">Update your company information.</p>
 

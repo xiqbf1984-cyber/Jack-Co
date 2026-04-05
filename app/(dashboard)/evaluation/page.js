@@ -42,7 +42,7 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 960, padding: '40px 48px' }}>
+    <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
       <h1 className="text-display-page mb-6">Evaluation</h1>
 
       {/* Stat cards */}

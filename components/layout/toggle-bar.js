@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 
-export default function ToggleBar({ options = [], value, onChange }) {
+export default function ToggleBar({ options = [], value, onChange, disabledOptions = [] }) {
   const [selected, setSelected] = useState(value ?? options[0] ?? '');
   const [indicatorStyle, setIndicatorStyle] = useState({});
   const containerRef = useRef(null);
@@ -23,6 +23,7 @@ export default function ToggleBar({ options = [], value, onChange }) {
   }, [activeValue, options]);
 
   const handleSelect = (opt) => {
+    if (disabledOptions.includes(opt)) return;
     if (value === undefined) setSelected(opt);
     onChange?.(opt);
   };
@@ -53,31 +54,36 @@ export default function ToggleBar({ options = [], value, onChange }) {
         }}
       />
 
-      {options.map((opt) => (
-        <button
-          key={opt}
-          ref={(el) => { buttonRefs.current[opt] = el; }}
-          onClick={() => handleSelect(opt)}
-          style={{
-            position: 'relative',
-            zIndex: 1,
-            padding: '6px 16px',
-            borderRadius: 9999,
-            fontSize: 12,
-            fontWeight: 600,
-            fontFamily: 'var(--font-body)',
-            cursor: 'pointer',
-            whiteSpace: 'nowrap',
-            userSelect: 'none',
-            background: 'transparent',
-            border: 'none',
-            color: activeValue === opt ? 'var(--brown)' : '#FBF9F4',
-            transition: 'color 0.2s ease',
-          }}
-        >
-          {opt}
-        </button>
-      ))}
+      {options.map((opt) => {
+        const isDisabled = disabledOptions.includes(opt);
+        const isActive = activeValue === opt;
+        return (
+          <button
+            key={opt}
+            ref={(el) => { buttonRefs.current[opt] = el; }}
+            onClick={() => handleSelect(opt)}
+            style={{
+              position: 'relative',
+              zIndex: 1,
+              padding: '6px 16px',
+              borderRadius: 9999,
+              fontSize: 12,
+              fontWeight: 600,
+              fontFamily: 'var(--font-body)',
+              cursor: isDisabled ? 'default' : 'pointer',
+              whiteSpace: 'nowrap',
+              userSelect: 'none',
+              background: 'transparent',
+              border: 'none',
+              color: isActive ? 'var(--brown)' : isDisabled ? 'rgba(251,249,244,0.4)' : '#FBF9F4',
+              transition: 'color 0.2s ease',
+              opacity: isDisabled && !isActive ? 0.5 : 1,
+            }}
+          >
+            {opt}
+          </button>
+        );
+      })}
     </div>
   );
 }
