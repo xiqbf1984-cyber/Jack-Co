@@ -15,13 +15,6 @@ export default function RootLayout({ children }) {
           href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Playfair+Display:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
-        <style>{`
-          :root {
-            --font-display: 'Playfair Display', Georgia, serif;
-            --font-body: 'Libre Baskerville', Georgia, serif;
-            --font-mono: 'DM Mono', monospace;
-          }
-        `}</style>
       </head>
       <body className="grid-texture">{children}</body>
     </html>
