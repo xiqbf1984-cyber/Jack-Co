@@ -1,85 +1,80 @@
 'use client';
 
 import Link from 'next/link';
-import { Users, Bot } from 'lucide-react';
-import { cn } from '@/lib/utils';
-
-const cardBase = cn(
-  'relative flex flex-col items-center gap-4 p-8',
-  'border',
-  'transition-all duration-200'
-);
 
 export default function HireTypeCards() {
   return (
-    <div className="flex flex-row items-stretch justify-center gap-6">
-      {/* Hiring Human - clickable */}
-      <Link href="/dashboard" className="no-underline">
+    <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+      {/* Hiring Human */}
+      <Link href="/dashboard" style={{ textDecoration: 'none' }}>
         <div
-          className={cn(
-            cardBase,
-            'cursor-pointer hover-scale-sm'
-          )}
           style={{
-            width: 280,
+            width: 240,
+            padding: '32px 24px',
+            borderRadius: 16,
+            border: '1px solid var(--border-default)',
             backgroundColor: 'var(--cream-card)',
-            borderColor: 'var(--border-default)',
-            borderRadius: 'var(--radius-2xl)',
             boxShadow: 'var(--shadow-card)',
+            textAlign: 'center',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = 'var(--gold)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-card-hover)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = 'var(--border-default)';
+            e.currentTarget.style.boxShadow = 'var(--shadow-card)';
           }}
         >
-          <div
-            className="flex items-center justify-center w-12 h-12 rounded-full"
-            style={{ backgroundColor: 'var(--cream)', border: '1px solid var(--border-light)' }}
-          >
-            <Users size={22} style={{ color: 'var(--brown)' }} />
-          </div>
-          <span className="font-display text-lg font-medium" style={{ color: 'var(--brown)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 8 }}>
             Hiring Human
-          </span>
-          <span className="text-body-sm text-center" style={{ color: 'var(--brown-muted)' }}>
+          </div>
+          <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)' }}>
             Evaluate real candidates
-          </span>
+          </div>
         </div>
       </Link>
 
-      {/* Hiring AI - not clickable */}
+      {/* Hiring AI */}
       <div
-        className={cn(
-          cardBase,
-          'opacity-50 cursor-default select-none'
-        )}
         style={{
-          width: 280,
+          width: 240,
+          padding: '32px 24px',
+          borderRadius: 16,
+          border: '1px solid var(--border-default)',
           backgroundColor: 'var(--cream-card)',
-          borderColor: 'var(--border-default)',
-          borderRadius: 'var(--radius-2xl)',
           boxShadow: 'var(--shadow-card)',
+          textAlign: 'center',
+          opacity: 0.45,
+          cursor: 'default',
+          position: 'relative',
         }}
       >
-        {/* Coming soon badge */}
         <span
-          className="absolute top-3 right-3 text-mono-tag px-2 py-0.5 rounded-full"
           style={{
-            backgroundColor: 'var(--cream-sidebar)',
+            position: 'absolute',
+            top: 10,
+            right: 12,
+            fontSize: 9,
+            fontFamily: 'var(--font-mono)',
+            textTransform: 'uppercase',
+            letterSpacing: 0.3,
             color: 'var(--brown-soft)',
-            border: '1px solid var(--border-light)',
+            backgroundColor: 'var(--cream-sidebar)',
+            padding: '2px 8px',
+            borderRadius: 9999,
           }}
         >
           Coming soon
         </span>
-        <div
-          className="flex items-center justify-center w-12 h-12 rounded-full"
-          style={{ backgroundColor: 'var(--cream)', border: '1px solid var(--border-light)' }}
-        >
-          <Bot size={22} style={{ color: 'var(--brown)' }} />
-        </div>
-        <span className="font-display text-lg font-medium" style={{ color: 'var(--brown)' }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 8 }}>
           Hiring AI
-        </span>
-        <span className="text-body-sm text-center" style={{ color: 'var(--brown-muted)' }}>
+        </div>
+        <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)' }}>
           Coming soon
-        </span>
+        </div>
       </div>
     </div>
   );

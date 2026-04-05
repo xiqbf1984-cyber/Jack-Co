@@ -11,7 +11,7 @@ export default function DashboardPage() {
   const company = useAppStore((s) => s.company);
 
   return (
-    <div className="mx-auto" style={{ maxWidth: 960, padding: '40px 48px' }}>
+    <div style={{ padding: '32px 40px' }}>
       {/* Welcome */}
       <div className="mb-6 animate-fade-scale">
         <h1 className="text-display-page mb-1">

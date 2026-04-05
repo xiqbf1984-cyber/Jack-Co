@@ -21,7 +21,7 @@ export default function RolesPage() {
   }, [roles, search]);
 
   return (
-    <div className="mx-auto animate-fi" style={{ maxWidth: 960, padding: '40px 48px' }}>
+    <div className="animate-fi" style={{ padding: '32px 40px' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-display-page">Roles</h1>
