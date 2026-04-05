@@ -62,13 +62,13 @@ export default function WizardProgress() {
                 {isCompleted ? (
                   <Check size={12} strokeWidth={3} />
                 ) : isCurrent ? (
-                  <span className="text-[10px] font-bold">{i + 1}</span>
+                  <span className="text-xs font-bold">{i + 1}</span>
                 ) : null}
               </div>
 
               {/* Label */}
               <span
-                className="text-[10px] whitespace-nowrap font-mono uppercase tracking-wide"
+                className="text-xs whitespace-nowrap"
                 style={{
                   color: isCompleted
                     ? 'var(--accent-green)'

@@ -191,8 +191,8 @@ export default function Sidebar() {
                 right: 8,
                 top: '50%',
                 transform: 'translateY(-50%)',
-                fontSize: 9,
-                fontFamily: 'var(--font-mono)',
+                fontSize: 11,
+                fontFamily: 'var(--font-body)',
                 color: 'var(--brown-soft)',
                 backgroundColor: 'var(--cream-sidebar)',
                 padding: '1px 5px',
@@ -254,7 +254,7 @@ export default function Sidebar() {
               </div>
               <div>
                 <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', fontWeight: 600, color: 'var(--brown)' }}>Create Team</div>
-                <div style={{ fontSize: 9, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', marginTop: 1 }}>Collaborate with others in a shared workspace</div>
+                <div style={{ fontSize: 11, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', marginTop: 1 }}>Collaborate with others in a shared workspace</div>
               </div>
             </button>
           </div>
@@ -279,8 +279,8 @@ export default function Sidebar() {
             <Search size={13} style={{ color: 'var(--brown-soft)', flexShrink: 0 }} />
             <span style={{ flex: 1, fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)' }}>Search</span>
             <span style={{
-              fontSize: 9,
-              fontFamily: 'var(--font-mono)',
+              fontSize: 11,
+              fontFamily: 'var(--font-body)',
               color: 'var(--brown-soft)',
               backgroundColor: 'var(--cream-sidebar)',
               padding: '1px 5px',
@@ -484,7 +484,7 @@ export default function Sidebar() {
         }}>
           <div style={{
             width: 28, height: 28, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700,
+            fontSize: 11, fontFamily: 'var(--font-body)', fontWeight: 700,
             background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
             color: 'var(--brown)', flexShrink: 0,
           }}>
@@ -495,7 +495,7 @@ export default function Sidebar() {
               <div style={{ fontSize: 11, fontWeight: 600, fontFamily: 'var(--font-body)', color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {userName}
               </div>
-              <div style={{ fontSize: 9, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              <div style={{ fontSize: 11, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {userEmail}
               </div>
             </div>

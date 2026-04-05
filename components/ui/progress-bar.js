@@ -66,13 +66,13 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
                 {isCompleted ? (
                   <Check size={12} />
                 ) : (
-                  <span className="text-[10px] font-semibold">
+                  <span className="text-xs font-semibold">
                     {isCurrent ? i + 1 : ''}
                   </span>
                 )}
               </div>
               <span
-                className="text-[10px] whitespace-nowrap"
+                className="text-xs whitespace-nowrap"
                 style={{ color: s.textColor, fontWeight: s.textWeight }}
               >
                 {step.label}

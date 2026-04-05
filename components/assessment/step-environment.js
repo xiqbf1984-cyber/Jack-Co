@@ -165,7 +165,7 @@ function EditableList({ title, items, onSave }) {
           {items.map((item, idx) => (
             <li key={item.id} className="flex items-start gap-2">
               <span
-                className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-semibold shrink-0 mt-0.5"
+                className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5"
                 style={{
                   backgroundColor: 'var(--cream-row-even)',
                   color: 'var(--brown)',

@@ -44,7 +44,7 @@ export default function RecentCandidatesList() {
           >
             <div className="flex items-center gap-3.5">
               <div
-                className="w-9 h-9 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold shrink-0"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-mono font-bold shrink-0"
                 style={{
                   background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                   color: 'var(--brown)',
