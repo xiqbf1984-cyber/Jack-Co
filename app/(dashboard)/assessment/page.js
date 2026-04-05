@@ -22,11 +22,11 @@ export default function ChallengesPage() {
   );
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
+    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-display-page">Challenges</h1>
-        <Link href="/challenges/create" className="btn-primary no-underline">
-          <Plus size={14} /> Add Challenge
+        <h1 className="text-display-page">Assessment</h1>
+        <Link href="/assessment/create" className="btn-primary no-underline">
+          <Plus size={14} /> New Assessment
         </Link>
       </div>
 
@@ -35,7 +35,7 @@ export default function ChallengesPage() {
         <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
         <input
           type="text"
-          placeholder="Search challenges..."
+          placeholder="Search assessments..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
@@ -49,7 +49,7 @@ export default function ChallengesPage() {
           {filtered.map((challenge, i) => (
             <Link
               key={challenge.id}
-              href={`/challenges/${challenge.id}`}
+              href={`/assessment/${challenge.id}`}
               className="block rounded-xl border p-4 transition-all duration-200 no-underline hover-shadow-card"
               style={{
                 backgroundColor: 'var(--cream-card)',
@@ -83,8 +83,8 @@ export default function ChallengesPage() {
       ) : (
         <div className="text-center py-16">
           <Trophy size={40} className="mx-auto mb-3" style={{ color: 'var(--brown-light)' }} />
-          <p className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>No challenges yet</p>
-          <p className="text-body-xs">Create your first challenge above.</p>
+          <p className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>No assessments yet</p>
+          <p className="text-body-xs">Create your first assessment.</p>
         </div>
       )}
     </div>

@@ -6,9 +6,9 @@ import { CheckCircle, Trophy, PlusCircle, LayoutDashboard } from 'lucide-react';
 export default function RoleComplete({ roleTitle = 'New Role' }) {
   const actions = [
     {
-      label: 'Create a Challenge',
+      label: 'Create Assessment',
       description: 'Design a skills assessment for this role',
-      href: '/challenges/create',
+      href: '/assessment/create',
       icon: Trophy,
       primary: true,
     },

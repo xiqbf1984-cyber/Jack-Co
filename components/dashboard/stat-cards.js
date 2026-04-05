@@ -7,7 +7,7 @@ import { useAppStore } from '@/stores/app-store';
 const stats = [
   { key: 'roles', label: 'Active Roles', icon: Briefcase, color: '#27825b' },
   { key: 'candidates', label: 'Candidates', icon: Users, color: '#0077B5' },
-  { key: 'challenges', label: 'Challenges', icon: Trophy, color: '#8b6914' },
+  { key: 'challenges', label: 'Assessments', icon: Trophy, color: '#8b6914' },
   { key: 'submissions', label: 'Submissions', icon: FileCheck, color: '#d4880f' },
 ];
 
@@ -30,7 +30,7 @@ export default function StatCards() {
         return (
           <div
             key={stat.key}
-            className="rounded-xl p-4 border transition-all duration-200 hover-shadow-card"
+            className="rounded-xl p-5 border transition-all duration-200 hover-shadow-card"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',

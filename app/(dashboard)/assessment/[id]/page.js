@@ -30,10 +30,10 @@ export default function ChallengeDetailPage() {
   if (!challenge) {
     return (
       <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
-        <Link href="/challenges" className="text-body-xs flex items-center gap-1 mb-4 no-underline" style={{ color: 'var(--gold)' }}>
-          <ArrowLeft size={14} /> Back to Challenges
+        <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline" style={{ color: 'var(--gold)' }}>
+          <ArrowLeft size={14} /> Back to Assessment
         </Link>
-        <p className="text-body-sm" style={{ color: 'var(--brown-soft)' }}>Challenge not found.</p>
+        <p className="text-body-sm" style={{ color: 'var(--brown-soft)' }}>Assessment not found.</p>
       </div>
     );
   }
@@ -42,8 +42,8 @@ export default function ChallengeDetailPage() {
 
   return (
     <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
-      <Link href="/challenges" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
-        <ArrowLeft size={14} /> Back to Challenges
+      <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
+        <ArrowLeft size={14} /> Back to Assessment
       </Link>
 
       <div className="flex items-center gap-3 mb-6">
@@ -125,15 +125,15 @@ export default function ChallengeDetailPage() {
       {activeTab === 'settings' && (
         <div className="animate-fsu">
           <div className="rounded-xl border p-5" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
-            <h3 className="text-display-section mb-4">Challenge Settings</h3>
-            <p className="text-body-xs mb-6">Manage this challenge's configuration.</p>
+            <h3 className="text-display-section mb-4">Assessment Settings</h3>
+            <p className="text-body-xs mb-6">Manage this assessment's configuration.</p>
             <div className="border-t pt-4" style={{ borderColor: 'var(--border-light)' }}>
               <h4 className="text-body-sm font-semibold mb-2" style={{ color: 'var(--red)' }}>Danger Zone</h4>
               <button
                 className="px-4 py-2 rounded-lg border text-body-sm font-semibold cursor-pointer transition-all font-body"
                 style={{ borderColor: 'var(--red)', color: 'var(--red)', backgroundColor: 'transparent' }}
               >
-                Delete Challenge
+                Delete Assessment
               </button>
             </div>
           </div>

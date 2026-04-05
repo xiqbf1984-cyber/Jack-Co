@@ -11,14 +11,14 @@ export default function DashboardPage() {
   const company = useAppStore((s) => s.company);
 
   return (
-    <div style={{ padding: '32px 40px' }}>
+    <div style={{ padding: '32px 40px', maxWidth: 1080 }}>
       {/* Welcome */}
       <div className="mb-6 animate-fade-scale">
         <h1 className="text-display-page mb-1">
           Welcome back, {company.name}
         </h1>
         <p className="text-body-lg">
-          Manage your roles, challenges, and candidates.
+          Overview of your hiring pipeline.
         </p>
       </div>
 

@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import { useAuth } from '@clerk/nextjs';
 
 export default function HireTypeCards() {
+  const { isSignedIn } = useAuth();
   return (
     <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
       {/* Hiring Human */}
-      <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+      <Link href={isSignedIn ? '/dashboard' : '/login'} style={{ textDecoration: 'none' }}>
         <div
           style={{
             width: 240,

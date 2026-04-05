@@ -42,7 +42,7 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
+    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
       <h1 className="text-display-page mb-6">Evaluation</h1>
 
       {/* Stat cards */}
@@ -52,7 +52,7 @@ export default function EvaluationPage() {
           return (
             <div
               key={stat.label}
-              className="rounded-xl p-4 border"
+              className="rounded-xl p-5 border"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
@@ -80,7 +80,7 @@ export default function EvaluationPage() {
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div
                 key={challenge.id}
-                className="rounded-xl border p-4"
+                className="rounded-xl border p-5"
                 style={{
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
@@ -142,7 +142,7 @@ export default function EvaluationPage() {
                 className="text-body-xs font-semibold hover:underline"
                 style={{ color: 'var(--gold)', background: 'none', border: 'none', cursor: 'pointer' }}
               >
-                View all {roleChallenges.length} challenges →
+                View all {roleChallenges.length} assessments →
               </button>
             )}
           </div>
@@ -153,7 +153,7 @@ export default function EvaluationPage() {
         <div className="text-center py-16">
           <BarChart3 size={40} className="mx-auto mb-3" style={{ color: 'var(--brown-light)' }} />
           <p className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>No evaluations yet</p>
-          <p className="text-body-xs">Results will appear as candidates complete challenges.</p>
+          <p className="text-body-xs">Results will appear as candidates complete assessments.</p>
         </div>
       )}
     </div>
