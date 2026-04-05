@@ -30,7 +30,7 @@ export default function StatCards() {
         return (
           <div
             key={stat.key}
-            className="rounded-xl p-4 border transition-all duration-200 hover:shadow-[0_8px_24px_rgba(0,0,0,.07)]"
+            className="rounded-xl p-4 border transition-all duration-200 hover-shadow-card"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',

@@ -22,8 +22,10 @@ export default function TypingIndicator() {
         {[0, 0.16, 0.32].map((delay, i) => (
           <span
             key={i}
-            className="inline-block w-[6px] h-[6px] rounded-full"
+            className="inline-block rounded-full"
             style={{
+              width: 6,
+              height: 6,
               backgroundColor: 'var(--brown-muted)',
               animation: `dotBounce 1s ${delay}s infinite`,
             }}

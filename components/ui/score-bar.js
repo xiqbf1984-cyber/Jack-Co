@@ -32,8 +32,8 @@ function ScoreBar({ score = 0, grade, className }) {
 
       {/* Score text */}
       <span
-        className="text-mono-data min-w-[32px] text-right"
-        style={{ color: barColor }}
+        className="text-mono-data text-right"
+        style={{ color: barColor, minWidth: 32 }}
       >
         {clampedScore}
       </span>

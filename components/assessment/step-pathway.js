@@ -43,7 +43,7 @@ export default function StepPathway() {
 
   if (!clusterData) {
     return (
-      <div className="max-w-[720px] mx-auto">
+      <div className="mx-auto" style={{ maxWidth: 720 }}>
         <h1 className="text-display-page mb-2">Select the career pathway and AI-native role</h1>
         <p className="text-body-lg">
           Please go back and select an industry cluster first.
@@ -53,7 +53,7 @@ export default function StepPathway() {
   }
 
   return (
-    <div className="max-w-[720px] mx-auto">
+    <div className="mx-auto" style={{ maxWidth: 720 }}>
       <h1 className="text-display-page mb-2">Select the career pathway and AI-native role</h1>
       <p className="text-body-lg mb-6">
         Choose a pathway within <strong style={{ color: 'var(--gold)' }}>{cluster.name}</strong>, then pick the role that best matches.

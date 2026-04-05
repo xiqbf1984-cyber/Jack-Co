@@ -93,8 +93,10 @@ function ProgressIndicator({ currentStage }) {
             {/* Connecting line */}
             {i < STAGES.length - 1 && (
               <div
-                className="w-16 h-[2px] mx-2 mt-[-14px] transition-colors duration-300"
+                className="w-16 mx-2 transition-colors duration-300"
                 style={{
+                  height: 2,
+                  marginTop: -14,
                   backgroundColor: isDone
                     ? 'var(--accent-green)'
                     : 'var(--border-default)',
