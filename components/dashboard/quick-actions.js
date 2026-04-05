@@ -22,12 +22,9 @@ export default function QuickActions() {
           const Icon = action.icon;
           const inner = (
             <div
-              className="flex flex-col items-center gap-2.5 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card text-center"
+              className="app-card app-card-interactive flex flex-col items-center gap-2.5 cursor-pointer text-center"
               style={{
                 padding: '16px 12px',
-                backgroundColor: 'var(--cream-card)',
-                borderColor: 'var(--border-default)',
-                boxShadow: 'var(--shadow-card)',
                 animation: `fsu 0.25s ease-out ${i * 0.05}s both`,
               }}
             >

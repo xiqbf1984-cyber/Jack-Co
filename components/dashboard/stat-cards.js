@@ -30,12 +30,9 @@ export default function StatCards() {
         return (
           <div
             key={stat.key}
-            className="rounded-xl border transition-all duration-200 hover-shadow-card"
+            className="app-card app-card-interactive"
             style={{
               padding: '28px',
-              backgroundColor: 'var(--cream-card)',
-              borderColor: 'var(--border-default)',
-              boxShadow: 'var(--shadow-card)',
               animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
             }}
           >

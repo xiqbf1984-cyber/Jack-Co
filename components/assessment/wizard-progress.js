@@ -40,13 +40,11 @@ export default function WizardProgress() {
               {/* Dot */}
               <div
                 className={cn(
-                  'rounded-full flex items-center justify-center transition-all duration-200',
+                  'app-progress-step-dot',
                   isCompleted && 'text-white',
                   isCurrent && 'text-white animate-glow',
                 )}
                 style={{
-                  width: isCurrent ? 28 : 24,
-                  height: isCurrent ? 28 : 24,
                   backgroundColor: isCompleted
                     ? 'var(--accent-green)'
                     : isCurrent
@@ -68,7 +66,7 @@ export default function WizardProgress() {
 
               {/* Label */}
               <span
-                className="text-[10px] whitespace-nowrap font-mono uppercase tracking-wide"
+                className="app-progress-step-label"
                 style={{
                   color: isCompleted
                     ? 'var(--accent-green)'

@@ -20,29 +20,33 @@ export default function HeroSection({ tab }) {
         />
       </h1>
 
-      {done && (
-        <p
-          className="animate-fsu text-body-lg"
-          style={{ color: 'var(--brown-muted)', maxWidth: 440, marginTop: 16 }}
-        >
-          See How Candidates Actually Work with AI.
-        </p>
-      )}
+      <div style={{ minHeight: 32, marginTop: 16 }}>
+        {done && (
+          <p
+            className="animate-fsu text-body-lg"
+            style={{ color: 'var(--brown-muted)', maxWidth: 440 }}
+          >
+            See How Candidates Actually Work with AI.
+          </p>
+        )}
+      </div>
 
-      {done && isCompanies && (
-        <div className="animate-fsu" style={{ marginTop: 48 }}>
-          <HireTypeCards />
-        </div>
-      )}
+      <div style={{ minHeight: 170, marginTop: 48 }}>
+        {done && isCompanies && (
+          <div className="animate-fsu">
+            <HireTypeCards />
+          </div>
+        )}
 
-      {done && !isCompanies && (
-        <p
-          className="animate-fsu text-body-sm"
-          style={{ color: 'var(--brown-light)', marginTop: 48 }}
-        >
-          Candidate features coming soon.
-        </p>
-      )}
+        {done && !isCompanies && (
+          <p
+            className="animate-fsu text-body-sm"
+            style={{ color: 'var(--brown-light)' }}
+          >
+            Candidate features coming soon.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

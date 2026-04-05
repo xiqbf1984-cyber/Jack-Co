@@ -56,7 +56,7 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
               )}
             >
               <div
-                className="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200"
+                className="app-progress-step-dot"
                 style={{
                   backgroundColor: s.dotBg,
                   border: `2px solid ${s.dotBorder}`,
@@ -72,7 +72,7 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
                 )}
               </div>
               <span
-                className="text-[10px] whitespace-nowrap"
+                className="app-progress-step-label"
                 style={{ color: s.textColor, fontWeight: s.textWeight }}
               >
                 {step.label}

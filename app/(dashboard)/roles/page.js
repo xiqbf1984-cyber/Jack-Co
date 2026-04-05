@@ -21,7 +21,7 @@ export default function RolesPage() {
   }, [roles, search]);
 
   return (
-    <div className="animate-fi" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+    <div className="app-page animate-fi">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Roles</h1>
@@ -74,12 +74,9 @@ export default function RolesPage() {
             return (
               <div
                 key={role.id}
-                className="flex items-center gap-5 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
+                className="app-card app-card-interactive flex items-center gap-5 cursor-pointer"
                 style={{
                   padding: '22px 28px',
-                  borderColor: 'var(--border-default)',
-                  backgroundColor: 'var(--cream-card)',
-                  boxShadow: 'var(--shadow-card)',
                 }}
               >
                 {/* Icon */}
@@ -92,10 +89,10 @@ export default function RolesPage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-body-sm font-semibold truncate" style={{ color: 'var(--brown)' }}>
+                  <div className="app-card-title truncate">
                     {role.title}
                   </div>
-                  <div className="text-body-xs mt-1" style={{ color: 'var(--brown-muted)' }}>
+                  <div className="app-card-meta mt-1">
                     {role.dept}
                   </div>
                 </div>

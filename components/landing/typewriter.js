@@ -8,6 +8,15 @@ export default function Typewriter({ text, delay = 60, onComplete }) {
   const [showCursor, setShowCursor] = useState(true);
   const [cursorFading, setCursorFading] = useState(false);
   const indexRef = useRef(0);
+  const completionFiredRef = useRef(false);
+
+  useEffect(() => {
+    setDisplayedText('');
+    setShowCursor(true);
+    setCursorFading(false);
+    indexRef.current = 0;
+    completionFiredRef.current = false;
+  }, [text]);
 
   useEffect(() => {
     if (indexRef.current < text.length) {
@@ -17,8 +26,10 @@ export default function Typewriter({ text, delay = 60, onComplete }) {
       }, delay);
       return () => clearTimeout(timeout);
     } else {
-      // Text fully typed - fire onComplete immediately, then fade cursor
-      onComplete?.();
+      if (!completionFiredRef.current) {
+        onComplete?.();
+        completionFiredRef.current = true;
+      }
       const fadeTimeout = setTimeout(() => {
         setCursorFading(true);
         setTimeout(() => setShowCursor(false), 500);
@@ -28,7 +39,7 @@ export default function Typewriter({ text, delay = 60, onComplete }) {
   }, [displayedText, text, delay, onComplete]);
 
   return (
-    <span className="text-display-hero">
+    <span className="text-display-hero inline-flex min-h-[1.2em] items-center">
       {displayedText}
       {showCursor && (
         <span

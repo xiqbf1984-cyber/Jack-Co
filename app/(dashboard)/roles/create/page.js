@@ -53,31 +53,29 @@ We offer competitive compensation, flexible work arrangements, and the opportuni
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div className="flex items-center justify-center gap-0 py-4 px-6">
+    <div className="flex items-center justify-center py-4 px-6">
       {STAGES.map((stage, i) => {
         const isCurrent = i === currentStage;
         const isDone = i < currentStage;
-        const isFuture = i > currentStage;
 
         return (
           <div key={stage.key} className="flex items-center">
             {/* Dot + Label */}
             <div className="flex flex-col items-center gap-1">
               <div
-                className="w-3 h-3 rounded-full transition-all duration-300"
+                className="app-progress-step-dot"
                 style={{
                   backgroundColor: isDone
                     ? 'var(--accent-green)'
                     : isCurrent
                     ? 'var(--gold)'
                     : 'var(--border-default)',
-                  boxShadow: isCurrent
-                    ? '0 0 0 4px rgba(139, 105, 20, 0.15)'
-                    : 'none',
+                  border: isDone || isCurrent ? '2px solid transparent' : '2px solid var(--border-default)',
+                  boxShadow: isCurrent ? '0 0 0 4px rgba(139, 105, 20, 0.15)' : 'none',
                 }}
               />
               <span
-                className="text-body-xs font-medium whitespace-nowrap"
+                className="app-progress-step-label"
                 style={{
                   color: isDone
                     ? 'var(--accent-green)'
@@ -93,10 +91,10 @@ function ProgressIndicator({ currentStage }) {
             {/* Connecting line */}
             {i < STAGES.length - 1 && (
               <div
-                className="w-16 mx-2 transition-colors duration-300"
+                className="w-16 mx-2 transition-colors duration-300 rounded-full"
                 style={{
                   height: 2,
-                  marginTop: -14,
+                  marginTop: -15,
                   backgroundColor: isDone
                     ? 'var(--accent-green)'
                     : 'var(--border-default)',

@@ -32,9 +32,9 @@ export default function SearchPage({ onSubmit }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-12 animate-fi">
+    <div className="flex flex-col items-center justify-start min-h-full px-6 pt-20 pb-12 animate-fi">
       {/* Typewriter title */}
-      <div className="mb-8 text-center">
+      <div className="mb-8 text-center min-h-[48px]">
         <Typewriter text="Describe your next hire" delay={50} />
       </div>
 

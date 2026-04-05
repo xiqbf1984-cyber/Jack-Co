@@ -11,7 +11,7 @@ export default function DashboardPage() {
   const company = useAppStore((s) => s.company);
 
   return (
-    <div style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+    <div className="app-page">
       {/* Welcome */}
       <div className="mb-8 animate-fade-scale">
         <h1 className="text-display-page mb-1">
