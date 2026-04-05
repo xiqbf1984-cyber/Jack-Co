@@ -8,11 +8,12 @@ export default function CompanyProfileCard() {
   const company = useAppStore((s) => s.company);
 
   return (
-    <div>
+    <div className="h-full">
       <h3 className="text-display-section mb-3">Company Profile</h3>
       <div
-        className="rounded-xl border p-5"
+        className="rounded-xl border h-full flex flex-col"
         style={{
+          padding: '20px',
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-card)',
@@ -20,7 +21,7 @@ export default function CompanyProfileCard() {
       >
         <div className="flex items-center gap-3 mb-4">
           <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center text-[14px] font-mono font-bold"
+            className="w-10 h-10 rounded-lg flex items-center justify-center text-[14px] font-mono font-bold shrink-0"
             style={{
               background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
               color: 'var(--brown)',
@@ -36,7 +37,7 @@ export default function CompanyProfileCard() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="flex flex-col gap-2.5 mb-4">
           <div className="flex items-center gap-2 text-body-xs">
             <MapPin size={12} style={{ color: 'var(--brown-soft)' }} />
             <span>{company.location}</span>
@@ -53,8 +54,8 @@ export default function CompanyProfileCard() {
 
         <Link
           href="/settings/company"
-          className="btn-secondary w-full text-center no-underline block"
-          style={{ fontSize: '11px' }}
+          className="btn-secondary w-full text-center no-underline block mt-auto"
+          style={{ fontSize: '12px' }}
         >
           Edit Profile
         </Link>

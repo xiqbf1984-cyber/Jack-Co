@@ -22,36 +22,38 @@ export default function ChallengesPage() {
   );
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
-      <div className="flex items-center justify-between mb-6">
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Assessment</h1>
         <Link href="/assessment/create" className="btn-primary no-underline">
           <Plus size={14} /> New Assessment
         </Link>
       </div>
+      <p className="text-body-lg mb-8">Create and manage AI-powered assessments for your roles.</p>
 
       {/* Search */}
-      <div className="relative mb-6">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
+      <div className="relative mb-8 max-w-sm">
+        <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
         <input
           type="text"
           placeholder="Search assessments..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
-          style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
+          style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
         />
       </div>
 
       {/* List */}
       {filtered.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filtered.map((challenge, i) => (
             <Link
               key={challenge.id}
               href={`/assessment/${challenge.id}`}
-              className="block rounded-xl border p-4 transition-all duration-200 no-underline hover-shadow-card"
+              className="block rounded-xl border transition-all duration-200 no-underline hover-shadow-card"
               style={{
+                padding: '22px 28px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',
@@ -60,19 +62,19 @@ export default function ChallengesPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>
+                  <div className="text-body-sm font-semibold mb-1.5" style={{ color: 'var(--brown)' }}>
                     {challenge.name}
                   </div>
                   <div className="text-body-xs">
                     {challenge.roleTitle} &middot; {challenge.skill}
                   </div>
                 </div>
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <span className="text-mono-tag" style={{ color: 'var(--brown-soft)' }}>
                     {challenge.candIds?.length || 0} candidates
                   </span>
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ backgroundColor: (statusColors[challenge.status] || '#c4b896') + '14' }}>
-                    <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: statusColors[challenge.status] }} />
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full" style={{ backgroundColor: (statusColors[challenge.status] || '#c4b896') + '14' }}>
+                    <span className="w-2 h-2 rounded-full" style={{ backgroundColor: statusColors[challenge.status] }} />
                     <span className="text-mono-tag" style={{ color: statusColors[challenge.status] }}>{challenge.status}</span>
                   </div>
                 </div>
@@ -81,8 +83,8 @@ export default function ChallengesPage() {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16">
-          <Trophy size={40} className="mx-auto mb-3" style={{ color: 'var(--brown-light)' }} />
+        <div className="text-center py-20">
+          <Trophy size={40} className="mx-auto mb-4" style={{ color: 'var(--brown-light)' }} />
           <p className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>No assessments yet</p>
           <p className="text-body-xs">Create your first assessment.</p>
         </div>

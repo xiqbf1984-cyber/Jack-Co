@@ -10,11 +10,11 @@
   --font-body: 'Libre Baskerville', Georgia, serif;
   --font-mono: 'DM Mono', monospace;
   /* Base Palette */
-  --cream: #fcfbf7;
-  --cream-sidebar: #F4F0E9;
+  --cream: #f5f3ee;
+  --cream-sidebar: #eae6dd;
   --cream-card: #ffffff;
-  --cream-card-hover: #fcfbf7;
-  --cream-row-even: #E9E4DA;
+  --cream-card-hover: #faf9f6;
+  --cream-row-even: #f5f2ec;
 
   /* Text */
   --brown: #5d5446;
@@ -30,9 +30,9 @@
   --btn-text: #FBF9F4;
 
   /* Borders */
-  --border-default: #e6dfd4;
-  --border-light: #efe8db;
-  --border-hover: #c4b896;
+  --border-default: #d5cdc0;
+  --border-light: #e2dbd0;
+  --border-hover: #b8a882;
 
   /* Functional */
   --gold: #8b6914;
@@ -43,12 +43,23 @@
   --orange: #d4880f;
 
   /* Shadows */
-  --shadow-card: 0 2px 8px rgba(0,0,0,.02);
-  --shadow-card-hover: 0 8px 24px rgba(0,0,0,.07);
-  --shadow-dropdown: 0 8px 24px rgba(0,0,0,.06);
-  --shadow-modal: 0 20px 60px rgba(0,0,0,.15);
+  --shadow-card: 0 1px 3px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.06);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.1);
+  --shadow-dropdown: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.1);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,.18);
   --shadow-glow-idle: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03);
   --shadow-glow-peak: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04);
+
+  /* Layout Spacing */
+  --page-padding-x: 48px;
+  --page-padding-y: 40px;
+  --page-max-width: 1280px;
+  --section-gap: 40px;
+  --card-gap: 24px;
+  --card-padding: 28px;
+  --row-padding-x: 24px;
+  --row-padding-y: 18px;
+  --header-mb: 32px;
 
   /* Radius */
   --radius-xs: 6px;
@@ -303,7 +314,7 @@ body {
 
 .text-mono-tag {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 400;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -315,7 +326,7 @@ body {
 }
 
 .hover-shadow-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .hover-shadow-card-var:hover {

@@ -4,16 +4,20 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
+import { useAppStore } from '@/stores/app-store';
 import { SIDEBAR_NAV } from '@/lib/constants';
 import {
   LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
   Settings, HelpCircle, Bell, Sun, Moon,
-  ChevronDown, Search, Check, Plus,
+  ChevronDown, Search, Check, Plus, PanelLeftClose, PanelLeftOpen,
 } from 'lucide-react';
 
 const iconMap = {
   LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
 };
+
+const EXPANDED_WIDTH = 220;
+const COLLAPSED_WIDTH = 64;
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -21,6 +25,10 @@ export default function Sidebar() {
   const [wsOpen, setWsOpen] = useState(false);
   const [theme, setTheme] = useState('light');
   const dropdownRef = useRef(null);
+  const collapsed = useAppStore((s) => s.sidebarCollapsed);
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
+
+  const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -43,37 +51,69 @@ export default function Sidebar() {
         position: 'fixed',
         left: 0,
         top: 0,
-        width: 200,
+        width: sidebarWidth,
         height: '100vh',
         zIndex: 40,
         display: 'flex',
         flexDirection: 'column',
         backgroundColor: 'var(--cream-sidebar)',
         borderRight: '1px solid var(--border-light)',
+        transition: 'width 0.2s ease',
+        overflow: 'hidden',
       }}
     >
+      {/* Collapse toggle — top-right */}
+      <button
+        onClick={toggleSidebar}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+        style={{
+          position: 'absolute',
+          top: 14,
+          right: collapsed ? undefined : 8,
+          left: collapsed ? '50%' : undefined,
+          transform: collapsed ? 'translateX(-50%)' : undefined,
+          width: 28,
+          height: 28,
+          borderRadius: 6,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          zIndex: 10,
+          color: 'var(--brown-soft)',
+          transition: 'all 0.15s ease',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+      >
+        {collapsed ? <PanelLeftOpen size={15} strokeWidth={1.5} /> : <PanelLeftClose size={15} strokeWidth={1.5} />}
+      </button>
       {/* ── Workspace Switcher ── */}
       <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
         <button
-          onClick={() => setWsOpen(!wsOpen)}
+          onClick={() => { if (!collapsed) setWsOpen(!wsOpen); }}
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: 8,
+            gap: 10,
             width: '100%',
-            padding: '14px 14px',
+            padding: collapsed ? '14px 0' : '14px 40px 14px 16px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             border: 'none',
             borderBottom: '1px solid var(--border-light)',
             background: 'transparent',
-            cursor: 'pointer',
+            cursor: collapsed ? 'default' : 'pointer',
             textAlign: 'left',
+            transition: 'padding 0.2s ease',
           }}
         >
           <div
             style={{
-              width: 24,
-              height: 24,
-              borderRadius: 6,
+              width: 28,
+              height: 28,
+              borderRadius: 8,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -81,33 +121,37 @@ export default function Sidebar() {
               flexShrink: 0,
             }}
           >
-            <span style={{ color: 'var(--btn-text)', fontSize: 11, fontWeight: 700, fontFamily: 'var(--font-body)' }}>N</span>
+            <span style={{ color: 'var(--btn-text)', fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-body)' }}>N</span>
           </div>
-          <span style={{
-            flex: 1,
-            fontSize: 13,
-            fontWeight: 600,
-            fontFamily: 'var(--font-body)',
-            color: 'var(--brown)',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-          }}>
-            NeoHuman
-          </span>
-          <ChevronDown
-            size={14}
-            style={{
-              color: 'var(--brown-soft)',
-              flexShrink: 0,
-              transition: 'transform 0.2s',
-              transform: wsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
-            }}
-          />
+          {!collapsed && (
+            <>
+              <span style={{
+                flex: 1,
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: 'var(--font-body)',
+                color: 'var(--brown)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}>
+                NeoHuman
+              </span>
+              <ChevronDown
+                size={14}
+                style={{
+                  color: 'var(--brown-soft)',
+                  flexShrink: 0,
+                  transition: 'transform 0.2s',
+                  transform: wsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                }}
+              />
+            </>
+          )}
         </button>
 
         {/* Dropdown */}
-        {wsOpen && (
+        {wsOpen && !collapsed && (
           <div
             className="animate-fsd"
             style={{
@@ -218,40 +262,72 @@ export default function Sidebar() {
       </div>
 
       {/* ── Global Search ── */}
-      <div style={{ padding: '10px 10px 6px' }}>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '7px 10px',
-            borderRadius: 8,
-            border: '1px solid var(--border-light)',
-            backgroundColor: 'var(--cream)',
-            cursor: 'pointer',
-          }}
-        >
-          <Search size={13} style={{ color: 'var(--brown-soft)', flexShrink: 0 }} />
-          <span style={{ flex: 1, fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)' }}>Search</span>
-          <span style={{
-            fontSize: 9,
-            fontFamily: 'var(--font-mono)',
-            color: 'var(--brown-soft)',
-            backgroundColor: 'var(--cream-sidebar)',
-            padding: '1px 5px',
-            borderRadius: 4,
-            border: '1px solid var(--border-light)',
-          }}>
-            ⌘K
-          </span>
+      {!collapsed && (
+        <div style={{ padding: '10px 12px 6px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '7px 10px',
+              borderRadius: 8,
+              border: '1px solid var(--border-light)',
+              backgroundColor: 'var(--cream)',
+              cursor: 'pointer',
+            }}
+          >
+            <Search size={13} style={{ color: 'var(--brown-soft)', flexShrink: 0 }} />
+            <span style={{ flex: 1, fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)' }}>Search</span>
+            <span style={{
+              fontSize: 9,
+              fontFamily: 'var(--font-mono)',
+              color: 'var(--brown-soft)',
+              backgroundColor: 'var(--cream-sidebar)',
+              padding: '1px 5px',
+              borderRadius: 4,
+              border: '1px solid var(--border-light)',
+            }}>
+              ⌘K
+            </span>
+          </div>
         </div>
-      </div>
+      )}
+
+      {collapsed && (
+        <div style={{ padding: '10px 0 6px', display: 'flex', justifyContent: 'center' }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              border: '1px solid var(--border-light)',
+              backgroundColor: 'var(--cream)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <Search size={14} style={{ color: 'var(--brown-soft)' }} />
+          </div>
+        </div>
+      )}
 
       {/* ── Navigation ── */}
-      <nav style={{ flex: 1, padding: '8px 8px', display: 'flex', flexDirection: 'column', gap: 1, overflowY: 'auto' }}>
-        <span className="text-mono-label" style={{ padding: '4px 10px 6px' }}>
-          Navigation
-        </span>
+      <nav style={{
+        flex: 1,
+        padding: collapsed ? '8px 8px' : '8px 10px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        overflowY: 'auto',
+        transition: 'padding 0.2s ease',
+      }}>
+        {!collapsed && (
+          <span className="text-mono-label" style={{ padding: '4px 10px 6px' }}>
+            Navigation
+          </span>
+        )}
         {SIDEBAR_NAV.map((item) => {
           const Icon = iconMap[item.icon];
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -259,11 +335,13 @@ export default function Sidebar() {
             <Link
               key={item.id}
               href={item.href}
+              title={collapsed ? item.label : undefined}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
-                padding: '8px 10px',
+                padding: collapsed ? '9px 0' : '8px 10px',
+                justifyContent: collapsed ? 'center' : 'flex-start',
                 borderRadius: 8,
                 textDecoration: 'none',
                 fontSize: 13,
@@ -280,24 +358,36 @@ export default function Sidebar() {
                 if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              <Icon size={16} strokeWidth={isActive ? 2 : 1.5} style={{ flexShrink: 0 }} />
-              <span>{item.label}</span>
+              <Icon size={17} strokeWidth={isActive ? 2 : 1.5} style={{ flexShrink: 0 }} />
+              {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
       </nav>
 
       {/* ── Bottom Section ── */}
-      <div style={{ padding: '8px 8px 10px', borderTop: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: 1 }}>
-        <span className="text-mono-label" style={{ padding: '4px 10px 6px' }}>
-          Preferences
-        </span>
+      <div style={{
+        padding: collapsed ? '8px 8px 10px' : '8px 10px 10px',
+        borderTop: '1px solid var(--border-light)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 2,
+        transition: 'padding 0.2s ease',
+      }}>
+        {!collapsed && (
+          <span className="text-mono-label" style={{ padding: '4px 10px 6px' }}>
+            Preferences
+          </span>
+        )}
 
         {/* Settings */}
         <Link
           href="/settings"
+          title={collapsed ? 'Settings' : undefined}
           style={{
-            display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px',
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: collapsed ? '8px 0' : '7px 10px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             borderRadius: 8, textDecoration: 'none', fontSize: 12,
             fontFamily: 'var(--font-body)', color: 'var(--brown)', transition: 'all 0.15s ease',
           }}
@@ -305,13 +395,16 @@ export default function Sidebar() {
           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
           <Settings size={15} strokeWidth={1.5} />
-          <span>Settings</span>
+          {!collapsed && <span>Settings</span>}
         </Link>
 
         {/* Help */}
         <button
+          title={collapsed ? 'Help & Support' : undefined}
           style={{
-            display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px',
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: collapsed ? '8px 0' : '7px 10px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             borderRadius: 8, fontSize: 12, fontFamily: 'var(--font-body)',
             color: 'var(--brown)', background: 'transparent', border: 'none',
             cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.15s ease',
@@ -320,13 +413,16 @@ export default function Sidebar() {
           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
           <HelpCircle size={15} strokeWidth={1.5} />
-          <span>Help & Support</span>
+          {!collapsed && <span>Help & Support</span>}
         </button>
 
         {/* Notifications */}
         <button
+          title={collapsed ? 'Notifications' : undefined}
           style={{
-            display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px',
+            display: 'flex', alignItems: 'center', gap: 10,
+            padding: collapsed ? '8px 0' : '7px 10px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             borderRadius: 8, fontSize: 12, fontFamily: 'var(--font-body)',
             color: 'var(--brown)', background: 'transparent', border: 'none',
             cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.15s ease',
@@ -336,58 +432,78 @@ export default function Sidebar() {
           onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
           <Bell size={15} strokeWidth={1.5} />
-          <span>Notifications</span>
-          <span style={{ position: 'absolute', top: 5, left: 22, width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--red)' }} />
+          {!collapsed && <span>Notifications</span>}
+          <span style={{
+            position: 'absolute',
+            top: collapsed ? 6 : 5,
+            left: collapsed ? 'calc(50% + 6px)' : 22,
+            width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--red)',
+          }} />
         </button>
 
         {/* Light/Dark toggle */}
-        <div style={{ display: 'flex', borderRadius: 8, padding: 2, marginTop: 4, backgroundColor: 'var(--cream-row-even)' }}>
-          <button
-            onClick={() => setTheme('light')}
-            style={{
-              flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-              padding: '5px 0', borderRadius: 6, fontSize: 11, fontFamily: 'var(--font-body)',
-              backgroundColor: theme === 'light' ? 'var(--cream-card)' : 'transparent',
-              color: theme === 'light' ? 'var(--brown)' : 'var(--brown-light)',
-              border: 'none', cursor: 'pointer', transition: 'all 0.2s ease',
-            }}
-          >
-            <Sun size={11} /> Light
-          </button>
-          <button
-            onClick={() => setTheme('dark')}
-            style={{
-              flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-              padding: '5px 0', borderRadius: 6, fontSize: 11, fontFamily: 'var(--font-body)',
-              backgroundColor: theme === 'dark' ? 'var(--cream-card)' : 'transparent',
-              color: theme === 'dark' ? 'var(--brown)' : 'var(--brown-light)',
-              border: 'none', cursor: 'pointer', transition: 'all 0.2s ease',
-            }}
-          >
-            <Moon size={11} /> Dark
-          </button>
-        </div>
+        {!collapsed && (
+          <div style={{ display: 'flex', borderRadius: 8, padding: 2, marginTop: 4, backgroundColor: 'var(--cream-row-even)' }}>
+            <button
+              onClick={() => setTheme('light')}
+              style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                padding: '5px 0', borderRadius: 6, fontSize: 11, fontFamily: 'var(--font-body)',
+                backgroundColor: theme === 'light' ? 'var(--cream-card)' : 'transparent',
+                color: theme === 'light' ? 'var(--brown)' : 'var(--brown-light)',
+                border: 'none', cursor: 'pointer', transition: 'all 0.2s ease',
+              }}
+            >
+              <Sun size={11} /> Light
+            </button>
+            <button
+              onClick={() => setTheme('dark')}
+              style={{
+                flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
+                padding: '5px 0', borderRadius: 6, fontSize: 11, fontFamily: 'var(--font-body)',
+                backgroundColor: theme === 'dark' ? 'var(--cream-card)' : 'transparent',
+                color: theme === 'dark' ? 'var(--brown)' : 'var(--brown-light)',
+                border: 'none', cursor: 'pointer', transition: 'all 0.2s ease',
+              }}
+            >
+              <Moon size={11} /> Dark
+            </button>
+          </div>
+        )}
 
         {/* User info (Clerk) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '8px 8px', marginTop: 4, borderRadius: 8, backgroundColor: 'rgba(0,0,0,0.02)' }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: collapsed ? '8px 0' : '8px 8px',
+          justifyContent: collapsed ? 'center' : 'flex-start',
+          marginTop: 4,
+          borderRadius: 8,
+          backgroundColor: 'rgba(0,0,0,0.02)',
+        }}>
           <div style={{
-            width: 26, height: 26, borderRadius: 6, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 10, fontFamily: 'var(--font-mono)', fontWeight: 700,
+            width: 28, height: 28, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 11, fontFamily: 'var(--font-mono)', fontWeight: 700,
             background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
             color: 'var(--brown)', flexShrink: 0,
           }}>
             {userInitial}
           </div>
-          <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 11, fontWeight: 600, fontFamily: 'var(--font-body)', color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {userName}
+          {!collapsed && (
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, fontFamily: 'var(--font-body)', color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {userName}
+              </div>
+              <div style={{ fontSize: 9, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {userEmail}
+              </div>
             </div>
-            <div style={{ fontSize: 9, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {userEmail}
-            </div>
-          </div>
+          )}
         </div>
       </div>
     </aside>
   );
 }
+
+export { EXPANDED_WIDTH, COLLAPSED_WIDTH };

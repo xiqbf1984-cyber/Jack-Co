@@ -17,7 +17,7 @@ export default function RecentCandidatesList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-5">
         <h3 className="text-display-section">Recent Candidates</h3>
         <Link
           href="/candidates"
@@ -27,20 +27,24 @@ export default function RecentCandidatesList() {
           View all <ChevronRight size={12} />
         </Link>
       </div>
-      <div className="rounded-xl border overflow-hidden relative" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
+      <div
+        className="rounded-xl border overflow-hidden relative"
+        style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}
+      >
         {display.map((cand, i) => (
           <div
             key={cand.id}
-            className="flex items-center justify-between px-4 py-3.5 border-b last:border-b-0"
+            className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover"
             style={{
+              padding: '18px 24px',
               borderColor: 'var(--border-light)',
               backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,
             }}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3.5">
               <div
-                className="w-7 h-7 rounded-md flex items-center justify-center text-[9px] font-mono font-bold shrink-0"
+                className="w-9 h-9 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold shrink-0"
                 style={{
                   background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                   color: 'var(--brown)',
@@ -48,16 +52,16 @@ export default function RecentCandidatesList() {
               >
                 {cand.avatar}
               </div>
-              <div className="flex flex-col gap-0.5">
+              <div className="flex flex-col gap-1">
                 <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
                   {cand.name}
                 </span>
                 <span className="text-body-xs">{cand.email}</span>
               </div>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <span
-                className="w-1.5 h-1.5 rounded-full"
+                className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: statusColors[cand.status] || '#c4b896' }}
               />
               <span className="text-mono-tag" style={{ color: statusColors[cand.status] || 'var(--brown-soft)' }}>
@@ -66,14 +70,6 @@ export default function RecentCandidatesList() {
             </div>
           </div>
         ))}
-        {candidates.length >= 4 && (
-          <div
-            className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
-            style={{
-              background: 'linear-gradient(transparent, var(--cream-card))',
-            }}
-          />
-        )}
       </div>
     </div>
   );

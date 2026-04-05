@@ -5,21 +5,22 @@ import { ChevronRight } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 
 const statusColors = {
-  active: '#27825b',
+  published: '#27825b',
+  submitted: '#d4880f',
   draft: '#a09878',
   pending: '#d4880f',
 };
 
-export default function HiringRolesList() {
-  const roles = useAppStore((s) => s.roles);
-  const display = roles.slice(0, 4);
+export default function RecentAssessmentsList() {
+  const challenges = useAppStore((s) => s.challenges);
+  const display = challenges.slice(0, 4);
 
   return (
     <div className="h-full flex flex-col">
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-display-section">Hiring Roles</h3>
+        <h3 className="text-display-section">Recent Assessments</h3>
         <Link
-          href="/roles"
+          href="/assessment"
           className="text-body-sm font-semibold no-underline flex items-center gap-1 hover:underline"
           style={{ color: 'var(--gold)' }}
         >
@@ -30,10 +31,11 @@ export default function HiringRolesList() {
         className="rounded-xl border overflow-hidden relative flex-1"
         style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}
       >
-        {display.map((role, i) => (
-          <div
-            key={role.id}
-            className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover"
+        {display.map((challenge, i) => (
+          <Link
+            key={challenge.id}
+            href={`/assessment/${challenge.id}`}
+            className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover no-underline"
             style={{
               padding: '16px 20px',
               borderColor: 'var(--border-light)',
@@ -43,22 +45,22 @@ export default function HiringRolesList() {
           >
             <div className="flex flex-col gap-0.5">
               <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
-                {role.title}
+                {challenge.name}
               </span>
               <span className="text-body-xs" style={{ color: '#7a7068' }}>
-                {role.dept} &middot; {role.salary}
+                {challenge.roleTitle} &middot; {challenge.candIds?.length || 0} candidates
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: statusColors[role.status] || '#a09878' }}
+                style={{ backgroundColor: statusColors[challenge.status] || '#a09878' }}
               />
-              <span className="text-mono-tag" style={{ color: statusColors[role.status] || 'var(--brown-soft)' }}>
-                {role.status}
+              <span className="text-mono-tag" style={{ color: statusColors[challenge.status] || 'var(--brown-soft)' }}>
+                {challenge.status}
               </span>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

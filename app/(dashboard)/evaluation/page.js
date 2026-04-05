@@ -42,31 +42,33 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
-      <h1 className="text-display-page mb-6">Evaluation</h1>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+      <h1 className="text-display-page mb-2">Evaluation</h1>
+      <p className="text-body-lg mb-8">Review scores, grades, and candidate performance.</p>
 
       {/* Stat cards */}
-      <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="grid gap-6 mb-10" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className="rounded-xl p-5 border"
+              className="rounded-xl border"
               style={{
+                padding: '28px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',
                 animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
               }}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-5">
                 <span className="text-mono-label">{stat.label}</span>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '18' }}>
-                  <Icon size={16} style={{ color: stat.color }} />
+                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
+                  <Icon size={18} style={{ color: stat.color }} />
                 </div>
               </div>
-              <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{stat.value}</div>
+              <div className="text-mono-display" style={{ color: 'var(--brown)', fontSize: 28 }}>{stat.value}</div>
             </div>
           );
         })}
@@ -74,20 +76,21 @@ export default function EvaluationPage() {
 
       {/* Results by role */}
       {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
-        <div key={roleTitle} className="mb-8">
-          <h3 className="text-display-section mb-3">{roleTitle}</h3>
-          <div className="space-y-3">
+        <div key={roleTitle} className="mb-10">
+          <h3 className="text-display-section mb-5">{roleTitle}</h3>
+          <div className="space-y-4">
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div
                 key={challenge.id}
-                className="rounded-xl border p-5"
+                className="rounded-xl border"
                 style={{
+                  padding: '28px',
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
                   boxShadow: 'var(--shadow-card)',
                 }}
               >
-                <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center justify-between mb-5">
                   <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
                     {challenge.name}
                   </span>
@@ -95,14 +98,14 @@ export default function EvaluationPage() {
                     {challenge.skill}
                   </span>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {(challenge.results || []).map((result) => {
                     const cand = candidates.find((c) => c.id === result.candId);
                     const grade = getGrade(result.score);
                     return (
-                      <div key={result.candId} className="flex items-center gap-3">
+                      <div key={result.candId} className="flex items-center gap-4">
                         <div
-                          className="w-6 h-6 rounded-md flex items-center justify-center text-[8px] font-mono font-bold shrink-0"
+                          className="w-7 h-7 rounded-md flex items-center justify-center text-[9px] font-mono font-bold shrink-0"
                           style={{
                             background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                             color: 'var(--brown)',
@@ -110,10 +113,10 @@ export default function EvaluationPage() {
                         >
                           {cand?.avatar || '??'}
                         </div>
-                        <span className="text-body-xs w-24 shrink-0" style={{ color: 'var(--brown)' }}>
+                        <span className="text-body-xs w-28 shrink-0" style={{ color: 'var(--brown)' }}>
                           {cand?.name || 'Unknown'}
                         </span>
-                        <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--cream-row-even)' }}>
+                        <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--cream-row-even)' }}>
                           <div
                             className="h-full rounded-full transition-all duration-500"
                             style={{
@@ -122,11 +125,11 @@ export default function EvaluationPage() {
                             }}
                           />
                         </div>
-                        <span className="text-mono-data w-8 text-right" style={{ color: 'var(--brown)' }}>
+                        <span className="text-mono-data w-10 text-right" style={{ color: 'var(--brown)' }}>
                           {result.score}
                         </span>
                         <span
-                          className="text-mono-data w-6 text-center font-bold"
+                          className="text-mono-data w-8 text-center font-bold"
                           style={{ color: grade.color }}
                         >
                           {grade.letter}
@@ -150,8 +153,8 @@ export default function EvaluationPage() {
       ))}
 
       {allResults.length === 0 && (
-        <div className="text-center py-16">
-          <BarChart3 size={40} className="mx-auto mb-3" style={{ color: 'var(--brown-light)' }} />
+        <div className="text-center py-20">
+          <BarChart3 size={40} className="mx-auto mb-4" style={{ color: 'var(--brown-light)' }} />
           <p className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>No evaluations yet</p>
           <p className="text-body-xs">Results will appear as candidates complete assessments.</p>
         </div>

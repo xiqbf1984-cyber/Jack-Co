@@ -2,12 +2,15 @@
 
 import { useState } from 'react';
 import { useAppStore } from '@/stores/app-store';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import { X } from 'lucide-react';
 
 export default function AddCandidateModal() {
   const open = useAppStore((s) => s.addCandidateModalOpen);
   const close = useAppStore((s) => s.closeAddCandidateModal);
   const addCandidate = useAppStore((s) => s.addCandidate);
+  const collapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -34,6 +37,7 @@ export default function AddCandidateModal() {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ paddingLeft: sidebarWidth, transition: 'padding-left 0.2s ease' }}
       onClick={close}
     >
       {/* Backdrop */}

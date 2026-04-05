@@ -35,7 +35,7 @@ Card.displayName = 'Card';
 
 const CardHeader = forwardRef(function CardHeader({ children, className, ...props }, ref) {
   return (
-    <div ref={ref} className={cn('px-5 pt-5 pb-3', className)} {...props}>
+    <div ref={ref} className={cn('px-6 pt-6 pb-3', className)} {...props}>
       {children}
     </div>
   );
@@ -45,7 +45,7 @@ CardHeader.displayName = 'CardHeader';
 
 const CardBody = forwardRef(function CardBody({ children, className, ...props }, ref) {
   return (
-    <div ref={ref} className={cn('px-5 pb-5', className)} {...props}>
+    <div ref={ref} className={cn('px-6 pb-6', className)} {...props}>
       {children}
     </div>
   );
