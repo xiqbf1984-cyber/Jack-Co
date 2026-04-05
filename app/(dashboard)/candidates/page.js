@@ -92,19 +92,29 @@ export default function CandidatesPage() {
   return (
     <div className="page-container">
       {/* Header */}
-      <h1 className="text-display-page mb-2">Candidates</h1>
-      <p className="text-body-lg mb-4">Manage your candidate pool and track their progress</p>
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="text-display-page">Candidates</h1>
+        <div className="flex items-center gap-2">
+          <button onClick={openModal} className="btn-primary" style={{ padding: '7px 16px' }}>
+            Add Candidate
+          </button>
+          <button className="btn-icon" title="View" style={{ width: 32, height: 32 }}>
+            <Settings2 size={14} />
+          </button>
+        </div>
+      </div>
+      <p className="text-body-lg mb-3">Manage your candidate pool and track their progress</p>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="relative" style={{ width: 280 }}>
+      <div className="flex items-center gap-2.5 mb-3">
+        <div className="relative" style={{ width: 240 }}>
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
           <input
             type="text"
             placeholder="Search candidates..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+            className="w-full pl-9 pr-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
@@ -112,20 +122,9 @@ export default function CandidatesPage() {
             }}
           />
         </div>
-        <button className="btn-secondary text-body-xs" style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '7px 14px' }}>
-          <Filter size={12} />
+        <button className="btn-secondary text-body-xs" style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '6px 12px' }}>
+          <Filter size={11} />
           Status
-        </button>
-        <div className="flex-1" />
-        <button onClick={openModal} className="btn-primary" style={{ padding: '8px 18px' }}>
-          Add Candidate
-        </button>
-        <button
-          className="btn-icon"
-          title="View"
-          style={{ width: 34, height: 34 }}
-        >
-          <Settings2 size={14} />
         </button>
       </div>
 

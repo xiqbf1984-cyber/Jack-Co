@@ -24,18 +24,18 @@ export default function SettingsPage() {
 
   return (
     <div className="page-container" style={{ maxWidth: 720 }}>
-      <h1 className="text-display-page mb-2">Settings</h1>
-      <p className="text-body-lg mb-4">Your hiring manager profile.</p>
+      <h1 className="text-display-page mb-1">Settings</h1>
+      <p className="text-body-lg mb-3">Your hiring manager profile.</p>
 
       {/* Input mode tabs */}
-      <div className="flex gap-3 mb-5">
+      <div className="flex gap-2.5 mb-4">
         {modes.map((mode) => {
           const Icon = mode.icon;
           return (
             <button
               key={mode.id}
               onClick={() => setInputMode(mode.id)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg border text-body-sm font-semibold transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border text-body-sm font-semibold transition-all duration-200 cursor-pointer"
               style={{
                 backgroundColor: inputMode === mode.id ? 'var(--cream-card)' : 'transparent',
                 borderColor: inputMode === mode.id ? 'var(--border-hover)' : 'var(--border-default)',
@@ -81,7 +81,7 @@ export default function SettingsPage() {
             placeholder="https://linkedin.com/in/yourprofile"
             value={hm.linkedinUrl}
             onChange={(e) => setHM({ linkedinUrl: e.target.value })}
-            className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body"
+            className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
@@ -109,7 +109,7 @@ export default function SettingsPage() {
                 placeholder={field.placeholder}
                 value={hm[field.key]}
                 onChange={(e) => setHM({ [field.key]: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
                 style={{
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
@@ -128,7 +128,7 @@ export default function SettingsPage() {
               placeholder="linkedin.com/in/sarahchen"
               value={hm.linkedinUrl}
               onChange={(e) => setHM({ linkedinUrl: e.target.value })}
-              className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+              className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',

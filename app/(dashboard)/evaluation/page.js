@@ -43,8 +43,8 @@ export default function EvaluationPage() {
 
   return (
     <div className="page-container">
-      <h1 className="text-display-page mb-2">Evaluation</h1>
-      <p className="text-body-lg mb-5">Review scores, grades, and candidate performance.</p>
+      <h1 className="text-display-page mb-1">Evaluation</h1>
+      <p className="text-body-lg mb-3">Review scores, grades, and candidate performance.</p>
 
       {/* Stat cards */}
       <div className="grid gap-3 mb-6" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>

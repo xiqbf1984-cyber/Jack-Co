@@ -23,17 +23,17 @@ export default function RolesPage() {
   return (
     <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-1">
         <h1 className="text-display-page">Roles</h1>
-        <Link href="/roles/create" className="btn-primary flex items-center gap-1.5">
-          <Plus size={15} />
+        <Link href="/roles/create" className="btn-primary flex items-center gap-1.5 no-underline" style={{ padding: '7px 16px' }}>
+          <Plus size={14} />
           Add Role
         </Link>
       </div>
-      <p className="text-body-lg mb-4">Manage your open positions and hiring pipeline.</p>
+      <p className="text-body-lg mb-3">Manage your open positions and hiring pipeline.</p>
 
       {/* Search */}
-      <div className="relative mb-4" style={{ width: 280 }}>
+      <div className="relative mb-3" style={{ width: 240 }}>
         <Search
           size={14}
           className="absolute left-3 top-1/2 -translate-y-1/2"
@@ -44,7 +44,7 @@ export default function RolesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search roles..."
-          className="w-full pl-9 pr-4 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+          className="w-full pl-9 pr-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
         />
       </div>

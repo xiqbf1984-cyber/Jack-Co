@@ -46,7 +46,7 @@ export default function ChallengeDetailPage() {
         <ArrowLeft size={14} /> Back to Assessment
       </Link>
 
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-4">
         <h1 className="text-display-page">{challenge.name}</h1>
         <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ backgroundColor: (statusColors[challenge.status] || '#c4b896') + '14' }}>
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: statusColors[challenge.status] }} />
@@ -55,7 +55,7 @@ export default function ChallengeDetailPage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b" style={{ borderColor: 'var(--border-light)' }}>
+      <div className="flex gap-1 mb-4 border-b" style={{ borderColor: 'var(--border-light)' }}>
         {tabs.map((tab) => {
           const Icon = tab.icon;
           return (

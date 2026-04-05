@@ -23,23 +23,23 @@ export default function ChallengesPage() {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between mb-2">
+      <div className="flex items-center justify-between mb-1">
         <h1 className="text-display-page">Assessment</h1>
-        <Link href="/assessment/create" className="btn-primary no-underline">
+        <Link href="/assessment/create" className="btn-primary no-underline" style={{ padding: '7px 16px' }}>
           <Plus size={14} /> New Assessment
         </Link>
       </div>
-      <p className="text-body-lg mb-4">Create and manage AI-powered assessments for your roles.</p>
+      <p className="text-body-lg mb-3">Create and manage AI-powered assessments for your roles.</p>
 
       {/* Search */}
-      <div className="relative mb-4" style={{ width: 280 }}>
+      <div className="relative mb-3" style={{ width: 240 }}>
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
         <input
           type="text"
           placeholder="Search assessments..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-9 pr-4 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+          className="w-full pl-9 pr-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
         />
       </div>
@@ -62,7 +62,7 @@ export default function ChallengesPage() {
             >
               <div className="flex items-center justify-between">
                 <div>
-                  <div className="text-body-sm font-semibold mb-1.5" style={{ color: 'var(--brown)' }}>
+                  <div className="text-body-sm font-semibold mb-0.5" style={{ color: 'var(--brown)' }}>
                     {challenge.name}
                   </div>
                   <div className="text-body-xs">
