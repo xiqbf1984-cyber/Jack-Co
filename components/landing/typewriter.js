@@ -17,15 +17,12 @@ export default function Typewriter({ text, delay = 60, onComplete }) {
       }, delay);
       return () => clearTimeout(timeout);
     } else {
-      // Text fully typed - blink for 1s then fade out cursor
+      // Text fully typed - fire onComplete immediately, then fade cursor
+      onComplete?.();
       const fadeTimeout = setTimeout(() => {
         setCursorFading(true);
-        const hideTimeout = setTimeout(() => {
-          setShowCursor(false);
-          onComplete?.();
-        }, 500);
-        return () => clearTimeout(hideTimeout);
-      }, 1000);
+        setTimeout(() => setShowCursor(false), 500);
+      }, 800);
       return () => clearTimeout(fadeTimeout);
     }
   }, [displayedText, text, delay, onComplete]);
