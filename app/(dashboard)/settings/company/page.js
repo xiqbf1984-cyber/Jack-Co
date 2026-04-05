@@ -15,7 +15,7 @@ export default function CompanySettingsPage() {
   ];
 
   return (
-    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: '32px 40px' }}>
+    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: 'var(--page-padding-y) var(--page-padding-x)' }}>
       <h1 className="text-display-page mb-1">Company Profile</h1>
       <p className="text-body-lg mb-6">Update your company information.</p>
 

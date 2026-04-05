@@ -24,13 +24,13 @@ export default function StatCards() {
   };
 
   return (
-    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+    <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (
           <div
             key={stat.key}
-            className="rounded-xl p-5 border transition-all duration-200 hover-shadow-card"
+            className="rounded-xl p-6 border transition-all duration-200 hover-shadow-card"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
@@ -38,13 +38,13 @@ export default function StatCards() {
               animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
             }}
           >
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-4">
               <span className="text-mono-label">{stat.label}</span>
               <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: stat.color + '18' }}
               >
-                <Icon size={16} style={{ color: stat.color }} />
+                <Icon size={17} style={{ color: stat.color }} />
               </div>
             </div>
             <div className="text-mono-display" style={{ color: 'var(--brown)' }}>

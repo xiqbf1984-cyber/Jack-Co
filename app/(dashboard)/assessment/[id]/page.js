@@ -29,7 +29,7 @@ export default function ChallengeDetailPage() {
 
   if (!challenge) {
     return (
-      <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
+      <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)' }}>
         <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline" style={{ color: 'var(--gold)' }}>
           <ArrowLeft size={14} /> Back to Assessment
         </Link>
@@ -41,7 +41,7 @@ export default function ChallengeDetailPage() {
   const statusColors = { published: '#27825b', submitted: '#0077B5', pending: '#d4880f', draft: '#c4b896' };
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px' }}>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)' }}>
       <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
         <ArrowLeft size={14} /> Back to Assessment
       </Link>

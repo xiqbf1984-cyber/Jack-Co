@@ -22,7 +22,7 @@ export default function CandidatesPage() {
   );
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-display-page">Candidates</h1>
         <button onClick={openModal} className="btn-primary">
@@ -52,7 +52,7 @@ export default function CandidatesPage() {
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
           {/* Header */}
           <div
-            className="grid gap-4 px-4 py-2.5 border-b"
+            className="grid gap-4 px-5 py-3 border-b"
             style={{ gridTemplateColumns: '1fr 1fr 100px 80px 100px', borderColor: 'var(--border-light)', backgroundColor: 'var(--cream-sidebar)' }}
           >
             <span className="text-mono-label">Name</span>
@@ -64,7 +64,7 @@ export default function CandidatesPage() {
           {filtered.map((cand, i) => (
             <div
               key={cand.id}
-              className="grid gap-4 px-4 py-3 border-b last:border-b-0 transition-colors duration-150"
+              className="grid gap-4 px-5 py-4 border-b last:border-b-0 transition-colors duration-150"
               style={{
                 borderColor: 'var(--border-light)',
                 backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
@@ -73,7 +73,7 @@ export default function CandidatesPage() {
             >
               <div className="flex items-center gap-2.5">
                 <div
-                  className="w-7 h-7 rounded-md flex items-center justify-center text-[9px] font-mono font-bold shrink-0"
+                  className="w-8 h-8 rounded-md flex items-center justify-center text-[10px] font-mono font-bold shrink-0"
                   style={{
                     background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                     color: 'var(--brown)',

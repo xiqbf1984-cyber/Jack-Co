@@ -9,16 +9,16 @@ export default function CompanyProfileCard() {
 
   return (
     <div>
-      <h3 className="text-display-section mb-3">Company Profile</h3>
+      <h3 className="text-display-section mb-4">Company Profile</h3>
       <div
-        className="rounded-xl border p-5"
+        className="rounded-xl border p-6"
         style={{
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-card)',
         }}
       >
-        <div className="flex items-center gap-3 mb-4">
+        <div className="flex items-center gap-3 mb-5">
           <div
             className="w-10 h-10 rounded-lg flex items-center justify-center text-[14px] font-mono font-bold"
             style={{
@@ -36,7 +36,7 @@ export default function CompanyProfileCard() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="flex flex-col gap-2.5 mb-5">
           <div className="flex items-center gap-2 text-body-xs">
             <MapPin size={12} style={{ color: 'var(--brown-soft)' }} />
             <span>{company.location}</span>

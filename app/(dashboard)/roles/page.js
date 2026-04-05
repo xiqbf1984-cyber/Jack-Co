@@ -21,9 +21,9 @@ export default function RolesPage() {
   }, [roles, search]);
 
   return (
-    <div className="animate-fi" style={{ padding: '32px 40px', maxWidth: 1080 }}>
+    <div className="animate-fi" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-7">
         <h1 className="text-display-page">Roles</h1>
         <Link href="/roles/create" className="btn-primary flex items-center gap-1.5">
           <Plus size={15} />
@@ -32,7 +32,7 @@ export default function RolesPage() {
       </div>
 
       {/* Search */}
-      <div className="relative mb-5 max-w-md">
+      <div className="relative mb-6 max-w-md">
         <Search
           size={15}
           className="absolute left-3 top-1/2 -translate-y-1/2"
@@ -67,18 +67,18 @@ export default function RolesPage() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-3">
           {filtered.map((role) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             return (
               <div
                 key={role.id}
-                className="flex items-center gap-4 px-5 py-4 rounded-xl border hover-border-hover hover-shadow-card-var transition-all cursor-pointer"
+                className="flex items-center gap-4 px-6 py-5 rounded-xl border hover-border-hover hover-shadow-card-var transition-all cursor-pointer"
                 style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)' }}
               >
                 {/* Icon */}
                 <div
-                  className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                  className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0"
                   style={{ backgroundColor: 'var(--cream-sidebar)' }}
                 >
                   <Briefcase size={18} style={{ color: 'var(--brown-muted)' }} />

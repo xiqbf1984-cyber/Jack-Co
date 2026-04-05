@@ -50,6 +50,17 @@
   --shadow-glow-idle: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03);
   --shadow-glow-peak: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04);
 
+  /* Layout Spacing */
+  --page-padding-x: 48px;
+  --page-padding-y: 36px;
+  --page-max-width: 1200px;
+  --section-gap: 32px;
+  --card-gap: 20px;
+  --card-padding: 24px;
+  --row-padding-x: 20px;
+  --row-padding-y: 16px;
+  --header-mb: 28px;
+
   /* Radius */
   --radius-xs: 6px;
   --radius-sm: 8px;

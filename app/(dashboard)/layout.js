@@ -1,11 +1,23 @@
+'use client';
+
 import Sidebar from '@/components/layout/sidebar';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import AddCandidateModal from '@/components/candidates/add-candidate-modal';
+import { useAppStore } from '@/stores/app-store';
 
 export default function DashboardLayout({ children }) {
+  const collapsed = useAppStore((s) => s.sidebarCollapsed);
+  const marginLeft = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
+
   return (
     <>
       <Sidebar />
-      <main style={{ marginLeft: 200, minHeight: '100vh', backgroundColor: 'var(--cream)' }}>
+      <main style={{
+        marginLeft,
+        minHeight: '100vh',
+        backgroundColor: 'var(--cream)',
+        transition: 'margin-left 0.2s ease',
+      }}>
         {children}
       </main>
       <AddCandidateModal />

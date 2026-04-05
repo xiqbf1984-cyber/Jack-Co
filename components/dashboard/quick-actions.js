@@ -16,13 +16,13 @@ export default function QuickActions() {
 
   return (
     <div>
-      <h3 className="text-display-section mb-3">Quick Actions</h3>
-      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+      <h3 className="text-display-section mb-4">Quick Actions</h3>
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
         {actions.map((action, i) => {
           const Icon = action.icon;
           const inner = (
             <div
-              className="flex items-center gap-3 p-4 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
+              className="flex items-center gap-3.5 p-5 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',

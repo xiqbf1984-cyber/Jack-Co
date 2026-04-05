@@ -17,7 +17,7 @@ export default function RecentCandidatesList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-display-section">Recent Candidates</h3>
         <Link
           href="/candidates"
@@ -31,7 +31,7 @@ export default function RecentCandidatesList() {
         {display.map((cand, i) => (
           <div
             key={cand.id}
-            className="flex items-center justify-between px-4 py-3.5 border-b last:border-b-0"
+            className="flex items-center justify-between px-5 py-4 border-b last:border-b-0"
             style={{
               borderColor: 'var(--border-light)',
               backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
@@ -40,7 +40,7 @@ export default function RecentCandidatesList() {
           >
             <div className="flex items-center gap-3">
               <div
-                className="w-7 h-7 rounded-md flex items-center justify-center text-[9px] font-mono font-bold shrink-0"
+                className="w-8 h-8 rounded-md flex items-center justify-center text-[10px] font-mono font-bold shrink-0"
                 style={{
                   background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                   color: 'var(--brown)',

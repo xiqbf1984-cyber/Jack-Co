@@ -26,7 +26,7 @@ export const useAppStore = create((set, get) => ({
   challenges: MOCK_CHALLENGES,
 
   addCandidateModalOpen: false,
-  sidebarExpanded: false,
+  sidebarCollapsed: false,
   draft: null,
 
   setHiringManager: (data) => set((s) => ({ hiringManager: { ...s.hiringManager, ...data } })),
@@ -42,7 +42,7 @@ export const useAppStore = create((set, get) => ({
 
   openAddCandidateModal: () => set({ addCandidateModalOpen: true }),
   closeAddCandidateModal: () => set({ addCandidateModalOpen: false }),
-  setSidebarExpanded: (val) => set({ sidebarExpanded: val }),
+  toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
 
   saveDraft: (assessmentData) => {
     const draft = { data: assessmentData, savedAt: new Date().toISOString() };

@@ -22,7 +22,7 @@ export default function ChallengesPage() {
   );
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-display-page">Assessment</h1>
         <Link href="/assessment/create" className="btn-primary no-underline">
@@ -45,12 +45,12 @@ export default function ChallengesPage() {
 
       {/* List */}
       {filtered.length > 0 ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {filtered.map((challenge, i) => (
             <Link
               key={challenge.id}
               href={`/assessment/${challenge.id}`}
-              className="block rounded-xl border p-4 transition-all duration-200 no-underline hover-shadow-card"
+              className="block rounded-xl border p-5 transition-all duration-200 no-underline hover-shadow-card"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',

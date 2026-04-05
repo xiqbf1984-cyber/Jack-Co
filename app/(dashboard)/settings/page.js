@@ -23,7 +23,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: '32px 40px' }}>
+    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: 'var(--page-padding-y) var(--page-padding-x)' }}>
       <h1 className="text-display-page mb-1">Settings</h1>
       <p className="text-body-lg mb-6">Your hiring manager profile.</p>
 
@@ -95,7 +95,7 @@ export default function SettingsPage() {
       {/* Manual fields */}
       <div className="animate-fsu">
         <h3 className="text-display-section mb-4">Personal Information</h3>
-        <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+        <div className="grid gap-5 mb-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Sarah Chen' },
             { key: 'title', label: 'Title', placeholder: 'VP of Engineering' },

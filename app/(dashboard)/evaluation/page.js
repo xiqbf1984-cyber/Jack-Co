@@ -42,17 +42,17 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="animate-fade-scale" style={{ padding: '32px 40px', maxWidth: 1080 }}>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
       <h1 className="text-display-page mb-6">Evaluation</h1>
 
       {/* Stat cards */}
-      <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="grid gap-5 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className="rounded-xl p-5 border"
+              className="rounded-xl p-6 border"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
@@ -60,10 +60,10 @@ export default function EvaluationPage() {
                 animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
               }}
             >
-              <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center justify-between mb-4">
                 <span className="text-mono-label">{stat.label}</span>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '18' }}>
-                  <Icon size={16} style={{ color: stat.color }} />
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '18' }}>
+                  <Icon size={17} style={{ color: stat.color }} />
                 </div>
               </div>
               <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{stat.value}</div>
@@ -76,11 +76,11 @@ export default function EvaluationPage() {
       {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
         <div key={roleTitle} className="mb-8">
           <h3 className="text-display-section mb-3">{roleTitle}</h3>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div
                 key={challenge.id}
-                className="rounded-xl border p-5"
+                className="rounded-xl border p-6"
                 style={{
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
