@@ -201,7 +201,6 @@ export default function StepReview() {
   };
 
   const handleSend = () => {
-    completeStep(7);
     setSent(true);
   };
 
