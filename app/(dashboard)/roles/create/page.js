@@ -188,10 +188,9 @@ export default function RoleCreatePage() {
       setJDContent(jd);
     }
 
-    if (nextIndex < ROLE_CREATION_QUESTIONS.length) {
-      // Ask next question
-      setQuestionIndex(nextIndex);
+    setQuestionIndex(nextIndex);
 
+    if (nextIndex < ROLE_CREATION_QUESTIONS.length) {
       // If we already have a JD, update it with new answers
       if (nextIndex >= 3) {
         const updatedJD = generateJD(newAnswers);
