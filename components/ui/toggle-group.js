@@ -26,18 +26,19 @@ function ToggleGroup({ options = [], value, onChange, className }) {
     <div
       ref={containerRef}
       className={cn(
-        'relative inline-flex items-center p-1 rounded-[var(--radius-pill)]',
+        'relative inline-flex items-center p-1',
         className
       )}
-      style={{ backgroundColor: '#5C5248' }}
+      style={{ backgroundColor: '#5C5248', borderRadius: 'var(--radius-pill)' }}
     >
       {/* Sliding indicator */}
       <div
-        className="absolute top-1 bottom-1 rounded-[calc(var(--radius-pill)-2px)] transition-all duration-200 ease-out"
+        className="absolute top-1 bottom-1 transition-all duration-200 ease-out"
         style={{
           left: `${indicator.left}px`,
           width: `${indicator.width}px`,
           backgroundColor: '#fcfbf7',
+          borderRadius: 'calc(var(--radius-pill) - 2px)',
         }}
       />
 
@@ -50,14 +51,13 @@ function ToggleGroup({ options = [], value, onChange, className }) {
             type="button"
             data-toggle-btn=""
             onClick={() => onChange?.(opt.value)}
-            className={cn(
-              'relative z-10 px-4 py-1.5 text-[12px] font-medium',
-              'rounded-[calc(var(--radius-pill)-2px)] transition-colors duration-200',
-              'cursor-pointer select-none whitespace-nowrap',
-              isActive
-                ? 'text-[var(--brown)]'
-                : 'text-[var(--cream)] hover:text-white'
-            )}
+            className="relative z-10 px-4 py-1.5 transition-colors duration-200 cursor-pointer select-none whitespace-nowrap"
+            style={{
+              fontSize: 12,
+              fontWeight: 500,
+              color: isActive ? 'var(--brown)' : 'var(--cream)',
+              borderRadius: 'calc(var(--radius-pill) - 2px)',
+            }}
           >
             {opt.label}
           </button>

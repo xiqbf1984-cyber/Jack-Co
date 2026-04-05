@@ -265,7 +265,7 @@ export default function StepReview() {
 
       {/* Summary */}
       <div className="rounded-xl border p-4 mb-4" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
-        <div className="grid grid-cols-3 gap-4 text-center">
+        <div className="grid gap-4 text-center" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
           <div>
             <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{dimensions.length}</div>
             <div className="text-mono-label">Dimensions</div>
@@ -284,7 +284,7 @@ export default function StepReview() {
       {/* Scoring system */}
       <div className="rounded-xl border p-4 mb-6" style={{ backgroundColor: 'var(--cream-sidebar)', borderColor: 'var(--border-default)' }}>
         <h4 className="text-mono-label mb-2">Scoring System</h4>
-        <div className="grid grid-cols-3 gap-3 text-body-xs">
+        <div className="grid gap-3 text-body-xs" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
           <div><span className="font-semibold" style={{ color: 'var(--accent-green)' }}>Essential</span> (8-10): Core requirement</div>
           <div><span className="font-semibold" style={{ color: 'var(--gold)' }}>Important</span> (4-7): Expected feature</div>
           <div><span className="font-semibold" style={{ color: 'var(--brown-soft)' }}>Optional</span> (2-3): Bonus polish</div>

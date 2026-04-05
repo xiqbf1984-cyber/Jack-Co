@@ -42,7 +42,7 @@ const Input = forwardRef(function Input(
         {...props}
       />
       {error && (
-        <span className="text-[11px] text-[var(--red)]">{error}</span>
+        <span style={{ fontSize: 11, color: 'var(--red)' }}>{error}</span>
       )}
     </div>
   );

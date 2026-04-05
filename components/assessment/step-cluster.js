@@ -35,7 +35,7 @@ export default function StepCluster() {
       </p>
 
       {/* Cluster grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
         {INDUSTRY_CLUSTERS.map((c) => {
           const isActive = c.status === 'active';
           const isRecommended = c.id === RECOMMENDED_CLUSTER && hasJD;

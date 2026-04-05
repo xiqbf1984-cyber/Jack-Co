@@ -54,7 +54,7 @@ function CandidateForm({ candidate, onUpdate, onRemove, defaultExpanded }) {
       {/* Expanded form */}
       {expanded && (
         <div className="px-4 pb-4 border-t animate-fsu" style={{ borderColor: 'var(--border-light)' }}>
-          <div className="pt-4 grid grid-cols-2 gap-4 mb-4">
+          <div className="pt-4 grid gap-4 mb-4" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
             <div>
               <label className="text-mono-label block mb-1.5">Email *</label>
               <input
@@ -191,7 +191,7 @@ export default function StepCandidates() {
               type="checkbox"
               checked={teamTrial}
               onChange={(e) => setTeamTrial(e.target.checked)}
-              className="accent-[var(--accent-green)]"
+              style={{ accentColor: 'var(--accent-green)' }}
             />
             Team Trial
           </label>

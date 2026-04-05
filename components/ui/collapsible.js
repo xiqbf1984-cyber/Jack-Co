@@ -25,19 +25,23 @@ function Collapsible({ title, children, defaultOpen = false, className }) {
   }, [open]);
 
   return (
-    <div className={cn('border border-[var(--border-default)] rounded-[var(--radius-lg)]', className)}>
+    <div
+      className={cn('rounded-xl', className)}
+      style={{ border: '1px solid var(--border-default)', borderRadius: 'var(--radius-lg)' }}
+    >
       <button
         type="button"
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between px-4 py-3 text-left cursor-pointer group"
       >
-        <span className="text-[13px] font-medium text-[var(--brown)]">{title}</span>
+        <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--brown)' }}>{title}</span>
         <ChevronRight
           size={16}
           className={cn(
-            'text-[var(--brown-soft)] transition-transform duration-200',
+            'transition-transform duration-200',
             open && 'rotate-90'
           )}
+          style={{ color: 'var(--brown-soft)' }}
         />
       </button>
       <div

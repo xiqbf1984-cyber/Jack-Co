@@ -16,7 +16,7 @@ export default function RoleCompletePage() {
     <Suspense
       fallback={
         <div className="flex items-center justify-center h-full">
-          <p className="text-body-sm text-[var(--brown-muted)]">Loading...</p>
+          <p className="text-body-sm" style={{ color: 'var(--brown-muted)' }}>Loading...</p>
         </div>
       }
     >

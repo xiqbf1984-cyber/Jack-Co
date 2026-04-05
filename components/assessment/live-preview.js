@@ -42,7 +42,7 @@ export default function LivePreview() {
   const rubrics = useAssessmentStore((s) => s.rubrics);
 
   return (
-    <div className="p-5">
+    <div style={{ padding: 24, borderLeft: '1px solid var(--border-light)' }}>
       {/* Header */}
       <h3
         className="text-display-section mb-1"

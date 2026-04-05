@@ -40,7 +40,7 @@ export default function RoleComplete({ roleTitle = 'New Role' }) {
 
       {/* Title */}
       <h1 className="text-display-page mb-2">Role saved successfully</h1>
-      <p className="text-body-lg text-[var(--brown-muted)] mb-10">{roleTitle}</p>
+      <p className="text-body-lg mb-10" style={{ color: 'var(--brown-muted)' }}>{roleTitle}</p>
 
       {/* Action cards */}
       <div className="flex flex-col gap-3 w-full max-w-md">

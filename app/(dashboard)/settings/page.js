@@ -23,7 +23,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="p-8 animate-fade-scale" style={{ maxWidth: 720 }}>
+    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: '40px 48px' }}>
       <h1 className="text-display-page mb-1">Settings</h1>
       <p className="text-body-lg mb-6">Your hiring manager profile.</p>
 

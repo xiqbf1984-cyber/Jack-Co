@@ -40,7 +40,7 @@ export default function CreateAssessmentPage() {
       </div>
 
       {/* Current step content */}
-      <div className="flex-1 px-8 py-6 animate-fsu">
+      <div className="flex-1 animate-fsu" style={{ padding: '40px 48px' }}>
         <StepComponent key={currentStep} />
       </div>
     </div>

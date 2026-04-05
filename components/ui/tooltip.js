@@ -19,15 +19,27 @@ function Tooltip({ content, children, className }) {
         <div
           className={cn(
             'absolute bottom-full left-1/2 -translate-x-1/2 mb-2',
-            'px-2.5 py-1.5 text-[11px] whitespace-nowrap',
-            'bg-[var(--brown)] text-[var(--cream)] rounded-[var(--radius-sm)]',
-            'shadow-[var(--shadow-dropdown)] animate-fsd',
-            'z-50 pointer-events-none',
+            'px-2.5 py-1.5 whitespace-nowrap',
+            'animate-fsd z-50 pointer-events-none',
             className
           )}
+          style={{
+            fontSize: 11,
+            backgroundColor: 'var(--brown)',
+            color: 'var(--cream)',
+            borderRadius: 'var(--radius-sm)',
+            boxShadow: 'var(--shadow-dropdown)',
+          }}
         >
           {content}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[var(--brown)]" />
+          <div
+            className="absolute top-full left-1/2 -translate-x-1/2 w-0 h-0"
+            style={{
+              borderLeft: '4px solid transparent',
+              borderRight: '4px solid transparent',
+              borderTop: '4px solid var(--brown)',
+            }}
+          />
         </div>
       )}
     </div>
