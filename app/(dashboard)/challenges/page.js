@@ -38,7 +38,7 @@ export default function ChallengesPage() {
           placeholder="Search challenges..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus:border-[var(--border-hover)]"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
         />
       </div>
@@ -50,7 +50,7 @@ export default function ChallengesPage() {
             <Link
               key={challenge.id}
               href={`/challenges/${challenge.id}`}
-              className="block rounded-xl border p-4 transition-all duration-200 no-underline hover:shadow-[0_8px_24px_rgba(0,0,0,.07)]"
+              className="block rounded-xl border p-4 transition-all duration-200 no-underline hover-shadow-card"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',

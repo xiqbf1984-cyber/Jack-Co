@@ -55,7 +55,7 @@ function EditableSection({ title, text, onSave }) {
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="p-1.5 rounded-md transition-colors hover:bg-[var(--cream-row-even)]"
+            className="p-1.5 rounded-md transition-colors hover-bg-cream-row-even"
           >
             <Pencil size={12} style={{ color: 'var(--brown-soft)' }} />
           </button>
@@ -129,7 +129,7 @@ function EditableList({ title, items, onSave }) {
           <button
             type="button"
             onClick={() => setEditing(true)}
-            className="p-1.5 rounded-md transition-colors hover:bg-[var(--cream-row-even)]"
+            className="p-1.5 rounded-md transition-colors hover-bg-cream-row-even"
           >
             <Pencil size={12} style={{ color: 'var(--brown-soft)' }} />
           </button>

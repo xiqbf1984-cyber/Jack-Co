@@ -14,13 +14,14 @@ const SearchBar = forwardRef(function SearchBar(
     <div
       className={cn(
         'relative flex items-center',
-        focused && 'animate-glow rounded-[var(--radius-md)]',
+        focused && 'animate-glow',
         className
       )}
     >
       <Search
         size={15}
-        className="absolute left-3 text-[var(--brown-soft)] pointer-events-none"
+        className="absolute left-3 pointer-events-none"
+        style={{ color: 'var(--brown-soft)' }}
       />
       <input
         ref={ref}
@@ -30,14 +31,14 @@ const SearchBar = forwardRef(function SearchBar(
         placeholder={placeholder}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        className={cn(
-          'w-full pl-9 pr-3 py-2 text-[13px]',
-          'bg-[var(--cream)] text-[var(--brown)]',
-          'border border-[var(--border-default)] rounded-[var(--radius-md)]',
-          'outline-none transition-all duration-200',
-          'placeholder:text-[var(--brown-soft)]',
-          'focus:border-[var(--border-hover)]'
-        )}
+        className="w-full pl-9 pr-3 py-2 border outline-none transition-all duration-200 focus-border-hover"
+        style={{
+          fontSize: 13,
+          backgroundColor: 'var(--cream)',
+          color: 'var(--brown)',
+          borderColor: 'var(--border-default)',
+          borderRadius: 'var(--radius-md)',
+        }}
         {...props}
       />
     </div>

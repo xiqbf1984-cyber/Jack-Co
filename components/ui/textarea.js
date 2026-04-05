@@ -27,15 +27,18 @@ const Textarea = forwardRef(function Textarea(
         onChange={onChange}
         rows={rows}
         className={cn(
-          'w-full px-3 py-2 text-[13px]',
-          'bg-[var(--cream)] text-[var(--brown)]',
-          'border border-[var(--border-default)] rounded-[var(--radius-md)]',
-          'outline-none transition-all duration-200',
-          'placeholder:text-[var(--brown-soft)]',
-          'focus:border-[var(--border-hover)] focus:shadow-[0_0_0_3px_rgba(139,105,20,0.08)]',
-          'resize-y',
+          'w-full px-3 py-2',
+          'border outline-none transition-all duration-200',
+          'focus-border-hover resize-y',
           className
         )}
+        style={{
+          fontSize: 13,
+          backgroundColor: 'var(--cream)',
+          color: 'var(--brown)',
+          borderColor: 'var(--border-default)',
+          borderRadius: 'var(--radius-md)',
+        }}
         {...props}
       />
     </div>

@@ -24,7 +24,7 @@ export default function StatCards() {
   };
 
   return (
-    <div className="grid grid-cols-4 gap-4">
+    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
       {stats.map((stat, i) => {
         const Icon = stat.icon;
         return (

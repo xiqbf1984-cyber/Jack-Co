@@ -36,9 +36,10 @@ export default function Typewriter({ text, delay = 60, onComplete }) {
       {showCursor && (
         <span
           className={cn(
-            'animate-blink inline-block ml-[2px] font-light',
+            'animate-blink inline-block font-light',
             cursorFading && 'transition-opacity duration-500 opacity-0'
           )}
+          style={{ marginLeft: 2 }}
         >
           |
         </span>

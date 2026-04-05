@@ -38,7 +38,7 @@ export default function CandidatesPage() {
           placeholder="Search candidates..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus:border-[var(--border-hover)]"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{
             backgroundColor: 'var(--cream)',
             borderColor: 'var(--border-default)',

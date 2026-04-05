@@ -42,7 +42,7 @@ function CandidateForm({ candidate, onUpdate, onRemove, defaultExpanded }) {
         <div className="flex items-center gap-2">
           <button
             onClick={(e) => { e.stopPropagation(); onRemove(); }}
-            className="w-6 h-6 rounded flex items-center justify-center bg-transparent border-none cursor-pointer hover:bg-[rgba(0,0,0,0.04)]"
+            className="w-6 h-6 rounded flex items-center justify-center bg-transparent border-none cursor-pointer hover-bg-dim"
             style={{ color: 'var(--brown-soft)' }}
           >
             <X size={14} />
@@ -62,7 +62,7 @@ function CandidateForm({ candidate, onUpdate, onRemove, defaultExpanded }) {
                 placeholder="candidate@example.com"
                 value={candidate.email}
                 onChange={(e) => onUpdate({ email: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none font-body focus:border-[var(--border-hover)]"
+                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none font-body focus-border-hover"
                 style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
               />
             </div>
@@ -73,7 +73,7 @@ function CandidateForm({ candidate, onUpdate, onRemove, defaultExpanded }) {
                 placeholder="John Doe"
                 value={candidate.name}
                 onChange={(e) => onUpdate({ name: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none font-body focus:border-[var(--border-hover)]"
+                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none font-body focus-border-hover"
                 style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
               />
             </div>

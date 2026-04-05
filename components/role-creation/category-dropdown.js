@@ -41,10 +41,8 @@ export default function CategoryDropdown({ onPreview, onSelect }) {
                 setOpenIndex(isOpen ? null : idx);
                 if (isOpen) onPreview?.('');
               }}
-              className={cn(
-                'btn-secondary text-body-xs flex items-center gap-1.5 px-3 py-1.5',
-                isOpen && 'border-[var(--border-hover)] bg-[var(--cream)]'
-              )}
+              className="btn-secondary text-body-xs flex items-center gap-1.5 px-3 py-1.5"
+              style={isOpen ? { borderColor: 'var(--border-hover)', backgroundColor: 'var(--cream)' } : undefined}
             >
               <Icon size={13} />
               {cat.label}
@@ -59,7 +57,8 @@ export default function CategoryDropdown({ onPreview, onSelect }) {
                   <button
                     key={opt.label}
                     type="button"
-                    className="w-full text-left px-3 py-2 text-body-sm text-[var(--brown)] hover:bg-[var(--cream)] transition-colors"
+                    className="w-full text-left px-3 py-2 text-body-sm hover-bg-cream transition-colors"
+                    style={{ color: 'var(--brown)' }}
                     onMouseEnter={() => onPreview?.(opt.prompt)}
                     onMouseLeave={() => onPreview?.('')}
                     onClick={() => {

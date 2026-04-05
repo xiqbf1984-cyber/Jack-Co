@@ -127,7 +127,7 @@ export default function StepContext() {
       <div className="mb-6">
         <label className="text-mono-label block mb-2">SUPPORTING FILES (OPTIONAL)</label>
         <label
-          className="flex flex-col items-center justify-center w-full py-6 rounded-lg border-2 border-dashed cursor-pointer transition-all duration-200 hover:border-[var(--gold)]"
+          className="flex flex-col items-center justify-center w-full py-6 rounded-lg border-2 border-dashed cursor-pointer transition-all duration-200 hover-border-gold"
           style={{
             borderColor: 'var(--border-default)',
             backgroundColor: 'var(--cream-card)',
@@ -176,7 +176,7 @@ export default function StepContext() {
                 <button
                   type="button"
                   onClick={() => handleFileRemove(idx)}
-                  className="p-1 rounded hover:bg-[var(--cream-row-even)] transition-colors"
+                  className="p-1 rounded hover-bg-cream-row-even transition-colors"
                 >
                   <X size={12} style={{ color: 'var(--brown-soft)' }} />
                 </button>

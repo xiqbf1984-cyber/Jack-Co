@@ -52,7 +52,7 @@ export default function AddCandidateModal() {
       >
         <button
           onClick={close}
-          className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center border-none cursor-pointer bg-transparent hover:bg-[rgba(0,0,0,0.04)] transition-colors"
+          className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center border-none cursor-pointer bg-transparent hover-bg-dim transition-colors"
           style={{ color: 'var(--brown-soft)' }}
         >
           <X size={16} />
@@ -71,7 +71,7 @@ export default function AddCandidateModal() {
               placeholder="John Doe"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all font-body focus:border-[var(--border-hover)]"
+              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
               style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
               required
             />
@@ -83,7 +83,7 @@ export default function AddCandidateModal() {
               placeholder="john@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all font-body focus:border-[var(--border-hover)]"
+              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
               style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
               required
             />

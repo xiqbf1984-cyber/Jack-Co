@@ -59,23 +59,28 @@ function ToastProvider({ children }) {
           return (
             <div
               key={t.id}
-              className={cn(
-                'flex items-start gap-2.5 px-4 py-3',
-                'bg-[var(--cream-card)] rounded-[var(--radius-lg)]',
-                'shadow-[var(--shadow-dropdown)] border border-[var(--border-default)]',
-                'animate-slide-up'
-              )}
-              style={{ borderLeftWidth: 3, borderLeftColor: borderColors[t.type] }}
+              className="flex items-start gap-2.5 px-4 py-3 border animate-slide-up"
+              style={{
+                backgroundColor: 'var(--cream-card)',
+                borderRadius: 'var(--radius-lg)',
+                boxShadow: 'var(--shadow-dropdown)',
+                borderColor: 'var(--border-default)',
+                borderLeftWidth: 3,
+                borderLeftColor: borderColors[t.type],
+              }}
             >
               <Icon
                 size={16}
                 className="flex-shrink-0 mt-0.5"
                 style={{ color: borderColors[t.type] }}
               />
-              <p className="text-[13px] text-[var(--brown)] flex-1">{t.message}</p>
+              <p className="flex-1" style={{ fontSize: 13, color: 'var(--brown)' }}>{t.message}</p>
               <button
                 onClick={() => removeToast(t.id)}
-                className="flex-shrink-0 text-[var(--brown-soft)] hover:text-[var(--brown)] transition-colors cursor-pointer"
+                className="flex-shrink-0 transition-colors cursor-pointer"
+                style={{ color: 'var(--brown-soft)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--brown)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--brown-soft)'; }}
               >
                 <X size={14} />
               </button>

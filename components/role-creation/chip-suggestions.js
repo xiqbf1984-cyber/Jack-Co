@@ -10,7 +10,8 @@ export default function ChipSuggestions({ chips = [], onSelect }) {
           key={chip}
           type="button"
           onClick={() => onSelect?.(chip)}
-          className="shrink-0 px-3 py-1 text-body-xs border border-[var(--border-default)] rounded-full text-[var(--brown)] hover:border-[var(--border-hover)] hover:bg-[var(--cream)] transition-all whitespace-nowrap"
+          className="shrink-0 px-3 py-1 text-body-xs border rounded-full hover-border-hover hover-bg-cream transition-all whitespace-nowrap"
+          style={{ borderColor: 'var(--border-default)', color: 'var(--brown)' }}
         >
           {chip}
         </button>

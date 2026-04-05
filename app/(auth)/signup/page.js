@@ -15,7 +15,7 @@ export default function SignupPage() {
         <h1 className="font-display text-[24px] mb-2" style={{ color: 'var(--brown)' }}>
           Sign up
         </h1>
-        <p className="text-body-xs mb-6">Create your WorkTrial account.</p>
+        <p className="text-body-xs mb-6">Create your account.</p>
 
         <div className="space-y-4 mb-6">
           <input

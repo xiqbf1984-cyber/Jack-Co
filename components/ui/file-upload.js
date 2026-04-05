@@ -82,20 +82,22 @@ function FileUpload({ onFiles, accept, maxSize, maxFiles = 5, className }) {
         onClick={() => inputRef.current?.click()}
         className={cn(
           'flex flex-col items-center justify-center gap-2 py-8 px-4',
-          'border-2 border-dashed rounded-[var(--radius-lg)]',
-          'cursor-pointer transition-all duration-200',
-          dragOver
-            ? 'border-[var(--gold)] bg-[rgba(139,105,20,0.04)]'
-            : 'border-[var(--border-default)] hover:border-[var(--border-hover)] bg-[var(--cream)]'
+          'border-2 border-dashed cursor-pointer transition-all duration-200',
+          !dragOver && 'hover-border-hover'
         )}
+        style={{
+          borderRadius: 'var(--radius-lg)',
+          borderColor: dragOver ? 'var(--gold)' : 'var(--border-default)',
+          backgroundColor: dragOver ? 'rgba(139,105,20,0.04)' : 'var(--cream)',
+        }}
       >
-        <Upload size={24} className="text-[var(--brown-soft)]" />
-        <p className="text-[13px] text-[var(--brown)]">
-          <span className="font-medium text-[var(--gold)]">Click to upload</span>
+        <Upload size={24} style={{ color: 'var(--brown-soft)' }} />
+        <p style={{ fontSize: 13, color: 'var(--brown)' }}>
+          <span className="font-medium" style={{ color: 'var(--gold)' }}>Click to upload</span>
           {' '}or drag and drop
         </p>
         {accept && (
-          <p className="text-[11px] text-[var(--brown-soft)]">{accept}</p>
+          <p style={{ fontSize: 11, color: 'var(--brown-soft)' }}>{accept}</p>
         )}
         <input
           ref={inputRef}
@@ -109,7 +111,7 @@ function FileUpload({ onFiles, accept, maxSize, maxFiles = 5, className }) {
 
       {/* Error */}
       {error && (
-        <p className="text-[11px] text-[var(--red)]">{error}</p>
+        <p style={{ fontSize: 11, color: 'var(--red)' }}>{error}</p>
       )}
 
       {/* File list */}
@@ -118,13 +120,14 @@ function FileUpload({ onFiles, accept, maxSize, maxFiles = 5, className }) {
           {files.map((f, i) => (
             <div
               key={`${f.name}-${i}`}
-              className="flex items-center gap-2 px-3 py-2 bg-[var(--cream)] border border-[var(--border-default)] rounded-[var(--radius-md)]"
+              className="flex items-center gap-2 px-3 py-2 border"
+              style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', borderRadius: 'var(--radius-md)' }}
             >
-              <FileText size={14} className="text-[var(--brown-soft)] flex-shrink-0" />
-              <span className="text-[12px] text-[var(--brown)] truncate flex-1">
+              <FileText size={14} className="flex-shrink-0" style={{ color: 'var(--brown-soft)' }} />
+              <span className="truncate flex-1" style={{ fontSize: 12, color: 'var(--brown)' }}>
                 {f.name}
               </span>
-              <span className="text-[11px] text-[var(--brown-soft)] flex-shrink-0">
+              <span className="flex-shrink-0" style={{ fontSize: 11, color: 'var(--brown-soft)' }}>
                 {formatSize(f.size)}
               </span>
               <button
@@ -133,7 +136,10 @@ function FileUpload({ onFiles, accept, maxSize, maxFiles = 5, className }) {
                   e.stopPropagation();
                   removeFile(i);
                 }}
-                className="text-[var(--brown-soft)] hover:text-[var(--red)] transition-colors cursor-pointer flex-shrink-0"
+                className="transition-colors cursor-pointer flex-shrink-0"
+                style={{ color: 'var(--brown-soft)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--red)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--brown-soft)'; }}
               >
                 <X size={14} />
               </button>

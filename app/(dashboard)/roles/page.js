@@ -43,7 +43,8 @@ export default function RolesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search roles..."
-          className="w-full pl-9 pr-4 py-2.5 rounded-lg border border-[var(--border-default)] bg-[var(--cream-card)] text-body-sm text-[var(--brown)] placeholder:text-[var(--brown-soft)] focus:outline-none focus:border-[var(--border-hover)] transition-colors"
+          className="w-full pl-9 pr-4 py-2.5 rounded-lg border text-body-sm focus:outline-none transition-colors"
+          style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
         />
       </div>
 
@@ -56,7 +57,7 @@ export default function RolesPage() {
           >
             <Briefcase size={24} style={{ color: 'var(--brown-muted)' }} />
           </div>
-          <p className="text-body-lg text-[var(--brown-muted)]">
+          <p className="text-body-lg" style={{ color: 'var(--brown-muted)' }}>
             {search ? 'No roles match your search' : 'No roles yet'}
           </p>
           {!search && (
@@ -72,7 +73,8 @@ export default function RolesPage() {
             return (
               <div
                 key={role.id}
-                className="flex items-center gap-4 px-5 py-4 rounded-xl border border-[var(--border-default)] bg-[var(--cream-card)] hover:border-[var(--border-hover)] hover:shadow-[var(--shadow-card-hover)] transition-all cursor-pointer"
+                className="flex items-center gap-4 px-5 py-4 rounded-xl border hover-border-hover hover-shadow-card-var transition-all cursor-pointer"
+                style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)' }}
               >
                 {/* Icon */}
                 <div
@@ -84,16 +86,16 @@ export default function RolesPage() {
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <div className="text-body-sm font-semibold text-[var(--brown)] truncate">
+                  <div className="text-body-sm font-semibold truncate" style={{ color: 'var(--brown)' }}>
                     {role.title}
                   </div>
-                  <div className="text-body-xs text-[var(--brown-muted)]">
+                  <div className="text-body-xs" style={{ color: 'var(--brown-muted)' }}>
                     {role.dept}
                   </div>
                 </div>
 
                 {/* Salary */}
-                <div className="text-body-xs text-[var(--brown-soft)] hidden sm:block">
+                <div className="text-body-xs hidden sm:block" style={{ color: 'var(--brown-soft)' }}>
                   {role.salary}
                 </div>
 

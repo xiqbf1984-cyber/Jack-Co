@@ -46,7 +46,7 @@ export default function CompanySettingsPage() {
                 placeholder={field.placeholder}
                 value={company[field.key]}
                 onChange={(e) => setCompany({ [field.key]: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus:border-[var(--border-hover)]"
+                className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
                 style={{
                   backgroundColor: 'var(--cream)',
                   borderColor: 'var(--border-default)',
@@ -64,7 +64,7 @@ export default function CompanySettingsPage() {
             placeholder="Brief description of your company..."
             value={company.description}
             onChange={(e) => setCompany({ description: e.target.value })}
-            className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body resize-none focus:border-[var(--border-hover)]"
+            className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body resize-none focus-border-hover"
             style={{
               backgroundColor: 'var(--cream)',
               borderColor: 'var(--border-default)',
