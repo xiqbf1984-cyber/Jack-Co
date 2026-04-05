@@ -42,7 +42,7 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+    <div className="page-container">
       <h1 className="text-display-page mb-2">Evaluation</h1>
       <p className="text-body-lg mb-8">Review scores, grades, and candidate performance.</p>
 
@@ -77,7 +77,7 @@ export default function EvaluationPage() {
       {/* Results by role */}
       {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
         <div key={roleTitle} className="mb-10">
-          <h3 className="text-display-section mb-5">{roleTitle}</h3>
+          <h3 className="text-display-section mb-3">{roleTitle}</h3>
           <div className="space-y-4">
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div
@@ -105,7 +105,7 @@ export default function EvaluationPage() {
                     return (
                       <div key={result.candId} className="flex items-center gap-4">
                         <div
-                          className="w-7 h-7 rounded-md flex items-center justify-center text-[9px] font-mono font-bold shrink-0"
+                          className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-mono font-bold shrink-0"
                           style={{
                             background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                             color: 'var(--brown)',

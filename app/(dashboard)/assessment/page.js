@@ -22,7 +22,7 @@ export default function ChallengesPage() {
   );
 
   return (
-    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+    <div className="page-container">
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Assessment</h1>
         <Link href="/assessment/create" className="btn-primary no-underline">

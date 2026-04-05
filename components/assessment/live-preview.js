@@ -123,7 +123,7 @@ export default function LivePreview() {
             {candidates.map((c) => (
               <div key={c.id} className="flex items-center gap-2">
                 <div
-                  className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-semibold"
+                  className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold"
                   style={{
                     backgroundColor: 'var(--border-default)',
                     color: 'var(--brown)',

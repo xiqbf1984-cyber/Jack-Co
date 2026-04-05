@@ -29,7 +29,7 @@ export default function ChallengeDetailPage() {
 
   if (!challenge) {
     return (
-      <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+      <div className="page-container">
         <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline" style={{ color: 'var(--gold)' }}>
           <ArrowLeft size={14} /> Back to Assessment
         </Link>
@@ -41,7 +41,7 @@ export default function ChallengeDetailPage() {
   const statusColors = { published: '#27825b', submitted: '#0077B5', pending: '#d4880f', draft: '#c4b896' };
 
   return (
-    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+    <div className="page-container">
       <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
         <ArrowLeft size={14} /> Back to Assessment
       </Link>
@@ -98,7 +98,7 @@ export default function ChallengeDetailPage() {
             const grade = getGrade(result.score);
             return (
               <div key={result.candId} className="rounded-xl border flex items-center gap-4" style={{ padding: '18px 24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-mono font-bold" style={{ background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))', color: 'var(--brown)' }}>
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold" style={{ background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))', color: 'var(--brown)' }}>
                   {cand?.avatar || '??'}
                 </div>
                 <div className="flex-1">
@@ -125,7 +125,7 @@ export default function ChallengeDetailPage() {
       {activeTab === 'settings' && (
         <div className="animate-fsu">
           <div className="rounded-xl border" style={{ padding: '28px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
-            <h3 className="text-display-section mb-5">Assessment Settings</h3>
+            <h3 className="text-display-section mb-3">Assessment Settings</h3>
             <p className="text-body-xs mb-6">Manage this assessment's configuration.</p>
             <div className="border-t pt-4" style={{ borderColor: 'var(--border-light)' }}>
               <h4 className="text-body-sm font-semibold mb-2" style={{ color: 'var(--red)' }}>Danger Zone</h4>
