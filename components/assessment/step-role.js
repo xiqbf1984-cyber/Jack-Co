@@ -111,11 +111,12 @@ export default function StepRole() {
             className={cn(
               'flex-1 py-2 px-4 rounded-md text-body-sm font-semibold transition-all duration-200',
               path === tab.id
-                ? 'bg-[var(--cream-card)] shadow-sm'
-                : 'hover:bg-[var(--cream-card-hover)]'
+                ? 'shadow-sm'
+                : 'hover-bg-cream-card-hover'
             )}
             style={{
               color: path === tab.id ? 'var(--brown)' : 'var(--brown-soft)',
+              backgroundColor: path === tab.id ? 'var(--cream-card)' : undefined,
             }}
           >
             {tab.label}
@@ -139,10 +140,10 @@ export default function StepRole() {
                     'flex items-center gap-2 px-3 py-2 rounded-lg text-body-sm transition-all duration-200',
                     jdTab === tab.id
                       ? 'border-2'
-                      : 'border border-[var(--border-default)] hover:border-[var(--border-hover)]'
+                      : 'border hover-border-hover'
                   )}
                   style={{
-                    borderColor: jdTab === tab.id ? 'var(--gold)' : undefined,
+                    borderColor: jdTab === tab.id ? 'var(--gold)' : 'var(--border-default)',
                     backgroundColor: jdTab === tab.id ? 'rgba(139,105,20,0.04)' : 'var(--cream-card)',
                     color: jdTab === tab.id ? 'var(--gold)' : 'var(--brown)',
                   }}
@@ -174,7 +175,7 @@ export default function StepRole() {
 
           {jdTab === 'upload' && (
             <label
-              className="flex flex-col items-center justify-center w-full h-36 rounded-lg border-2 border-dashed cursor-pointer transition-all duration-200 hover:border-[var(--gold)]"
+              className="flex flex-col items-center justify-center w-full h-36 rounded-lg border-2 border-dashed cursor-pointer transition-all duration-200 hover-border-gold"
               style={{
                 borderColor: fileName ? 'var(--accent-green)' : 'var(--border-default)',
                 backgroundColor: 'var(--cream-card)',

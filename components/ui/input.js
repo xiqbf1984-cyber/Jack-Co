@@ -27,17 +27,18 @@ const Input = forwardRef(function Input(
         value={value}
         onChange={onChange}
         className={cn(
-          'w-full px-3 py-2 text-[13px]',
-          'bg-[var(--cream)] text-[var(--brown)]',
-          'border rounded-[var(--radius-md)]',
-          'outline-none transition-all duration-200',
-          'placeholder:text-[var(--brown-soft)]',
-          error
-            ? 'border-[var(--red)] focus:border-[var(--red)]'
-            : 'border-[var(--border-default)] focus:border-[var(--border-hover)]',
-          'focus:shadow-[0_0_0_3px_rgba(139,105,20,0.08)]',
+          'w-full px-3 py-2',
+          'border outline-none transition-all duration-200',
+          !error && 'focus-border-hover',
           className
         )}
+        style={{
+          fontSize: 13,
+          backgroundColor: 'var(--cream)',
+          color: 'var(--brown)',
+          borderRadius: 'var(--radius-md)',
+          borderColor: error ? 'var(--red)' : 'var(--border-default)',
+        }}
         {...props}
       />
       {error && (

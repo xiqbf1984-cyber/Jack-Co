@@ -53,21 +53,20 @@ export default function SearchPage({ onSubmit }) {
               }
             }}
             placeholder="Senior ML Engineer with 5+ years PyTorch experience..."
-            className="w-full px-5 py-4 text-body-lg text-[var(--brown)] placeholder:text-[var(--brown-soft)] bg-[var(--cream-card)] border border-[var(--border-default)] rounded-xl resize-none focus:outline-none focus:border-[var(--border-hover)] transition-all"
-            style={
-              !input.trim()
-                ? {
-                    animation: 'inputGlow 3s infinite',
-                  }
-                : {
-                    boxShadow: 'var(--shadow-card)',
-                  }
-            }
+            className="w-full px-5 py-4 text-body-lg border rounded-xl resize-none focus:outline-none focus-border-hover transition-all"
+            style={{
+              ...(!input.trim()
+                ? { animation: 'inputGlow 3s infinite' }
+                : { boxShadow: 'var(--shadow-card)' }),
+              color: 'var(--brown)',
+              backgroundColor: 'var(--cream-card)',
+              borderColor: 'var(--border-default)',
+            }}
           />
 
           {/* Ghost text overlay */}
           {ghostText && !input && (
-            <div className="absolute inset-0 px-5 py-4 pointer-events-none text-body-lg text-[var(--brown-light)] opacity-50">
+            <div className="absolute inset-0 px-5 py-4 pointer-events-none text-body-lg opacity-50" style={{ color: 'var(--brown-light)' }}>
               {ghostText}
             </div>
           )}

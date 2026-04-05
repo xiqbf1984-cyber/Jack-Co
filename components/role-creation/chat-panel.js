@@ -53,7 +53,7 @@ export default function ChatPanel({ messages = [], onSend, currentQuestion, isTy
       </div>
 
       {/* Input bar */}
-      <div className="px-5 pb-4 pt-2 border-t border-[var(--border-light)]">
+      <div className="px-5 pb-4 pt-2 border-t" style={{ borderColor: 'var(--border-light)' }}>
         <form onSubmit={handleSubmit} className="flex items-center gap-2">
           <input
             ref={inputRef}
@@ -62,7 +62,8 @@ export default function ChatPanel({ messages = [], onSend, currentQuestion, isTy
             onChange={(e) => setInput(e.target.value)}
             placeholder="Type your answer..."
             disabled={isTyping}
-            className="flex-1 px-4 py-2.5 rounded-lg border border-[var(--border-default)] bg-[var(--cream-card)] text-body-sm text-[var(--brown)] placeholder:text-[var(--brown-soft)] focus:outline-none focus:border-[var(--border-hover)] transition-colors disabled:opacity-50"
+            className="flex-1 px-4 py-2.5 rounded-lg border text-body-sm focus:outline-none focus-border-hover transition-colors disabled:opacity-50"
+            style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
           />
           <button
             type="submit"

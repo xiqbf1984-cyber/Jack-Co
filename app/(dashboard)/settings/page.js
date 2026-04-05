@@ -109,7 +109,7 @@ export default function SettingsPage() {
                 placeholder={field.placeholder}
                 value={hm[field.key]}
                 onChange={(e) => setHM({ [field.key]: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus:border-[var(--border-hover)]"
+                className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
                 style={{
                   backgroundColor: 'var(--cream)',
                   borderColor: 'var(--border-default)',
@@ -128,7 +128,7 @@ export default function SettingsPage() {
               placeholder="linkedin.com/in/sarahchen"
               value={hm.linkedinUrl}
               onChange={(e) => setHM({ linkedinUrl: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus:border-[var(--border-hover)]"
+              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
               style={{
                 backgroundColor: 'var(--cream)',
                 borderColor: 'var(--border-default)',

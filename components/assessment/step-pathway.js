@@ -79,7 +79,7 @@ export default function StepPathway() {
               <button
                 type="button"
                 onClick={() => togglePathway(pw.id)}
-                className="w-full flex items-center justify-between px-5 py-4 transition-colors duration-150 hover:bg-[var(--cream)]"
+                className="w-full flex items-center justify-between px-5 py-4 transition-colors duration-150 hover-bg-cream"
               >
                 <div className="flex items-center gap-3">
                   {isExpanded ? (

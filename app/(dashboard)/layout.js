@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }) {
       <Sidebar />
       <main
         className="flex-1 min-h-screen"
-        style={{ backgroundColor: 'var(--cream)', marginLeft: 60 }}
+        style={{ backgroundColor: 'var(--cream)', marginLeft: 60, overflowX: 'hidden' }}
       >
         {children}
       </main>

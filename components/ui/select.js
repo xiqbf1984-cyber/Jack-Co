@@ -27,14 +27,18 @@ const Select = forwardRef(function Select(
           value={value}
           onChange={onChange}
           className={cn(
-            'w-full px-3 py-2 pr-8 text-[13px] appearance-none',
-            'bg-[var(--cream)] text-[var(--brown)]',
-            'border border-[var(--border-default)] rounded-[var(--radius-md)]',
-            'outline-none transition-all duration-200',
-            'focus:border-[var(--border-hover)] focus:shadow-[0_0_0_3px_rgba(139,105,20,0.08)]',
-            'cursor-pointer',
+            'w-full px-3 py-2 pr-8 appearance-none',
+            'border outline-none transition-all duration-200',
+            'focus-border-hover cursor-pointer',
             className
           )}
+          style={{
+            fontSize: 13,
+            backgroundColor: 'var(--cream)',
+            color: 'var(--brown)',
+            borderColor: 'var(--border-default)',
+            borderRadius: 'var(--radius-md)',
+          }}
           {...props}
         >
           {placeholder && (
@@ -50,7 +54,8 @@ const Select = forwardRef(function Select(
         </select>
         <ChevronDown
           size={14}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[var(--brown-soft)] pointer-events-none"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none"
+          style={{ color: 'var(--brown-soft)' }}
         />
       </div>
     </div>

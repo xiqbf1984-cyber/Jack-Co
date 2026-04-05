@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@source "../components/**/*.js";
+@source "../lib/**/*.js";
+@source "../stores/**/*.js";
 
 /* ==================== CUSTOM PROPERTIES ==================== */
 :root {
@@ -307,6 +310,38 @@ body {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
 }
 
+.hover-shadow-card-var:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.hover-bg-cream:hover {
+  background-color: var(--cream);
+}
+
+.hover-bg-cream-card-hover:hover {
+  background-color: var(--cream-card-hover);
+}
+
+.hover-bg-cream-row-even:hover {
+  background-color: var(--cream-row-even);
+}
+
+.hover-border-hover:hover {
+  border-color: var(--border-hover);
+}
+
+.hover-border-gold:hover {
+  border-color: var(--gold);
+}
+
+.hover-scale-sm:hover {
+  transform: scale(1.01);
+}
+
+.focus-border-hover:focus {
+  border-color: var(--border-hover);
+}
+
 /* ==================== BUTTON BASE ==================== */
 .btn-primary {
   display: inline-flex;
@@ -361,5 +396,23 @@ body {
 .btn-secondary:hover {
   border-color: var(--border-hover);
   background: var(--cream);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background-color: var(--cream-card);
+  color: var(--brown);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  border-color: var(--border-hover);
+  background-color: var(--cream);
   box-shadow: var(--shadow-card);
 }

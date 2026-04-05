@@ -70,7 +70,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
   return (
     <div className="border rounded-xl overflow-hidden" style={{ borderColor: 'var(--border-default)' }}>
       <div
-        className="flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-[var(--cream-card-hover)] transition-colors"
+        className="flex items-center justify-between px-4 py-3 cursor-pointer hover-bg-cream-card-hover transition-colors"
         style={{ backgroundColor: 'var(--cream-card)' }}
         onClick={() => setExpanded(!expanded)}
       >
@@ -108,7 +108,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
               </select>
               <button
                 onClick={() => onDeleteRubric(rubric.id)}
-                className="w-7 h-7 rounded flex items-center justify-center bg-transparent border-none cursor-pointer hover:bg-[rgba(192,57,43,0.06)]"
+                className="w-7 h-7 rounded flex items-center justify-center bg-transparent border-none cursor-pointer hover-bg-dim"
                 style={{ color: 'var(--brown-soft)' }}
               >
                 <Trash2 size={13} />

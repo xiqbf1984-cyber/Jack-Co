@@ -35,11 +35,14 @@ function Modal({ open, onClose, title, children, className }) {
       {/* Panel */}
       <div
         className={cn(
-          'relative z-10 w-full max-w-lg mx-4',
-          'bg-[var(--cream-card)] rounded-[var(--radius-3xl)]',
-          'shadow-[var(--shadow-modal)] animate-fade-scale',
+          'relative z-10 w-full max-w-lg mx-4 animate-fade-scale',
           className
         )}
+        style={{
+          backgroundColor: 'var(--cream-card)',
+          borderRadius: 'var(--radius-3xl)',
+          boxShadow: 'var(--shadow-modal)',
+        }}
       >
         {/* Header */}
         {title && (
@@ -47,7 +50,8 @@ function Modal({ open, onClose, title, children, className }) {
             <h2 className="text-display-dialog">{title}</h2>
             <button
               onClick={onClose}
-              className="w-8 h-8 flex items-center justify-center rounded-[var(--radius-sm)] text-[var(--brown-soft)] hover:bg-[var(--cream)] transition-colors cursor-pointer"
+              className="w-8 h-8 flex items-center justify-center hover-bg-cream transition-colors cursor-pointer"
+              style={{ borderRadius: 'var(--radius-sm)', color: 'var(--brown-soft)' }}
             >
               <X size={18} />
             </button>

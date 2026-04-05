@@ -73,7 +73,9 @@ export default function RoleCreateLayout({ children }) {
       {rightPanelVisible && (
         <div
           onMouseDown={handleMouseDown}
-          className="w-1 cursor-col-resize hover:bg-[var(--border-hover)] transition-colors shrink-0"
+          className="w-1 cursor-col-resize transition-colors shrink-0"
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--border-default)'; }}
           style={{ backgroundColor: 'var(--border-default)' }}
         />
       )}

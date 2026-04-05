@@ -18,8 +18,7 @@ export default function HireTypeCards() {
         <div
           className={cn(
             cardBase,
-            'cursor-pointer',
-            'hover:scale-[1.01]'
+            'cursor-pointer hover-scale-sm'
           )}
           style={{
             width: 280,

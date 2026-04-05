@@ -12,14 +12,18 @@ const Card = forwardRef(function Card(
       ref={ref}
       onClick={onClick}
       className={cn(
-        'bg-[var(--cream-card)] border border-[var(--border-default)]',
-        'rounded-[var(--radius-lg)] shadow-[var(--shadow-card)]',
-        'transition-all duration-200',
-        hoverable && 'hover:shadow-[var(--shadow-card-hover)] cursor-pointer',
+        'border transition-all duration-200',
+        hoverable && 'hover-shadow-card-var cursor-pointer',
         glass && 'liquid-glass',
         onClick && 'cursor-pointer',
         className
       )}
+      style={{
+        backgroundColor: 'var(--cream-card)',
+        borderColor: 'var(--border-default)',
+        borderRadius: 'var(--radius-lg)',
+        boxShadow: 'var(--shadow-card)',
+      }}
       {...props}
     >
       {children}

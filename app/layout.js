@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "WorkTrial",
+  title: "Hiring Platform",
   description: "AI-powered hiring assessments. Find, evaluate, and hire remarkable talent.",
 };
 

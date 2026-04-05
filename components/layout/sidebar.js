@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 import { SIDEBAR_NAV } from '@/lib/constants';
 import {
   LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
-  Settings, HelpCircle, Bell, Sun, Moon, ChevronRight
+  Settings, HelpCircle, Bell, Sun, Moon
 } from 'lucide-react';
 
 const iconMap = {
@@ -35,22 +35,13 @@ export default function Sidebar() {
       <div className="flex items-center px-4 border-b" style={{ borderColor: 'var(--border-light)', height: 56 }}>
         <Link href="/" className="flex items-center gap-2 no-underline">
           <div
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold"
+            className="w-7 h-7 rounded-lg flex items-center justify-center"
             style={{
               background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-              color: 'var(--btn-text)',
             }}
           >
-            W
+            <Briefcase size={14} style={{ color: 'var(--btn-text)' }} />
           </div>
-          {expanded && (
-            <span
-              className="font-display text-[14px] font-semibold whitespace-nowrap animate-fi"
-              style={{ color: 'var(--brown)' }}
-            >
-              WorkTrial
-            </span>
-          )}
         </Link>
       </div>
 
@@ -75,7 +66,7 @@ export default function Sidebar() {
                 'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 no-underline text-[12px] font-body',
                 isActive
                   ? 'font-semibold'
-                  : 'hover:bg-[rgba(0,0,0,0.04)]'
+                  : 'hover-bg-dim'
               )}
               style={{
                 color: isActive ? 'var(--gold)' : 'var(--brown)',
@@ -116,7 +107,7 @@ export default function Sidebar() {
         <Link
           href="/settings"
           className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 no-underline text-[12px] font-body hover:bg-[rgba(0,0,0,0.04)]',
+            'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 no-underline text-[12px] font-body hover-bg-dim',
           )}
           style={{ color: 'var(--brown)' }}
         >
@@ -127,7 +118,7 @@ export default function Sidebar() {
         {/* Help */}
         <button
           className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-[12px] font-body hover:bg-[rgba(0,0,0,0.04)] border-none cursor-pointer bg-transparent w-full text-left',
+            'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-[12px] font-body hover-bg-dim border-none cursor-pointer bg-transparent w-full text-left',
           )}
           style={{ color: 'var(--brown)' }}
         >
@@ -138,7 +129,7 @@ export default function Sidebar() {
         {/* Notifications */}
         <button
           className={cn(
-            'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-[12px] font-body hover:bg-[rgba(0,0,0,0.04)] border-none cursor-pointer bg-transparent w-full text-left relative',
+            'flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 text-[12px] font-body hover-bg-dim border-none cursor-pointer bg-transparent w-full text-left relative',
           )}
           style={{ color: 'var(--brown)' }}
         >

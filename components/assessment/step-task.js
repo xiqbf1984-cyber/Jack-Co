@@ -104,7 +104,7 @@ export default function StepTask() {
                 <button
                   type="button"
                   onClick={() => toggleCategory(cat.id)}
-                  className="w-full flex items-center justify-between px-5 py-3.5 transition-colors duration-150 hover:bg-[var(--cream)]"
+                  className="w-full flex items-center justify-between px-5 py-3.5 transition-colors duration-150 hover-bg-cream"
                 >
                   <div className="flex items-center gap-3">
                     {isExpanded ? (
