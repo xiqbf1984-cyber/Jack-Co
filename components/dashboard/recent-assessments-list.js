@@ -17,7 +17,7 @@ export default function RecentAssessmentsList() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-display-section">Recent Assessments</h3>
         <Link
           href="/assessment"

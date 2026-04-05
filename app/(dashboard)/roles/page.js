@@ -30,10 +30,10 @@ export default function RolesPage() {
           Add Role
         </Link>
       </div>
-      <p className="text-body-lg mb-8">Manage your open positions and hiring pipeline.</p>
+      <p className="text-body-lg mb-6">Manage your open positions and hiring pipeline.</p>
 
       {/* Search */}
-      <div className="relative mb-8 max-w-sm">
+      <div className="relative mb-6 max-w-sm">
         <Search
           size={15}
           className="absolute left-3.5 top-1/2 -translate-y-1/2"
@@ -44,7 +44,7 @@ export default function RolesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search roles..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm focus:outline-none transition-colors"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
         />
       </div>
@@ -76,7 +76,7 @@ export default function RolesPage() {
                 key={role.id}
                 className="flex items-center gap-5 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
                 style={{
-                  padding: '22px 28px',
+                  padding: '20px 24px',
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--cream-card)',
                   boxShadow: 'var(--shadow-card)',

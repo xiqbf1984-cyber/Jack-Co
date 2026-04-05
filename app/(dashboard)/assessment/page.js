@@ -29,10 +29,10 @@ export default function ChallengesPage() {
           <Plus size={14} /> New Assessment
         </Link>
       </div>
-      <p className="text-body-lg mb-8">Create and manage AI-powered assessments for your roles.</p>
+      <p className="text-body-lg mb-6">Create and manage AI-powered assessments for your roles.</p>
 
       {/* Search */}
-      <div className="relative mb-8 max-w-sm">
+      <div className="relative mb-6 max-w-sm">
         <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
         <input
           type="text"
@@ -53,7 +53,7 @@ export default function ChallengesPage() {
               href={`/assessment/${challenge.id}`}
               className="block rounded-xl border transition-all duration-200 no-underline hover-shadow-card"
               style={{
-                padding: '22px 28px',
+                padding: '20px 24px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',

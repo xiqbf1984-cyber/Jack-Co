@@ -44,10 +44,10 @@ export default function EvaluationPage() {
   return (
     <div className="page-container">
       <h1 className="text-display-page mb-2">Evaluation</h1>
-      <p className="text-body-lg mb-8">Review scores, grades, and candidate performance.</p>
+      <p className="text-body-lg mb-6">Review scores, grades, and candidate performance.</p>
 
       {/* Stat cards */}
-      <div className="grid gap-6 mb-10" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
@@ -55,14 +55,14 @@ export default function EvaluationPage() {
               key={stat.label}
               className="rounded-xl border"
               style={{
-                padding: '28px',
+                padding: '24px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',
                 animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
               }}
             >
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-3">
                 <span className="text-mono-label">{stat.label}</span>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
                   <Icon size={18} style={{ color: stat.color }} />
@@ -76,21 +76,21 @@ export default function EvaluationPage() {
 
       {/* Results by role */}
       {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
-        <div key={roleTitle} className="mb-10">
-          <h3 className="text-display-section mb-3">{roleTitle}</h3>
+        <div key={roleTitle} className="mb-8">
+          <h3 className="text-display-section mb-4">{roleTitle}</h3>
           <div className="space-y-4">
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div
                 key={challenge.id}
                 className="rounded-xl border"
                 style={{
-                  padding: '28px',
+                  padding: '24px',
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
                   boxShadow: 'var(--shadow-card)',
                 }}
               >
-                <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center justify-between mb-4">
                   <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
                     {challenge.name}
                   </span>

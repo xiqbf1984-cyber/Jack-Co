@@ -79,7 +79,7 @@ export default function ChallengeDetailPage() {
       {/* Overview Tab */}
       {activeTab === 'overview' && (
         <div className="space-y-4 animate-fsu">
-          <div className="rounded-xl border" style={{ padding: '28px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+          <div className="rounded-xl border" style={{ padding: '24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
             <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
               <div><span className="text-mono-label block mb-2">Role</span><span className="text-body-sm">{challenge.roleTitle}</span></div>
               <div><span className="text-mono-label block mb-2">Skill</span><span className="text-body-sm">{challenge.skill}</span></div>
@@ -124,7 +124,7 @@ export default function ChallengeDetailPage() {
       {/* Settings Tab */}
       {activeTab === 'settings' && (
         <div className="animate-fsu">
-          <div className="rounded-xl border" style={{ padding: '28px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+          <div className="rounded-xl border" style={{ padding: '24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
             <h3 className="text-display-section mb-3">Assessment Settings</h3>
             <p className="text-body-xs mb-6">Manage this assessment's configuration.</p>
             <div className="border-t pt-4" style={{ borderColor: 'var(--border-light)' }}>

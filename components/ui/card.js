@@ -4,7 +4,7 @@ import { forwardRef } from 'react';
 import { cn } from '@/lib/utils';
 
 const Card = forwardRef(function Card(
-  { children, className, glass = false, onClick, hoverable = false, ...props },
+  { children, className, onClick, hoverable = false, ...props },
   ref
 ) {
   return (
@@ -14,7 +14,6 @@ const Card = forwardRef(function Card(
       className={cn(
         'border transition-all duration-200',
         hoverable && 'hover-shadow-card-var cursor-pointer',
-        glass && 'liquid-glass',
         onClick && 'cursor-pointer',
         className
       )}

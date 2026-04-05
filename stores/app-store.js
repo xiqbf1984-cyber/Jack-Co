@@ -34,7 +34,7 @@ export const useAppStore = create((set, get) => ({
 
   addRole: (role) => set((s) => ({ roles: [{ id: Date.now(), ...role }, ...s.roles] })),
   addCandidate: (candidate) => set((s) => ({
-    candidates: [...s.candidates, { id: Date.now(), ...candidate }],
+    candidates: [...s.candidates, { id: Date.now(), trials: 0, lastActive: '\u2014', ...candidate }],
   })),
   addChallenge: (challenge) => set((s) => ({
     challenges: [{ id: 'ch-' + Date.now(), ...challenge }, ...s.challenges],

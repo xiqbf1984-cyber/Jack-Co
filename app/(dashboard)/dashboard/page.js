@@ -13,8 +13,8 @@ export default function DashboardPage() {
   return (
     <div className="page-container">
       {/* Welcome */}
-      <div className="mb-8 animate-fade-scale">
-        <h1 className="text-display-page mb-1">
+      <div className="mb-6 animate-fade-scale">
+        <h1 className="text-display-page mb-2">
           Welcome back, {company.name}
         </h1>
         <p className="text-body-lg">
@@ -23,18 +23,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="mb-8">
+      <div className="mb-6">
         <StatCards />
       </div>
 
       {/* Quick Actions + Company Profile */}
-      <div className="grid gap-6 mb-8" style={{ gridTemplateColumns: '1fr 280px', alignItems: 'stretch' }}>
+      <div className="grid gap-5 mb-6" style={{ gridTemplateColumns: '1fr 280px', alignItems: 'stretch' }}>
         <QuickActions />
         <CompanyProfileCard />
       </div>
 
       {/* Hiring Roles + Recent Assessments */}
-      <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)', alignItems: 'stretch' }}>
+      <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(2, 1fr)', alignItems: 'stretch' }}>
         <HiringRolesList />
         <RecentAssessmentsList />
       </div>

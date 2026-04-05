@@ -9,7 +9,7 @@ export default function CompanyProfileCard() {
 
   return (
     <div className="h-full">
-      <h3 className="text-display-section mb-3">Company Profile</h3>
+      <h3 className="text-display-section mb-4">Company Profile</h3>
       <div
         className="rounded-xl border h-full flex flex-col"
         style={{
