@@ -98,7 +98,7 @@ export default function ChallengeDetailPage() {
             const grade = getGrade(result.score);
             return (
               <div key={result.candId} className="rounded-xl border flex items-center gap-4" style={{ padding: '18px 24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-xs font-mono font-bold" style={{ background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))', color: 'var(--brown)' }}>
+                <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-mono font-bold" style={{ background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))', color: 'var(--brown)' }}>
                   {cand?.avatar || '??'}
                 </div>
                 <div className="flex-1">

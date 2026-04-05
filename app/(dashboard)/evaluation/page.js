@@ -64,8 +64,8 @@ export default function EvaluationPage() {
             >
               <div className="flex items-center justify-between mb-3">
                 <span className="text-mono-label">{stat.label}</span>
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
-                  <Icon size={18} style={{ color: stat.color }} />
+                <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
+                  <Icon size={17} style={{ color: stat.color }} />
                 </div>
               </div>
               <div className="text-mono-display" style={{ color: 'var(--brown)', fontSize: 28 }}>{stat.value}</div>
@@ -105,7 +105,7 @@ export default function EvaluationPage() {
                     return (
                       <div key={result.candId} className="flex items-center gap-4">
                         <div
-                          className="w-7 h-7 rounded-md flex items-center justify-center text-[11px] font-mono font-bold shrink-0"
+                          className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-mono font-bold shrink-0"
                           style={{
                             background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
                             color: 'var(--brown)',

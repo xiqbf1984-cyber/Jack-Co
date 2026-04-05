@@ -37,7 +37,7 @@ export default function HiringRolesList() {
             style={{
               padding: '16px 20px',
               borderColor: 'var(--border-light)',
-              backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
+              backgroundColor: undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,
             }}
           >

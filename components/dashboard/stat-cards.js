@@ -42,10 +42,10 @@ export default function StatCards() {
             <div className="flex items-center justify-between mb-3">
               <span className="text-mono-label">{stat.label}</span>
               <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                className="w-9 h-9 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: stat.color + '14' }}
               >
-                <Icon size={18} style={{ color: stat.color }} />
+                <Icon size={17} style={{ color: stat.color }} />
               </div>
             </div>
             <div className="text-mono-display" style={{ color: 'var(--brown)', fontSize: 28 }}>
