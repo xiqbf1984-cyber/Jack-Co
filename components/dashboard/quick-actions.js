@@ -24,7 +24,7 @@ export default function QuickActions() {
             <div
               className="flex items-center gap-4 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
               style={{
-                padding: '20px 22px',
+                padding: '22px 28px',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',

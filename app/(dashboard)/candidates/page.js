@@ -24,7 +24,7 @@ export default function CandidatesPage() {
   );
 
   return (
-    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Candidates</h1>

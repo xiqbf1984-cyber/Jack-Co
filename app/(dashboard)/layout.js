@@ -14,7 +14,8 @@ export default function DashboardLayout({ children }) {
       <Sidebar />
       <main style={{
         marginLeft,
-        minHeight: '100vh',
+        height: '100vh',
+        overflowY: 'auto',
         backgroundColor: 'var(--cream)',
         transition: 'margin-left 0.2s ease',
       }}>

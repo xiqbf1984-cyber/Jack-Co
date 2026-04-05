@@ -42,7 +42,7 @@ export default function EvaluationPage() {
   });
 
   return (
-    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
+    <div className="animate-fade-scale" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
       <h1 className="text-display-page mb-2">Evaluation</h1>
       <p className="text-body-lg mb-8">Review scores, grades, and candidate performance.</p>
 

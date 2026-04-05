@@ -3,8 +3,12 @@
 import { useEffect, useCallback } from 'react';
 import { cn } from '@/lib/utils';
 import { X } from 'lucide-react';
+import { useAppStore } from '@/stores/app-store';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 
 function Modal({ open, onClose, title, children, className }) {
+  const collapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
   const handleKeyDown = useCallback(
     (e) => {
       if (e.key === 'Escape') onClose?.();
@@ -26,7 +30,10 @@ function Modal({ open, onClose, title, children, className }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center"
+      style={{ paddingLeft: sidebarWidth, transition: 'padding-left 0.2s ease' }}
+    >
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-black/30 animate-fi"
