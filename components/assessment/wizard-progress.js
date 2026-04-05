@@ -12,7 +12,7 @@ export default function WizardProgress() {
   const goToStep = useAssessmentStore((s) => s.goToStep);
 
   return (
-    <div className="flex items-center w-full max-w-[720px] mx-auto">
+    <div className="flex items-center w-full mx-auto" style={{ maxWidth: 720 }}>
       {WIZARD_STEPS.map((step, i) => {
         const isCompleted = completedSteps.includes(i);
         const isCurrent = currentStep === i;

@@ -11,7 +11,7 @@ export default function DashboardPage() {
   const company = useAppStore((s) => s.company);
 
   return (
-    <div className="p-8 max-w-[1200px]">
+    <div className="p-8" style={{ maxWidth: 1200 }}>
       {/* Welcome */}
       <div className="mb-6 animate-fade-scale">
         <h1 className="text-display-page mb-1">
@@ -28,7 +28,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Quick Actions + Company Profile */}
-      <div className="grid grid-cols-[1fr_320px] gap-6 mb-8">
+      <div className="grid gap-6 mb-8" style={{ gridTemplateColumns: '1fr 320px' }}>
         <QuickActions />
         <CompanyProfileCard />
       </div>

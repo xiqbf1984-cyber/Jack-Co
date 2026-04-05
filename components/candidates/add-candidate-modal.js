@@ -41,8 +41,9 @@ export default function AddCandidateModal() {
 
       {/* Modal */}
       <div
-        className="relative w-[420px] rounded-2xl border p-6 animate-fade-scale"
+        className="relative rounded-2xl border p-6 animate-fade-scale"
         style={{
+          width: 420,
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-modal)',

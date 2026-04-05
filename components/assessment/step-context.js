@@ -81,7 +81,7 @@ export default function StepContext() {
   const canContinue = description.trim().length > 10;
 
   return (
-    <div className="max-w-[640px] mx-auto">
+    <div className="mx-auto" style={{ maxWidth: 640 }}>
       <h1 className="text-display-page mb-2">What business problem should this candidate solve?</h1>
       <p className="text-body-lg mb-6">
         Give context about the real challenge your team faces. This helps generate a realistic assessment.

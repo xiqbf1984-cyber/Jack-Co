@@ -4,8 +4,9 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <div
-        className="w-[400px] rounded-2xl border p-8 text-center"
+        className="rounded-2xl border p-8 text-center"
         style={{
+          width: 400,
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-card)',

@@ -41,7 +41,7 @@ export default function ChallengeDetailPage() {
   const statusColors = { published: '#27825b', submitted: '#0077B5', pending: '#d4880f', draft: '#c4b896' };
 
   return (
-    <div className="p-8 max-w-[900px] animate-fade-scale">
+    <div className="p-8 animate-fade-scale" style={{ maxWidth: 900 }}>
       <Link href="/challenges" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
         <ArrowLeft size={14} /> Back to Challenges
       </Link>

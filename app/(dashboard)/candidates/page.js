@@ -22,7 +22,7 @@ export default function CandidatesPage() {
   );
 
   return (
-    <div className="p-8 max-w-[1000px] animate-fade-scale">
+    <div className="p-8 animate-fade-scale" style={{ maxWidth: 1000 }}>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-display-page">Candidates</h1>
         <button onClick={openModal} className="btn-primary">
@@ -52,8 +52,8 @@ export default function CandidatesPage() {
         <div className="rounded-xl border overflow-hidden" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
           {/* Header */}
           <div
-            className="grid grid-cols-[1fr_1fr_100px_80px_100px] gap-4 px-4 py-2.5 border-b"
-            style={{ borderColor: 'var(--border-light)', backgroundColor: 'var(--cream-sidebar)' }}
+            className="grid gap-4 px-4 py-2.5 border-b"
+            style={{ gridTemplateColumns: '1fr 1fr 100px 80px 100px', borderColor: 'var(--border-light)', backgroundColor: 'var(--cream-sidebar)' }}
           >
             <span className="text-mono-label">Name</span>
             <span className="text-mono-label">Email</span>
@@ -64,7 +64,7 @@ export default function CandidatesPage() {
           {filtered.map((cand, i) => (
             <div
               key={cand.id}
-              className="grid grid-cols-[1fr_1fr_100px_80px_100px] gap-4 px-4 py-3 border-b last:border-b-0 transition-colors duration-150 hover:bg-[var(--cream-card-hover)]"
+              className="grid gap-4 px-4 py-3 border-b last:border-b-0 transition-colors duration-150"
               style={{
                 borderColor: 'var(--border-light)',
                 backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
