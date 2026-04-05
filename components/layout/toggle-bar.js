@@ -30,13 +30,20 @@ export default function ToggleBar({ options = [], value, onChange }) {
   return (
     <div
       ref={containerRef}
-      className="relative inline-flex items-center rounded-full"
-      style={{ backgroundColor: '#5C5248', padding: 4 }}
+      style={{
+        position: 'relative',
+        display: 'inline-flex',
+        alignItems: 'center',
+        borderRadius: 9999,
+        backgroundColor: '#5C5248',
+        padding: 4,
+      }}
     >
       {/* Sliding indicator */}
       <div
-        className="absolute rounded-full"
         style={{
+          position: 'absolute',
+          borderRadius: 9999,
           backgroundColor: '#fcfbf7',
           top: 4,
           bottom: 4,

@@ -38,7 +38,7 @@ export default function HireTypeCards() {
             Hiring Human
           </span>
           <span className="text-body-sm text-center" style={{ color: 'var(--brown-muted)' }}>
-            Post trials and evaluate real candidates
+            Evaluate real candidates
           </span>
         </div>
       </Link>
@@ -78,7 +78,7 @@ export default function HireTypeCards() {
           Hiring AI
         </span>
         <span className="text-body-sm text-center" style={{ color: 'var(--brown-muted)' }}>
-          Evaluate AI agents for your workflows
+          Coming soon
         </span>
       </div>
     </div>

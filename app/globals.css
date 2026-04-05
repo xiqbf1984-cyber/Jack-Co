@@ -343,7 +343,7 @@ body {
 }
 
 .hover-scale-sm:hover {
-  transform: scale(1.01);
+  box-shadow: var(--shadow-card-hover);
 }
 
 .focus-border-hover:focus {
@@ -373,7 +373,6 @@ body {
 .btn-primary:hover {
   background: linear-gradient(135deg, var(--btn-hover-from), var(--btn-hover-to));
   box-shadow: 0 0 0 4px rgba(92,82,72,0.15);
-  transform: scale(1.02);
 }
 
 .btn-primary:disabled {
