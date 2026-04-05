@@ -23,19 +23,19 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 680, padding: 'var(--page-padding-y) var(--page-padding-x)' }}>
-      <h1 className="text-display-page mb-1">Settings</h1>
-      <p className="text-body-lg mb-6">Your hiring manager profile.</p>
+    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 720, padding: 'var(--page-padding-y) var(--page-padding-x)' }}>
+      <h1 className="text-display-page mb-2">Settings</h1>
+      <p className="text-body-lg mb-8">Your hiring manager profile.</p>
 
       {/* Input mode tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex gap-3 mb-8">
         {modes.map((mode) => {
           const Icon = mode.icon;
           return (
             <button
               key={mode.id}
               onClick={() => setInputMode(mode.id)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border text-body-sm font-semibold transition-all duration-200 cursor-pointer"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg border text-body-sm font-semibold transition-all duration-200 cursor-pointer"
               style={{
                 backgroundColor: inputMode === mode.id ? 'var(--cream-card)' : 'transparent',
                 borderColor: inputMode === mode.id ? 'var(--border-hover)' : 'var(--border-default)',
@@ -53,11 +53,11 @@ export default function SettingsPage() {
       {/* Resume upload */}
       {inputMode === 'resume' && (
         <div
-          className="rounded-xl border-2 border-dashed p-8 text-center mb-6 animate-fsu"
+          className="rounded-xl border-2 border-dashed p-10 text-center mb-8 animate-fsu"
           style={{ borderColor: 'var(--border-default)' }}
         >
-          <Upload size={32} style={{ color: 'var(--brown-soft)' }} className="mx-auto mb-3" />
-          <p className="text-body-sm mb-3" style={{ color: 'var(--brown-soft)' }}>
+          <Upload size={36} style={{ color: 'var(--brown-soft)' }} className="mx-auto mb-4" />
+          <p className="text-body-sm mb-4" style={{ color: 'var(--brown-soft)' }}>
             Upload your resume to auto-fill your profile
           </p>
           <label className="btn-primary cursor-pointer">
@@ -65,7 +65,7 @@ export default function SettingsPage() {
             <input type="file" accept=".pdf,.doc,.docx" onChange={handleFileUpload} className="hidden" />
           </label>
           {hm.resumeFileName && (
-            <p className="text-body-xs mt-3" style={{ color: 'var(--accent-green)' }}>
+            <p className="text-body-xs mt-4" style={{ color: 'var(--accent-green)' }}>
               Uploaded: {hm.resumeFileName}
             </p>
           )}
@@ -74,7 +74,7 @@ export default function SettingsPage() {
 
       {/* LinkedIn URL */}
       {inputMode === 'linkedin' && (
-        <div className="mb-6 animate-fsu">
+        <div className="mb-8 animate-fsu">
           <label className="text-mono-label block mb-2">LinkedIn Profile URL</label>
           <input
             type="url"
@@ -83,7 +83,7 @@ export default function SettingsPage() {
             onChange={(e) => setHM({ linkedinUrl: e.target.value })}
             className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body"
             style={{
-              backgroundColor: 'var(--cream)',
+              backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
               color: 'var(--brown)',
             }}
@@ -94,8 +94,8 @@ export default function SettingsPage() {
 
       {/* Manual fields */}
       <div className="animate-fsu">
-        <h3 className="text-display-section mb-4">Personal Information</h3>
-        <div className="grid gap-5 mb-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+        <h3 className="text-display-section mb-5">Personal Information</h3>
+        <div className="grid gap-5 mb-8" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Sarah Chen' },
             { key: 'title', label: 'Title', placeholder: 'VP of Engineering' },
@@ -103,15 +103,15 @@ export default function SettingsPage() {
             { key: 'reportsTo', label: 'Reports To', placeholder: 'CTO' },
           ].map((field) => (
             <div key={field.key}>
-              <label className="text-mono-label block mb-1.5">{field.label}</label>
+              <label className="text-mono-label block mb-2">{field.label}</label>
               <input
                 type="text"
                 placeholder={field.placeholder}
                 value={hm[field.key]}
                 onChange={(e) => setHM({ [field.key]: e.target.value })}
-                className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+                className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
                 style={{
-                  backgroundColor: 'var(--cream)',
+                  backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
                   color: 'var(--brown)',
                 }}
@@ -121,16 +121,16 @@ export default function SettingsPage() {
         </div>
 
         {inputMode === 'manual' && (
-          <div className="mb-6">
-            <label className="text-mono-label block mb-1.5">LinkedIn URL</label>
+          <div className="mb-8">
+            <label className="text-mono-label block mb-2">LinkedIn URL</label>
             <input
               type="url"
               placeholder="linkedin.com/in/sarahchen"
               value={hm.linkedinUrl}
               onChange={(e) => setHM({ linkedinUrl: e.target.value })}
-              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+              className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
               style={{
-                backgroundColor: 'var(--cream)',
+                backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 color: 'var(--brown)',
               }}

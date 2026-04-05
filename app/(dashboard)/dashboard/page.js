@@ -13,7 +13,7 @@ export default function DashboardPage() {
   return (
     <div style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
       {/* Welcome */}
-      <div className="mb-8 animate-fade-scale">
+      <div className="mb-10 animate-fade-scale">
         <h1 className="text-display-page mb-1">
           Welcome back, {company.name}
         </h1>
@@ -23,18 +23,18 @@ export default function DashboardPage() {
       </div>
 
       {/* Stat Cards */}
-      <div className="mb-8">
+      <div className="mb-10">
         <StatCards />
       </div>
 
       {/* Quick Actions + Company Profile */}
-      <div className="grid gap-5 mb-8" style={{ gridTemplateColumns: '1fr 340px' }}>
+      <div className="grid gap-6 mb-10" style={{ gridTemplateColumns: '1fr 360px' }}>
         <QuickActions />
         <CompanyProfileCard />
       </div>
 
       {/* Hiring Roles + Recent Candidates */}
-      <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
+      <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
         <HiringRolesList />
         <RecentCandidatesList />
       </div>

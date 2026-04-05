@@ -23,19 +23,20 @@ export default function RolesPage() {
   return (
     <div className="animate-fi" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)' }}>
       {/* Header */}
-      <div className="flex items-center justify-between mb-7">
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Roles</h1>
         <Link href="/roles/create" className="btn-primary flex items-center gap-1.5">
           <Plus size={15} />
           Add Role
         </Link>
       </div>
+      <p className="text-body-lg mb-8">Manage your open positions and hiring pipeline.</p>
 
       {/* Search */}
-      <div className="relative mb-6 max-w-md">
+      <div className="relative mb-8 max-w-sm">
         <Search
           size={15}
-          className="absolute left-3 top-1/2 -translate-y-1/2"
+          className="absolute left-3.5 top-1/2 -translate-y-1/2"
           style={{ color: 'var(--brown-soft)' }}
         />
         <input
@@ -43,19 +44,19 @@ export default function RolesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search roles..."
-          className="w-full pl-9 pr-4 py-2.5 rounded-lg border text-body-sm focus:outline-none transition-colors"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm focus:outline-none transition-colors"
           style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
         />
       </div>
 
       {/* Roles list */}
       {filtered.length === 0 ? (
-        <div className="flex flex-col items-center justify-center flex-1 gap-4 py-16">
+        <div className="flex flex-col items-center justify-center flex-1 gap-4 py-20">
           <div
-            className="w-14 h-14 rounded-full flex items-center justify-center"
+            className="w-16 h-16 rounded-full flex items-center justify-center"
             style={{ backgroundColor: 'var(--cream-sidebar)' }}
           >
-            <Briefcase size={24} style={{ color: 'var(--brown-muted)' }} />
+            <Briefcase size={28} style={{ color: 'var(--brown-muted)' }} />
           </div>
           <p className="text-body-lg" style={{ color: 'var(--brown-muted)' }}>
             {search ? 'No roles match your search' : 'No roles yet'}
@@ -73,15 +74,20 @@ export default function RolesPage() {
             return (
               <div
                 key={role.id}
-                className="flex items-center gap-4 px-6 py-5 rounded-xl border hover-border-hover hover-shadow-card-var transition-all cursor-pointer"
-                style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)' }}
+                className="flex items-center gap-5 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
+                style={{
+                  padding: '22px 28px',
+                  borderColor: 'var(--border-default)',
+                  backgroundColor: 'var(--cream-card)',
+                  boxShadow: 'var(--shadow-card)',
+                }}
               >
                 {/* Icon */}
                 <div
-                  className="w-11 h-11 rounded-lg flex items-center justify-center shrink-0"
+                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                   style={{ backgroundColor: 'var(--cream-sidebar)' }}
                 >
-                  <Briefcase size={18} style={{ color: 'var(--brown-muted)' }} />
+                  <Briefcase size={20} style={{ color: 'var(--brown-muted)' }} />
                 </div>
 
                 {/* Info */}
@@ -89,7 +95,7 @@ export default function RolesPage() {
                   <div className="text-body-sm font-semibold truncate" style={{ color: 'var(--brown)' }}>
                     {role.title}
                   </div>
-                  <div className="text-body-xs" style={{ color: 'var(--brown-muted)' }}>
+                  <div className="text-body-xs mt-1" style={{ color: 'var(--brown-muted)' }}>
                     {role.dept}
                   </div>
                 </div>
@@ -101,7 +107,7 @@ export default function RolesPage() {
 
                 {/* Status badge */}
                 <span
-                  className="text-mono-tag px-2.5 py-1 rounded-full shrink-0"
+                  className="text-mono-tag px-3 py-1.5 rounded-full shrink-0"
                   style={{
                     backgroundColor: `color-mix(in srgb, var(--${statusInfo.color}) 12%, transparent)`,
                     color: `var(--${statusInfo.color})`,

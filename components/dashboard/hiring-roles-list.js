@@ -16,7 +16,7 @@ export default function HiringRolesList() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <h3 className="text-display-section">Hiring Roles</h3>
         <Link
           href="/roles"
@@ -26,26 +26,30 @@ export default function HiringRolesList() {
           View all <ChevronRight size={12} />
         </Link>
       </div>
-      <div className="rounded-xl border overflow-hidden relative" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
+      <div
+        className="rounded-xl border overflow-hidden relative"
+        style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}
+      >
         {display.map((role, i) => (
           <div
             key={role.id}
-            className="flex items-center justify-between px-5 py-4 border-b last:border-b-0"
+            className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover"
             style={{
+              padding: '18px 24px',
               borderColor: 'var(--border-light)',
               backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,
             }}
           >
-            <div className="flex flex-col gap-0.5">
+            <div className="flex flex-col gap-1">
               <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
                 {role.title}
               </span>
               <span className="text-body-xs">{role.dept} &middot; {role.salary}</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-2">
               <span
-                className="w-1.5 h-1.5 rounded-full"
+                className="w-2 h-2 rounded-full"
                 style={{ backgroundColor: statusColors[role.status] || '#c4b896' }}
               />
               <span className="text-mono-tag" style={{ color: statusColors[role.status] || 'var(--brown-soft)' }}>
@@ -54,15 +58,6 @@ export default function HiringRolesList() {
             </div>
           </div>
         ))}
-        {/* Bottom fade overlay for 4th item */}
-        {roles.length >= 4 && (
-          <div
-            className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
-            style={{
-              background: 'linear-gradient(transparent, var(--cream-card))',
-            }}
-          />
-        )}
       </div>
     </div>
   );
