@@ -15,7 +15,7 @@ export default function HeroSection({ tab }) {
       <h1>
         <Typewriter
           text="Who do you want to hire?"
-          delay={55}
+          animate={false}
           onComplete={handleComplete}
         />
       </h1>

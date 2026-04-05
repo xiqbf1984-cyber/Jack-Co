@@ -35,7 +35,7 @@ export default function SearchPage({ onSubmit }) {
     <div className="flex flex-col items-center justify-center min-h-full px-6 py-12 animate-fi">
       {/* Typewriter title */}
       <div className="mb-8 text-center">
-        <Typewriter text="Describe your next hire" delay={50} />
+        <Typewriter text="Describe your next hire" animate={false} />
       </div>
 
       {/* Search textarea */}

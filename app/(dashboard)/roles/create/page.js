@@ -53,37 +53,46 @@ We offer competitive compensation, flexible work arrangements, and the opportuni
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div className="flex items-center justify-center gap-0 py-4 px-6">
+    <div className="flex items-center justify-center w-full px-8 pt-5 pb-3">
       {STAGES.map((stage, i) => {
         const isCurrent = i === currentStage;
         const isDone = i < currentStage;
-        const isFuture = i > currentStage;
+        const isLast = i === STAGES.length - 1;
 
         return (
-          <div key={stage.key} className="flex items-center">
+          <div
+            key={stage.key}
+            className={`flex items-center ${!isLast ? 'flex-1 max-w-44' : ''}`}
+          >
             {/* Dot + Label */}
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-center gap-1.5">
               <div
-                className="w-3 h-3 rounded-full transition-all duration-300"
+                className="rounded-full transition-all duration-300"
                 style={{
+                  width: isCurrent ? 24 : 20,
+                  height: isCurrent ? 24 : 20,
                   backgroundColor: isDone
                     ? 'var(--accent-green)'
                     : isCurrent
                     ? 'var(--gold)'
-                    : 'var(--border-default)',
-                  boxShadow: isCurrent
-                    ? '0 0 0 4px rgba(139, 105, 20, 0.15)'
-                    : 'none',
+                    : 'var(--cream)',
+                  border: isDone
+                    ? '2px solid var(--accent-green)'
+                    : isCurrent
+                    ? '2px solid var(--gold)'
+                    : '2px solid var(--border-default)',
+                  boxShadow: isCurrent ? '0 0 0 3px rgba(139, 105, 20, 0.12)' : 'none',
                 }}
               />
               <span
-                className="text-body-xs font-medium whitespace-nowrap"
+                className="text-mono-label whitespace-nowrap"
                 style={{
                   color: isDone
                     ? 'var(--accent-green)'
                     : isCurrent
                     ? 'var(--gold)'
                     : 'var(--brown-soft)',
+                  fontWeight: isCurrent || isDone ? 600 : 400,
                 }}
               >
                 {stage.label}
@@ -91,12 +100,11 @@ function ProgressIndicator({ currentStage }) {
             </div>
 
             {/* Connecting line */}
-            {i < STAGES.length - 1 && (
+            {!isLast && (
               <div
-                className="w-16 mx-2 transition-colors duration-300"
+                className="flex-1 mx-2.5 rounded-full transition-colors duration-300"
                 style={{
                   height: 2,
-                  marginTop: -14,
                   backgroundColor: isDone
                     ? 'var(--accent-green)'
                     : 'var(--border-default)',

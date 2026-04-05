@@ -27,16 +27,13 @@ export default function HiringRolesList() {
         </Link>
       </div>
       <div
-        className="rounded-xl border overflow-hidden relative flex-1"
-        style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}
+        className="surface-card overflow-hidden relative flex-1"
       >
         {display.map((role, i) => (
           <div
             key={role.id}
-            className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover"
+            className="surface-list-row flex items-center justify-between transition-colors hover-bg-cream-card-hover"
             style={{
-              padding: '16px 20px',
-              borderColor: 'var(--border-light)',
               backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,
             }}

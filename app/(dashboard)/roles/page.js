@@ -21,7 +21,7 @@ export default function RolesPage() {
   }, [roles, search]);
 
   return (
-    <div className="animate-fi" style={{ padding: 'var(--page-padding-y) var(--page-padding-x)', maxWidth: 'var(--page-max-width)', margin: '0 auto' }}>
+    <div className="page-shell animate-fi">
       {/* Header */}
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Roles</h1>
@@ -68,18 +68,15 @@ export default function RolesPage() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3">
           {filtered.map((role) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             return (
               <div
                 key={role.id}
-                className="flex items-center gap-5 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
+                className="surface-card flex items-center gap-5 hover-border-hover hover-shadow-card transition-all"
                 style={{
                   padding: '22px 28px',
-                  borderColor: 'var(--border-default)',
-                  backgroundColor: 'var(--cream-card)',
-                  boxShadow: 'var(--shadow-card)',
                 }}
               >
                 {/* Icon */}
