@@ -17,7 +17,7 @@ export default function QuickActions() {
   return (
     <div>
       <h3 className="text-display-section mb-3">Quick Actions</h3>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
         {actions.map((action, i) => {
           const Icon = action.icon;
           const inner = (

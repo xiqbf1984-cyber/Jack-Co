@@ -46,7 +46,7 @@ export default function EvaluationPage() {
       <h1 className="text-display-page mb-6">Evaluation</h1>
 
       {/* Stat cards */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (

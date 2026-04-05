@@ -95,7 +95,7 @@ export default function SettingsPage() {
       {/* Manual fields */}
       <div className="animate-fsu">
         <h3 className="text-display-section mb-4">Personal Information</h3>
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid gap-4 mb-6" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Sarah Chen' },
             { key: 'title', label: 'Title', placeholder: 'VP of Engineering' },
