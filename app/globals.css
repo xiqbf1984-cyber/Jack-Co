@@ -458,3 +458,16 @@ body {
   text-transform: none;
   letter-spacing: 0;
 }
+
+.table-header-sortable {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.table-header-sortable:hover {
+  color: var(--brown);
+}

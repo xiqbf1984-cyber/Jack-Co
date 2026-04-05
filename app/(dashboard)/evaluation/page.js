@@ -62,7 +62,7 @@ export default function EvaluationPage() {
                 animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
               }}
             >
-              <div className="flex items-center justify-between mb-5">
+              <div className="flex items-center justify-between mb-3">
                 <span className="text-mono-label">{stat.label}</span>
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
                   <Icon size={18} style={{ color: stat.color }} />
@@ -90,7 +90,7 @@ export default function EvaluationPage() {
                   boxShadow: 'var(--shadow-card)',
                 }}
               >
-                <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center justify-between mb-4">
                   <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
                     {challenge.name}
                   </span>

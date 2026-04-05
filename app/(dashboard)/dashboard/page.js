@@ -14,7 +14,7 @@ export default function DashboardPage() {
     <div className="page-container">
       {/* Welcome */}
       <div className="mb-8 animate-fade-scale">
-        <h1 className="text-display-page mb-1">
+        <h1 className="text-display-page mb-2">
           Welcome back, {company.name}
         </h1>
         <p className="text-body-lg">

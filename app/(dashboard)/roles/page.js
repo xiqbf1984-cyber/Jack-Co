@@ -44,7 +44,7 @@ export default function RolesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search roles..."
-          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm focus:outline-none transition-colors"
+          className="w-full pl-10 pr-4 py-2.5 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
           style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream-card)', color: 'var(--brown)' }}
         />
       </div>
