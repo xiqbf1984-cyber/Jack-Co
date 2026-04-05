@@ -18,12 +18,12 @@ function Badge({ children, color = 'brown', className }) {
     <span
       className={cn(
         'text-mono-tag inline-flex items-center px-2 py-0.5',
-        'rounded-[var(--radius-sm)]',
         className
       )}
       style={{
         backgroundColor: colors.bg,
         color: colors.text,
+        borderRadius: 'var(--radius-sm)',
       }}
     >
       {children}

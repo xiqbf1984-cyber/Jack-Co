@@ -11,11 +11,18 @@ export default function JDCanvas({ content = '', onChange, onSave }) {
 
   return (
     <div
-      className="flex flex-col h-full rounded-xl border border-[var(--border-default)] bg-[var(--cream-card)] overflow-hidden animate-canvas-in"
-      style={{ boxShadow: 'var(--shadow-card)' }}
+      className="flex flex-col h-full rounded-xl overflow-hidden animate-canvas-in"
+      style={{
+        border: '1px solid var(--border-default)',
+        backgroundColor: 'var(--cream-card)',
+        boxShadow: 'var(--shadow-card)',
+      }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-[var(--border-light)]">
+      <div
+        className="flex items-center justify-between px-5 py-3"
+        style={{ borderBottom: '1px solid var(--border-light)' }}
+      >
         <h2 className="text-display-section">Job Description</h2>
         {onSave && (
           <button
@@ -34,13 +41,20 @@ export default function JDCanvas({ content = '', onChange, onSave }) {
         <textarea
           value={content}
           onChange={(e) => onChange?.(e.target.value)}
-          className="flex-1 w-full resize-none text-body-sm text-[var(--brown)] leading-relaxed bg-transparent focus:outline-none placeholder:text-[var(--brown-soft)]"
+          className="flex-1 w-full resize-none text-body-sm leading-relaxed bg-transparent focus:outline-none"
+          style={{ color: 'var(--brown)' }}
           placeholder="Your job description will appear here..."
         />
       </div>
 
       {/* Footer */}
-      <div className="px-5 py-2 border-t border-[var(--border-light)] text-body-xs text-[var(--brown-soft)]">
+      <div
+        className="px-5 py-2 text-body-xs"
+        style={{
+          borderTop: '1px solid var(--border-light)',
+          color: 'var(--brown-soft)',
+        }}
+      >
         {wordCount} words
       </div>
     </div>

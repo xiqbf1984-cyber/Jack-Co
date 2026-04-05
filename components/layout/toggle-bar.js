@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { cn } from '@/lib/utils';
 
 export default function ToggleBar({ options = [], value, onChange }) {
   const [selected, setSelected] = useState(value ?? options[0] ?? '');
@@ -24,25 +23,26 @@ export default function ToggleBar({ options = [], value, onChange }) {
   }, [activeValue, options]);
 
   const handleSelect = (opt) => {
-    if (value === undefined) {
-      setSelected(opt);
-    }
+    if (value === undefined) setSelected(opt);
     onChange?.(opt);
   };
 
   return (
     <div
       ref={containerRef}
-      className="relative inline-flex items-center rounded-full p-1"
-      style={{ backgroundColor: '#5C5248' }}
+      className="relative inline-flex items-center rounded-full"
+      style={{ backgroundColor: '#5C5248', padding: 4 }}
     >
       {/* Sliding indicator */}
       <div
-        className="absolute top-1 bottom-1 rounded-full transition-all duration-300 ease-in-out"
+        className="absolute rounded-full"
         style={{
           backgroundColor: '#fcfbf7',
+          top: 4,
+          bottom: 4,
           left: indicatorStyle.left ?? 0,
           width: indicatorStyle.width ?? 0,
+          transition: 'all 0.3s ease',
         }}
       />
 
@@ -51,14 +51,22 @@ export default function ToggleBar({ options = [], value, onChange }) {
           key={opt}
           ref={(el) => { buttonRefs.current[opt] = el; }}
           onClick={() => handleSelect(opt)}
-          className={cn(
-            'relative z-10 px-4 py-1.5 rounded-full text-xs font-semibold transition-colors duration-200 cursor-pointer',
-            'whitespace-nowrap select-none',
-            activeValue === opt
-              ? 'text-[var(--brown)]'
-              : 'text-[#FBF9F4]'
-          )}
-          style={{ background: 'transparent', border: 'none' }}
+          style={{
+            position: 'relative',
+            zIndex: 1,
+            padding: '6px 16px',
+            borderRadius: 9999,
+            fontSize: 12,
+            fontWeight: 600,
+            fontFamily: 'var(--font-body)',
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            userSelect: 'none',
+            background: 'transparent',
+            border: 'none',
+            color: activeValue === opt ? 'var(--brown)' : '#FBF9F4',
+            transition: 'color 0.2s ease',
+          }}
         >
           {opt}
         </button>

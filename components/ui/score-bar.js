@@ -20,7 +20,7 @@ function ScoreBar({ score = 0, grade, className }) {
   return (
     <div className={cn('flex items-center gap-3', className)}>
       {/* Bar */}
-      <div className="flex-1 h-2 bg-[var(--cream)] border border-[var(--border-default)] rounded-full overflow-hidden">
+      <div className="flex-1 h-2 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--cream)', border: '1px solid var(--border-default)' }}>
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{

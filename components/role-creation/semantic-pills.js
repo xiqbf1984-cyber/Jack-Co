@@ -1,7 +1,6 @@
 'use client';
 
 import { useMemo } from 'react';
-import { cn } from '@/lib/utils';
 import { SEMANTIC_PILLS } from '@/lib/constants';
 
 export default function SemanticPills({ inputText = '' }) {
@@ -24,15 +23,13 @@ export default function SemanticPills({ inputText = '' }) {
         return (
           <span
             key={pill.key}
-            className={cn(
-              'px-3 py-1 text-body-xs font-medium transition-all duration-200',
-              'border rounded-full select-none',
-              isActive
-                ? 'border-[var(--gold)] bg-[rgba(139,105,20,0.08)] text-[var(--gold)]'
-                : 'border-[var(--border-default)] text-[var(--brown-soft)]',
-              isActive && 'animate-pill-pop'
-            )}
-            style={isActive ? { animation: 'pillPop 0.3s ease-out' } : undefined}
+            className="px-3 py-1 text-body-xs font-medium transition-all duration-200 rounded-full select-none"
+            style={{
+              border: isActive ? '1px solid var(--gold)' : '1px solid var(--border-default)',
+              backgroundColor: isActive ? 'rgba(139,105,20,0.08)' : 'transparent',
+              color: isActive ? 'var(--gold)' : 'var(--brown-soft)',
+              animation: isActive ? 'pillPop 0.3s ease-out' : undefined,
+            }}
           >
             {pill.label}
           </span>

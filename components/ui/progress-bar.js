@@ -15,25 +15,31 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
         if (isCompleted) status = 'done';
         else if (isCurrent) status = 'active';
 
-        const colors = {
+        const statusStyles = {
           done: {
-            dot: 'bg-[var(--accent-green)] border-[var(--accent-green)]',
-            text: 'text-[var(--accent-green)]',
-            line: 'bg-[var(--accent-green)]',
+            dotBg: 'var(--accent-green)',
+            dotBorder: 'var(--accent-green)',
+            textColor: 'var(--accent-green)',
+            textWeight: 400,
+            lineBg: 'var(--accent-green)',
           },
           active: {
-            dot: 'bg-[var(--gold)] border-[var(--gold)]',
-            text: 'text-[var(--gold)] font-semibold',
-            line: 'bg-[var(--border-default)]',
+            dotBg: 'var(--gold)',
+            dotBorder: 'var(--gold)',
+            textColor: 'var(--gold)',
+            textWeight: 600,
+            lineBg: 'var(--border-default)',
           },
           locked: {
-            dot: 'bg-[var(--cream)] border-[var(--border-default)]',
-            text: 'text-[var(--brown-soft)]',
-            line: 'bg-[var(--border-default)]',
+            dotBg: 'var(--cream)',
+            dotBorder: 'var(--border-default)',
+            textColor: 'var(--brown-soft)',
+            textWeight: 400,
+            lineBg: 'var(--border-default)',
           },
         };
 
-        const c = colors[status];
+        const s = statusStyles[status];
 
         return (
           <div
@@ -45,16 +51,17 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
               type="button"
               onClick={() => onStepClick?.(step.id)}
               className={cn(
-                'flex flex-col items-center gap-1.5 cursor-pointer group',
-                !onStepClick && 'cursor-default'
+                'flex flex-col items-center gap-1.5',
+                onStepClick ? 'cursor-pointer' : 'cursor-default'
               )}
             >
               <div
-                className={cn(
-                  'w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all duration-200',
-                  c.dot,
-                  status !== 'locked' && 'text-white'
-                )}
+                className="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200"
+                style={{
+                  backgroundColor: s.dotBg,
+                  border: `2px solid ${s.dotBorder}`,
+                  color: status !== 'locked' ? 'white' : undefined,
+                }}
               >
                 {isCompleted ? (
                   <Check size={12} />
@@ -64,7 +71,10 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
                   </span>
                 )}
               </div>
-              <span className={cn('text-[10px] whitespace-nowrap', c.text)}>
+              <span
+                className="text-[10px] whitespace-nowrap"
+                style={{ color: s.textColor, fontWeight: s.textWeight }}
+              >
                 {step.label}
               </span>
             </button>
@@ -72,7 +82,8 @@ function ProgressBar({ steps = [], currentStep, completedSteps = [], onStepClick
             {/* Connector line */}
             {!isLast && (
               <div
-                className={cn('flex-1 h-0.5 mx-2 rounded-full', c.line)}
+                className="flex-1 mx-2 rounded-full"
+                style={{ height: 2, backgroundColor: s.lineBg }}
               />
             )}
           </div>

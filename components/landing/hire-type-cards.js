@@ -28,13 +28,16 @@ export default function HireTypeCards() {
             boxShadow: 'var(--shadow-card)',
           }}
         >
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--border-light)]">
-            <Users size={22} className="text-[var(--brown)]" />
+          <div
+            className="flex items-center justify-center w-12 h-12 rounded-full"
+            style={{ backgroundColor: 'var(--cream)', border: '1px solid var(--border-light)' }}
+          >
+            <Users size={22} style={{ color: 'var(--brown)' }} />
           </div>
-          <span className="font-display text-lg font-medium text-[var(--brown)]">
+          <span className="font-display text-lg font-medium" style={{ color: 'var(--brown)' }}>
             Hiring Human
           </span>
-          <span className="text-body-sm text-center text-[var(--brown-muted)]">
+          <span className="text-body-sm text-center" style={{ color: 'var(--brown-muted)' }}>
             Post trials and evaluate real candidates
           </span>
         </div>
@@ -55,16 +58,26 @@ export default function HireTypeCards() {
         }}
       >
         {/* Coming soon badge */}
-        <span className="absolute top-3 right-3 text-mono-tag bg-[var(--cream-sidebar)] text-[var(--brown-soft)] px-2 py-0.5 rounded-full border border-[var(--border-light)]">
+        <span
+          className="absolute top-3 right-3 text-mono-tag px-2 py-0.5 rounded-full"
+          style={{
+            backgroundColor: 'var(--cream-sidebar)',
+            color: 'var(--brown-soft)',
+            border: '1px solid var(--border-light)',
+          }}
+        >
           Coming soon
         </span>
-        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[var(--cream)] border border-[var(--border-light)]">
-          <Bot size={22} className="text-[var(--brown)]" />
+        <div
+          className="flex items-center justify-center w-12 h-12 rounded-full"
+          style={{ backgroundColor: 'var(--cream)', border: '1px solid var(--border-light)' }}
+        >
+          <Bot size={22} style={{ color: 'var(--brown)' }} />
         </div>
-        <span className="font-display text-lg font-medium text-[var(--brown)]">
+        <span className="font-display text-lg font-medium" style={{ color: 'var(--brown)' }}>
           Hiring AI
         </span>
-        <span className="text-body-sm text-center text-[var(--brown-muted)]">
+        <span className="text-body-sm text-center" style={{ color: 'var(--brown-muted)' }}>
           Evaluate AI agents for your workflows
         </span>
       </div>

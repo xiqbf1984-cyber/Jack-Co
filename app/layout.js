@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "Hiring Platform",
+  title: "NeoHuman",
   description: "AI-powered hiring assessments. Find, evaluate, and hire remarkable talent.",
 };
 
@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="grid-texture">{children}</body>
+      <body className="noise-texture">{children}</body>
     </html>
   );
 }

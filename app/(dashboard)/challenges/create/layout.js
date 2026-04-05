@@ -18,7 +18,7 @@ export default function CreateAssessmentLayout({ children }) {
         className="overflow-y-auto shrink-0 hidden lg:block"
         style={{
           width: 380,
-          borderLeft: '1px solid var(--border-default)',
+          borderLeft: '1px solid var(--border-light)',
           backgroundColor: 'var(--cream-card)',
         }}
       >

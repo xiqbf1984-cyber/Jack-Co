@@ -40,13 +40,24 @@ export default function WizardProgress() {
               {/* Dot */}
               <div
                 className={cn(
-                  'rounded-full border-2 flex items-center justify-center transition-all duration-200',
-                  isCompleted
-                    ? 'w-6 h-6 bg-[var(--accent-green)] border-[var(--accent-green)] text-white'
-                    : isCurrent
-                      ? 'w-7 h-7 bg-[var(--gold)] border-[var(--gold)] text-white animate-glow'
-                      : 'w-6 h-6 bg-[var(--cream)] border-[var(--border-default)]'
+                  'rounded-full flex items-center justify-center transition-all duration-200',
+                  isCompleted && 'text-white',
+                  isCurrent && 'text-white animate-glow',
                 )}
+                style={{
+                  width: isCurrent ? 28 : 24,
+                  height: isCurrent ? 28 : 24,
+                  backgroundColor: isCompleted
+                    ? 'var(--accent-green)'
+                    : isCurrent
+                      ? 'var(--gold)'
+                      : 'var(--cream)',
+                  border: isCompleted
+                    ? '2px solid var(--accent-green)'
+                    : isCurrent
+                      ? '2px solid var(--gold)'
+                      : '2px solid var(--border-default)',
+                }}
               >
                 {isCompleted ? (
                   <Check size={12} strokeWidth={3} />
@@ -57,12 +68,15 @@ export default function WizardProgress() {
 
               {/* Label */}
               <span
-                className={cn(
-                  'text-[10px] whitespace-nowrap font-mono uppercase tracking-wide',
-                  isCompleted && 'text-[var(--accent-green)] font-semibold',
-                  isCurrent && 'text-[var(--gold)] font-semibold',
-                  !isCompleted && !isCurrent && 'text-[var(--brown-soft)]'
-                )}
+                className="text-[10px] whitespace-nowrap font-mono uppercase tracking-wide"
+                style={{
+                  color: isCompleted
+                    ? 'var(--accent-green)'
+                    : isCurrent
+                      ? 'var(--gold)'
+                      : 'var(--brown-soft)',
+                  fontWeight: (isCompleted || isCurrent) ? 600 : 400,
+                }}
               >
                 {step.label}
               </span>
@@ -71,12 +85,13 @@ export default function WizardProgress() {
             {/* Connector line */}
             {!isLast && (
               <div
-                className={cn(
-                  'flex-1 h-0.5 mx-1.5 rounded-full transition-colors duration-300',
-                  lineCompleted
-                    ? 'bg-[var(--accent-green)]'
-                    : 'bg-[var(--border-default)]'
-                )}
+                className="flex-1 mx-1.5 rounded-full transition-colors duration-300"
+                style={{
+                  height: 2,
+                  backgroundColor: lineCompleted
+                    ? 'var(--accent-green)'
+                    : 'var(--border-default)',
+                }}
               />
             )}
           </div>

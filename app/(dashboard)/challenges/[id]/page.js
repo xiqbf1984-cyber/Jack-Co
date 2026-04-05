@@ -29,7 +29,7 @@ export default function ChallengeDetailPage() {
 
   if (!challenge) {
     return (
-      <div className="p-8 animate-fade-scale">
+      <div className="mx-auto animate-fade-scale" style={{ maxWidth: 960, padding: '40px 48px' }}>
         <Link href="/challenges" className="text-body-xs flex items-center gap-1 mb-4 no-underline" style={{ color: 'var(--gold)' }}>
           <ArrowLeft size={14} /> Back to Challenges
         </Link>
@@ -41,7 +41,7 @@ export default function ChallengeDetailPage() {
   const statusColors = { published: '#27825b', submitted: '#0077B5', pending: '#d4880f', draft: '#c4b896' };
 
   return (
-    <div className="p-8 animate-fade-scale" style={{ maxWidth: 900 }}>
+    <div className="mx-auto animate-fade-scale" style={{ maxWidth: 960, padding: '40px 48px' }}>
       <Link href="/challenges" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
         <ArrowLeft size={14} /> Back to Challenges
       </Link>
@@ -80,7 +80,7 @@ export default function ChallengeDetailPage() {
       {activeTab === 'overview' && (
         <div className="space-y-4 animate-fsu">
           <div className="rounded-xl border p-5" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
               <div><span className="text-mono-label block mb-1">Role</span><span className="text-body-sm">{challenge.roleTitle}</span></div>
               <div><span className="text-mono-label block mb-1">Skill</span><span className="text-body-sm">{challenge.skill}</span></div>
               <div><span className="text-mono-label block mb-1">Task</span><span className="text-body-sm">{challenge.task}</span></div>

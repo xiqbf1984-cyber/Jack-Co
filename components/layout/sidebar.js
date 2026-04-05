@@ -38,10 +38,28 @@ export default function Sidebar() {
             className="w-7 h-7 rounded-lg flex items-center justify-center"
             style={{
               background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+              fontSize: 11,
+              fontWeight: 700,
+              color: 'var(--btn-text)',
+              fontFamily: 'var(--font-mono)',
             }}
           >
-            <Briefcase size={14} style={{ color: 'var(--btn-text)' }} />
+            N
           </div>
+          {expanded && (
+            <span
+              className="animate-fi"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 14,
+                fontWeight: 600,
+                color: 'var(--brown)',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              NeoHuman
+            </span>
+          )}
         </Link>
       </div>
 
@@ -166,10 +184,8 @@ export default function Sidebar() {
 
         {/* User info */}
         <div
-          className={cn(
-            'flex items-center gap-2.5 px-2 py-2 mt-1 rounded-lg',
-            expanded && 'bg-[rgba(0,0,0,0.02)]'
-          )}
+          className="flex items-center gap-2.5 px-2 py-2 mt-1 rounded-lg"
+          style={expanded ? { backgroundColor: 'rgba(0,0,0,0.02)' } : undefined}
         >
           <div
             className="w-7 h-7 rounded-md flex items-center justify-center text-[10px] font-mono font-bold shrink-0"
