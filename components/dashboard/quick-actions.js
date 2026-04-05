@@ -5,10 +5,10 @@ import { Plus, Trophy, Users, BarChart3 } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 
 const actions = [
-  { label: 'Add a Role', icon: Plus, color: '#27825b', href: '/roles/create' },
-  { label: 'Add a Challenge', icon: Trophy, color: '#8b6914', href: '/challenges/create' },
-  { label: 'Add Candidate', icon: Users, color: '#0077B5', href: null },
-  { label: 'View Evaluations', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
+  { label: 'Add a Role', subtitle: 'Create a new hiring position', icon: Plus, color: '#27825b', href: '/roles/create' },
+  { label: 'New Assessment', subtitle: 'Design an AI assessment', icon: Trophy, color: '#8b6914', href: '/assessment/create' },
+  { label: 'Add Candidate', subtitle: 'Invite to your pool', icon: Users, color: '#0077B5', href: null },
+  { label: 'View Evaluations', subtitle: 'Scores and feedback', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
 ];
 
 export default function QuickActions() {
@@ -22,7 +22,7 @@ export default function QuickActions() {
           const Icon = action.icon;
           const inner = (
             <div
-              className="flex items-center gap-3 p-3 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
+              className="flex items-center gap-3 p-4 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
@@ -36,9 +36,10 @@ export default function QuickActions() {
               >
                 <Icon size={16} style={{ color: action.color }} />
               </div>
-              <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
-                {action.label}
-              </span>
+              <div>
+                <div className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>{action.label}</div>
+                <div className="text-body-xs" style={{ color: 'var(--brown-muted)' }}>{action.subtitle}</div>
+              </div>
             </div>
           );
 

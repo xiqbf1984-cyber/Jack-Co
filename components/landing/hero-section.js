@@ -25,7 +25,7 @@ export default function HeroSection({ tab }) {
           className="animate-fsu text-body-lg"
           style={{ color: 'var(--brown-muted)', maxWidth: 440, marginTop: 16 }}
         >
-          In the age of AI, the only thing that matters is what you can do.
+          See How Candidates Actually Work with AI.
         </p>
       )}
 

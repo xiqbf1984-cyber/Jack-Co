@@ -31,7 +31,7 @@ export default function RecentCandidatesList() {
         {display.map((cand, i) => (
           <div
             key={cand.id}
-            className="flex items-center justify-between px-4 py-3 border-b last:border-b-0"
+            className="flex items-center justify-between px-4 py-3.5 border-b last:border-b-0"
             style={{
               borderColor: 'var(--border-light)',
               backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,

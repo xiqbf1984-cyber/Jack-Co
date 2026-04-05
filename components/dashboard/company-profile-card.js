@@ -11,7 +11,7 @@ export default function CompanyProfileCard() {
     <div>
       <h3 className="text-display-section mb-3">Company Profile</h3>
       <div
-        className="rounded-xl border p-4"
+        className="rounded-xl border p-5"
         style={{
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
