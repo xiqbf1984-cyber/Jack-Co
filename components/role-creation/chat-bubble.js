@@ -12,7 +12,7 @@ export default function ChatBubble({ role, content, animate = false, compact = f
         isAI ? 'self-start' : 'self-end flex-row-reverse',
         animate && 'animate-slide-up'
       )}
-      style={{ maxWidth: compact ? '90%' : '72%', minWidth: 0 }}
+      style={{ maxWidth: compact ? '85%' : '72%', minWidth: 0, overflow: 'hidden' }}
     >
       {isAI && (
         <div

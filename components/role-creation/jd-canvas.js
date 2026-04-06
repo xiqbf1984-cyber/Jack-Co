@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useCallback } from 'react';
-import { Save, Link2, Check, X, Bold, Italic, List, Heading } from 'lucide-react';
+import { Save, Download, Link2, Check, X, Bold, Italic, List, Heading, Bookmark } from 'lucide-react';
 
 function CopyLinkModal({ link, onClose }) {
   var [copied, setCopied] = useState(false);
@@ -55,6 +55,7 @@ export default function JDCanvas({
   content = '',
   onChange,
   onSave,
+  onSaveForLater,
   matchedRoleName,
   matchScore,
   sharableLink,
@@ -78,12 +79,24 @@ export default function JDCanvas({
     var replacement = prefix + selected + (suffix || '');
     var newText = text.slice(0, start) + replacement + text.slice(end);
     onChange?.(newText);
-    // Restore cursor position after React re-render
     setTimeout(function () {
       textarea.focus();
       var newPos = start + replacement.length;
       textarea.setSelectionRange(newPos, newPos);
     }, 0);
+  }
+
+  function handleDownload() {
+    if (isEmpty) return;
+    var blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = (matchedRoleName || 'job-description').replace(/\s+/g, '-').toLowerCase() + '.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   return (
@@ -95,85 +108,78 @@ export default function JDCanvas({
         boxShadow: 'var(--shadow-card)',
       }}
     >
-      {/* Header */}
+      {/* Tab header – single "JD" tab */}
       <div
-        className="flex items-center justify-between px-5 py-3"
-        style={{ borderBottom: '1px solid var(--border-light)' }}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 20px',
+          borderBottom: '1px solid var(--border-light)',
+          backgroundColor: 'var(--cream)',
+          minHeight: 44,
+        }}
       >
-        <div>
-          <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 700, color: 'var(--brown)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
+          <div style={{
+            padding: '10px 16px',
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            fontWeight: 600,
+            color: 'var(--brown)',
+            borderBottom: '2px solid var(--gold)',
+            marginBottom: -1,
+            cursor: 'default',
+          }}>
             Job Description
-          </h2>
-          {matchedRoleName && (
-            <div className="flex items-center gap-1 mt-1" style={{
-              fontFamily: 'var(--font-body)', fontSize: 10,
-              color: matchScore > 0 ? 'var(--accent-green)' : 'var(--brown-muted)',
-            }}>
-              {matchScore > 0 ? (
-                <>
-                  <Check size={10} strokeWidth={2.5} />
-                  Matched: {matchedRoleName}
-                </>
-              ) : 'No strong match found'}
-            </div>
-          )}
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          {sharableLink && (
-            <button
-              type="button"
-              onClick={function () { setShowLinkModal(true); }}
-              className="flex items-center gap-1 px-2.5 py-1.5 text-body-xs rounded-lg transition-all hover-bg-cream"
-              style={{ border: '1px solid var(--border-default)', color: 'var(--brown-muted)' }}
-            >
-              <Link2 size={12} />
-              Copy link
-            </button>
-          )}
-          {onSave && (
-            <button
-              type="button" onClick={onSave} disabled={isEmpty}
-              className="btn-primary text-body-xs flex items-center gap-1.5"
-              title={isEmpty ? 'JD cannot be empty' : undefined}
-            >
-              <Save size={13} />
-              Save Role
-            </button>
-          )}
-        </div>
+        {/* Matched role indicator */}
+        {matchedRoleName && matchScore > 0 && (
+          <div className="flex items-center gap-1" style={{
+            fontFamily: 'var(--font-body)', fontSize: 10,
+            color: 'var(--accent-green)',
+          }}>
+            <Check size={10} strokeWidth={2.5} />
+            Matched: {matchedRoleName}
+          </div>
+        )}
       </div>
 
       {/* Formatting toolbar */}
       <div style={{
-        display: 'flex', gap: 2, padding: '6px 20px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '6px 16px',
         borderBottom: '1px solid var(--border-light)',
       }}>
-        {[
-          { icon: Heading, action: function () { insertMarkdown('## ', ''); }, title: 'Heading' },
-          { icon: Bold, action: function () { insertMarkdown('**', '**'); }, title: 'Bold' },
-          { icon: Italic, action: function () { insertMarkdown('*', '*'); }, title: 'Italic' },
-          { icon: List, action: function () { insertMarkdown('- ', ''); }, title: 'List' },
-        ].map(function (tool) {
-          var Icon = tool.icon;
-          return (
-            <button key={tool.title} type="button" onClick={tool.action} title={tool.title}
-              style={{
-                width: 28, height: 28, borderRadius: 6, border: 'none', background: 'transparent',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                cursor: 'pointer', color: 'var(--brown-soft)', transition: 'all 0.1s ease',
-              }}
-              onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; e.currentTarget.style.color = 'var(--brown)'; }}
-              onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brown-soft)'; }}
-            >
-              <Icon size={14} />
-            </button>
-          );
-        })}
+        <div style={{ display: 'flex', gap: 2 }}>
+          {[
+            { icon: Heading, action: function () { insertMarkdown('## ', ''); }, title: 'Heading' },
+            { icon: Bold, action: function () { insertMarkdown('**', '**'); }, title: 'Bold' },
+            { icon: Italic, action: function () { insertMarkdown('*', '*'); }, title: 'Italic' },
+            { icon: List, action: function () { insertMarkdown('- ', ''); }, title: 'List' },
+          ].map(function (tool) {
+            var Icon = tool.icon;
+            return (
+              <button key={tool.title} type="button" onClick={tool.action} title={tool.title}
+                style={{
+                  width: 28, height: 28, borderRadius: 6, border: 'none', background: 'transparent',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', color: 'var(--brown-soft)', transition: 'all 0.1s ease',
+                }}
+                onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; e.currentTarget.style.color = 'var(--brown)'; }}
+                onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brown-soft)'; }}
+              >
+                <Icon size={14} />
+              </button>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Body */}
-      <div className="flex-1 p-5 overflow-hidden flex flex-col">
+      {/* Body – editable JD */}
+      <div className="flex-1 p-4 overflow-hidden flex flex-col">
         <textarea
           id="jd-textarea"
           value={content}
@@ -182,15 +188,106 @@ export default function JDCanvas({
           style={{
             fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.8, color: 'var(--brown)',
             borderRadius: 12, border: '1px solid var(--border-default)', backgroundColor: 'var(--cream-card)',
-            padding: 16, minHeight: 400,
+            padding: 16, minHeight: 300,
           }}
           placeholder="Your job description will appear here..."
         />
       </div>
 
-      {/* Footer */}
-      <div className="px-5 py-2 text-body-xs" style={{ borderTop: '1px solid var(--border-light)', color: 'var(--brown-soft)' }}>
-        {wordCount} words
+      {/* Footer with word count + action buttons */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 16px 12px',
+        borderTop: '1px solid var(--border-light)',
+        backgroundColor: 'var(--cream)',
+        gap: 8,
+      }}>
+        <div className="text-body-xs" style={{ color: 'var(--brown-soft)' }}>
+          {wordCount} words
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Download */}
+          <button
+            type="button"
+            onClick={handleDownload}
+            disabled={isEmpty}
+            title="Download as Markdown"
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              padding: '7px 12px', borderRadius: 8,
+              border: '1px solid var(--border-default)',
+              background: 'transparent',
+              color: isEmpty ? 'var(--brown-light)' : 'var(--brown-soft)',
+              fontFamily: 'var(--font-body)', fontSize: 11,
+              cursor: isEmpty ? 'default' : 'pointer',
+              transition: 'all 0.15s ease',
+              opacity: isEmpty ? 0.5 : 1,
+            }}
+          >
+            <Download size={13} />
+            Download
+          </button>
+
+          {/* Copy link */}
+          {sharableLink && (
+            <button
+              type="button"
+              onClick={function () { setShowLinkModal(true); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                padding: '7px 12px', borderRadius: 8,
+                border: '1px solid var(--border-default)',
+                background: 'transparent',
+                color: 'var(--brown-soft)',
+                fontFamily: 'var(--font-body)', fontSize: 11,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+              }}
+            >
+              <Link2 size={13} />
+              Share
+            </button>
+          )}
+
+          {/* Save for later */}
+          {onSaveForLater && (
+            <button
+              type="button"
+              onClick={onSaveForLater}
+              disabled={isEmpty}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 5,
+                padding: '7px 12px', borderRadius: 8,
+                border: '1px solid var(--border-default)',
+                background: 'transparent',
+                color: isEmpty ? 'var(--brown-light)' : 'var(--brown-soft)',
+                fontFamily: 'var(--font-body)', fontSize: 11,
+                cursor: isEmpty ? 'default' : 'pointer',
+                transition: 'all 0.15s ease',
+                opacity: isEmpty ? 0.5 : 1,
+              }}
+            >
+              <Bookmark size={13} />
+              Save for Later
+            </button>
+          )}
+
+          {/* Save Role (primary) */}
+          {onSave && (
+            <button
+              type="button" onClick={onSave} disabled={isEmpty}
+              className="btn-primary text-body-xs flex items-center gap-1.5"
+              style={{ padding: '7px 16px', opacity: isEmpty ? 0.5 : 1 }}
+              title={isEmpty ? 'JD cannot be empty' : 'Save and finalize this role'}
+            >
+              <Save size={13} />
+              Save Role
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Link sharing modal */}

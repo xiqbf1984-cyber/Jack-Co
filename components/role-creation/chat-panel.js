@@ -75,10 +75,12 @@ export default function ChatPanel({
       <div style={{
         flex: 1,
         overflowY: 'auto',
+        overflowX: 'hidden',
         padding: compact ? '20px 20px' : '28px 24px',
         display: 'flex',
         flexDirection: 'column',
         gap: 16,
+        minWidth: 0,
       }}>
         {messages.map(function (msg, i) {
           return (

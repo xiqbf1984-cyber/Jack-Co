@@ -9,6 +9,7 @@ import { ROLE_CREATION_QUESTIONS, AI_ACKS, matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
 import ChatPanel from '@/components/role-creation/chat-panel';
 import JDCanvas from '@/components/role-creation/jd-canvas';
+import SaveSuccessModal from '@/components/role-creation/save-success-modal';
 
 var STAGES = [
   { key: 'describe', label: 'Describe' },
@@ -29,7 +30,7 @@ function inferDepartment(answers) {
 function generateJD(answers, matched, company) {
   var title = answers.title || (matched ? matched.title : 'Open Role');
   var oneLiner = matched ? matched.oneLiner : '';
-  var companyName = company?.name || 'Our Company';
+  var companyName = company?.name || 'Your Company';
   var companyDesc = company?.description || 'We are a forward-thinking technology company building cutting-edge AI solutions.';
 
   var ownership = answers.own || 'core AI/ML initiatives';
@@ -37,26 +38,49 @@ function generateJD(answers, matched, company) {
   var level = answers.level || 'Relevant experience level';
   var extras = answers.extra || 'Competitive compensation';
 
-  var lines = ['# ' + title];
-  if (oneLiner) lines.push('', oneLiner);
+  // Build a well-structured JD with clear sections and formatting
+  var lines = [
+    '# ' + title,
+  ];
+
+  if (oneLiner) {
+    lines.push('', '*' + oneLiner + '*');
+  }
 
   lines.push(
     '',
     '## About ' + companyName,
+    '',
     companyDesc,
     '',
-    '## Responsibilities',
-    '- Lead ' + ownership,
-    '- Collaborate cross-functionally with engineering and product teams',
-    '- Drive technical direction in ' + (answers.skills || 'relevant domain'),
+    '---',
     '',
-    '## Requirements',
-    '- ' + skills,
-    '- ' + level,
-    '- Experience with modern AI/ML tools and frameworks',
+    '## Role Overview',
     '',
-    '## Details',
-    '- ' + extras
+    'We are looking for a **' + title + '** to join our team. This role will focus on ' + ownership.toLowerCase() + ', working cross-functionally to deliver impactful results.',
+    '',
+    '## Key Responsibilities',
+    '',
+    '- **Own and lead** ' + ownership,
+    '- Collaborate cross-functionally with engineering, product, and design teams',
+    '- Drive technical direction and best practices in ' + (answers.skills || 'relevant domain'),
+    '- Contribute to strategic planning and roadmap development',
+    '- Mentor team members and foster a culture of continuous improvement',
+    '',
+    '## Required Qualifications',
+    '',
+    '- **Skills:** ' + skills,
+    '- **Experience:** ' + level,
+    '- Experience with modern AI/ML tools, frameworks, and methodologies',
+    '- Strong communication skills and ability to work in cross-functional teams',
+    '- Track record of delivering production-quality work',
+    '',
+    '## What We Offer',
+    '',
+    '- ' + extras,
+    '- Opportunity to work on cutting-edge technology',
+    '- Collaborative and inclusive team environment',
+    '- Professional development and growth opportunities',
   );
 
   return lines.join('\n');
@@ -111,6 +135,8 @@ export default function RoleCreatePage() {
   var [description, setDescription] = useState('');
   var [matchedRole, setMatchedRole] = useState(null);
   var [matchScore, setMatchScore] = useState(0);
+  var [showSuccessModal, setShowSuccessModal] = useState(false);
+  var [savedRoleTitle, setSavedRoleTitle] = useState('');
   var [sharableLink] = useState(function () {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
@@ -162,9 +188,7 @@ export default function RoleCreatePage() {
   function handleSearchSubmit(text) {
     setDescription(text);
     setStage(1);
-    // Match role from initial input
     doMatch(text);
-    // Add the user's description as first message, then AI asks Q1
     setMessages([{ role: 'user', content: text }]);
     addAIMessage(
       'Great, I\'ll help you build this role. ' + ROLE_CREATION_QUESTIONS[0].question
@@ -177,16 +201,13 @@ export default function RoleCreatePage() {
     var newAnswers = Object.assign({}, answers, { [currentQ.id]: text });
     setAnswers(newAnswers);
 
-    // Add user message
     setMessages(function (prev) { return prev.concat([{ role: 'user', content: text }]); });
 
-    // Re-match role with all answers combined
     var allText = description + ' ' + Object.values(newAnswers).join(' ');
     var matchResult = doMatch(allText);
 
     var nextIndex = questionIndex + 1;
 
-    // After 3rd question answered, show JD panel
     if (nextIndex >= 3 && stage < 2) {
       setStage(2);
       var jd = generateJD(newAnswers, matchResult.role, company);
@@ -196,17 +217,14 @@ export default function RoleCreatePage() {
     setQuestionIndex(nextIndex);
 
     if (nextIndex < ROLE_CREATION_QUESTIONS.length) {
-      // Update JD if we're already in split view
       if (nextIndex >= 3) {
         var updatedJD = generateJD(newAnswers, matchResult.role, company);
         setJDContent(updatedJD);
       }
 
-      // Pick a random acknowledgment + next question
       var ack = AI_ACKS[Math.floor(Math.random() * AI_ACKS.length)];
       addAIMessage(ack + ' ' + ROLE_CREATION_QUESTIONS[nextIndex].question);
     } else {
-      // All questions answered
       var finalJD = generateJD(newAnswers, matchResult.role, company);
       setJDContent(finalJD);
       addAIMessage(
@@ -215,7 +233,7 @@ export default function RoleCreatePage() {
     }
   }
 
-  // Handle JD save
+  // Handle JD save – show modal instead of navigating
   function handleSaveRole() {
     if (!jdContent.trim()) return;
 
@@ -229,9 +247,49 @@ export default function RoleCreatePage() {
       jd: jdContent,
       sharableLink: sharableLink,
     });
-    router.push(
-      '/roles/create/complete?title=' + encodeURIComponent(title)
-    );
+    setSavedRoleTitle(title);
+    setShowSuccessModal(true);
+  }
+
+  // Handle save-for-later (draft)
+  function handleSaveForLater() {
+    if (!jdContent.trim()) return;
+
+    var title = answers.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
+    addRole({
+      title: title,
+      dept: inferDepartment(answers),
+      salary: answers.extra || 'TBD',
+      status: 'draft',
+      roleRef: matchedRole,
+      jd: jdContent,
+      sharableLink: sharableLink,
+    });
+    setSavedRoleTitle(title);
+    setShowSuccessModal(true);
+  }
+
+  // Success modal handlers
+  function handleCreateAnother() {
+    setShowSuccessModal(false);
+    // Reset everything
+    setStage(0);
+    setMessages([]);
+    setQuestionIndex(0);
+    setAnswers({});
+    setJDContent('');
+    setDescription('');
+    setMatchedRole(null);
+    setMatchScore(0);
+    setJDPortalTarget(null);
+  }
+
+  function handleGoToAssessment() {
+    router.push('/assessment/create');
+  }
+
+  function handleStay() {
+    setShowSuccessModal(false);
   }
 
   var currentQuestion = ROLE_CREATION_QUESTIONS[questionIndex] || null;
@@ -309,7 +367,8 @@ export default function RoleCreatePage() {
             <JDCanvas
               content={jdContent}
               onChange={setJDContent}
-              onSave={allQuestionsAnswered ? handleSaveRole : undefined}
+              onSave={handleSaveRole}
+              onSaveForLater={handleSaveForLater}
               matchedRoleName={matchedRole ? matchedRole.title : null}
               matchScore={matchScore}
               sharableLink={sharableLink}
@@ -317,6 +376,16 @@ export default function RoleCreatePage() {
           </div>,
           jdPortalTarget
         )}
+
+      {/* Success modal with backdrop blur */}
+      {showSuccessModal && (
+        <SaveSuccessModal
+          roleTitle={savedRoleTitle}
+          onCreateAnother={handleCreateAnother}
+          onGoToAssessment={handleGoToAssessment}
+          onStay={handleStay}
+        />
+      )}
     </div>
   );
 }
