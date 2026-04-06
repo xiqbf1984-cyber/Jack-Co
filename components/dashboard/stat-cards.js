@@ -1,55 +1,74 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-import { Briefcase, Users, Trophy, FileCheck } from 'lucide-react';
+import { Briefcase, Users, Trophy, BarChart3 } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 
-const stats = [
-  { key: 'roles', label: 'Active Roles', icon: Briefcase, color: '#27825b' },
-  { key: 'candidates', label: 'Candidates', icon: Users, color: '#0077B5' },
-  { key: 'challenges', label: 'Assessments', icon: Trophy, color: '#8b6914' },
-  { key: 'submissions', label: 'Submissions', icon: FileCheck, color: '#d4880f' },
-];
+const iconMap = { roles: Briefcase, candidates: Users, challenge: Trophy, eval: BarChart3 };
 
 export default function StatCards() {
   const roles = useAppStore((s) => s.roles);
   const candidates = useAppStore((s) => s.candidates);
   const challenges = useAppStore((s) => s.challenges);
+  const totalSubmissions = challenges.reduce((sum, c) => sum + (c.results?.length || 0), 0);
 
-  const counts = {
-    roles: roles.filter((r) => r.status === 'active').length,
-    candidates: candidates.length,
-    challenges: challenges.length,
-    submissions: challenges.reduce((sum, c) => sum + (c.results?.length || 0), 0),
-  };
+  const stats = [
+    { key: 'roles', label: 'Active Roles', value: roles.filter((r) => r.status === 'active').length, icon: 'roles', color: '#27825b' },
+    { key: 'candidates', label: 'Candidates', value: candidates.length, icon: 'candidates', color: '#0077B5' },
+    { key: 'challenges', label: 'Challenges', value: challenges.length, icon: 'challenge', color: '#8b6914' },
+    { key: 'submissions', label: 'Submissions', value: totalSubmissions, icon: 'eval', color: '#d4880f' },
+  ];
 
   return (
-    <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: 'repeat(4, 1fr)',
+      gap: 12,
+      marginBottom: 20,
+    }}>
       {stats.map((stat, i) => {
-        const Icon = stat.icon;
+        const Icon = iconMap[stat.icon];
         return (
           <div
             key={stat.key}
-            className="rounded-xl border transition-all duration-200 hover-shadow-card"
             style={{
-              padding: '18px 20px',
-              backgroundColor: 'var(--cream-card)',
-              borderColor: 'var(--border-default)',
-              boxShadow: 'var(--shadow-card)',
-              animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
+              padding: 16,
+              borderRadius: 14,
+              border: '1px solid var(--border-default)',
+              background: '#fff',
+              textAlign: 'center',
+              animation: `fsu .25s ease ${i * 0.06}s both`,
             }}
           >
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-mono-label">{stat.label}</span>
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ backgroundColor: stat.color + '14' }}
-              >
-                <Icon size={15} style={{ color: stat.color }} />
-              </div>
+            {/* Icon container */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              backgroundColor: stat.color + '1a',
+            }}>
+              <Icon size={15} style={{ color: stat.color }} />
             </div>
-            <div className="text-mono-display" style={{ color: 'var(--brown)' }}>
-              {counts[stat.key]}
+            {/* Number */}
+            <div style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 20,
+              fontWeight: 700,
+              color: '#1a1612',
+              marginTop: 6,
+            }}>
+              {stat.value}
+            </div>
+            {/* Label */}
+            <div style={{
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 10,
+              color: '#c4b896',
+              marginTop: 2,
+            }}>
+              {stat.label}
             </div>
           </div>
         );

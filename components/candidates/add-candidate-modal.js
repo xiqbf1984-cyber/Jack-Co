@@ -1,101 +1,231 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAppStore } from '@/stores/app-store';
-import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import { X } from 'lucide-react';
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
 
 export default function AddCandidateModal() {
   const open = useAppStore((s) => s.addCandidateModalOpen);
   const close = useAppStore((s) => s.closeAddCandidateModal);
   const addCandidate = useAppStore((s) => s.addCandidate);
-  const collapsed = useAppStore((s) => s.sidebarCollapsed);
-  const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [emailTouched, setEmailTouched] = useState(false);
+
+  const emailInvalid = emailTouched && email.length > 0 && !isValidEmail(email);
+  const canSubmit = name.trim().length > 0 && isValidEmail(email);
+
+  const handleClose = useCallback(() => {
+    setName('');
+    setEmail('');
+    setEmailTouched(false);
+    close();
+  }, [close]);
+
+  const handleSubmit = useCallback(() => {
+    if (!canSubmit) return;
+    const initials = name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+    addCandidate({
+      id: Date.now(),
+      name: name.trim(),
+      email: email.trim(),
+      status: 'idle',
+      tz: 'UTC',
+      avatar: initials,
+    });
+    handleClose();
+  }, [canSubmit, name, email, addCandidate, handleClose]);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e) => {
+      if (e.key === 'Escape') handleClose();
+      if (e.key === 'Enter' && canSubmit) handleSubmit();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [open, canSubmit, handleClose, handleSubmit]);
 
   if (!open) return null;
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!name || !email) return;
-    const initials = name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
-    addCandidate({
-      name,
-      email,
-      status: 'pending',
-      tz: 'EST',
-      joined: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      avatar: initials,
-    });
-    setName('');
-    setEmail('');
-    close();
-  };
-
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center"
-      style={{ paddingLeft: sidebarWidth, transition: 'padding-left 0.2s ease' }}
-      onClick={close}
+      style={{
+        position: 'fixed',
+        inset: 0,
+        zIndex: 50,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+      onClick={handleClose}
     >
-      <div className="absolute inset-0 bg-black/20 animate-fi" />
+      {/* Backdrop */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        backgroundColor: 'rgba(26,22,18,0.4)',
+        animation: 'fi .15s ease both',
+      }} />
 
+      {/* Modal */}
       <div
-        className="relative rounded-xl border animate-fade-scale"
         style={{
-          width: 380,
-          padding: '20px 24px',
-          backgroundColor: 'var(--cream-card)',
-          borderColor: 'var(--border-default)',
-          boxShadow: 'var(--shadow-modal)',
+          position: 'relative',
+          width: 400,
+          background: '#fff',
+          borderRadius: 18,
+          padding: 28,
+          boxShadow: '0 20px 60px rgba(0,0,0,.15)',
+          animation: 'fadeScale .2s ease both',
         }}
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Close button */}
         <button
-          onClick={close}
-          className="absolute top-4 right-4 w-6 h-6 rounded-md flex items-center justify-center border-none cursor-pointer bg-transparent hover-bg-dim transition-colors"
-          style={{ color: 'var(--brown-soft)' }}
+          onClick={handleClose}
+          style={{
+            position: 'absolute',
+            top: 16,
+            right: 16,
+            width: 28,
+            height: 28,
+            borderRadius: 6,
+            border: 'none',
+            background: 'transparent',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#9a9184',
+          }}
         >
-          <X size={14} />
+          <X size={16} />
         </button>
 
-        <h2 className="text-display-section mb-0.5" style={{ color: 'var(--brown)' }}>
-          Add Candidate
-        </h2>
-        <p className="text-body-xs mb-4">Add a new candidate to your pool.</p>
+        <h2 style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: 18,
+          fontWeight: 700,
+          color: '#1a1612',
+          marginBottom: 20,
+        }}>Add Candidate</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="text-body-xs font-medium block mb-1" style={{ color: 'var(--brown)' }}>Full Name</label>
-            <input
-              type="text"
-              placeholder="John Doe"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
-              style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
-              required
-            />
-          </div>
-          <div className="mb-5">
-            <label className="text-body-xs font-medium block mb-1" style={{ color: 'var(--brown)' }}>Email</label>
-            <input
-              type="email"
-              placeholder="john@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
-              style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
-              required
-            />
-          </div>
-          <div className="flex gap-2.5 justify-end">
-            <button type="button" onClick={close} className="btn-secondary" style={{ padding: '6px 14px' }}>Cancel</button>
-            <button type="submit" className="btn-primary" style={{ padding: '6px 14px' }}>Add Candidate</button>
-          </div>
-        </form>
+        {/* Name */}
+        <div style={{ marginBottom: 16 }}>
+          <label style={{
+            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontSize: 11,
+            fontWeight: 600,
+            color: '#1a1612',
+            display: 'block',
+            marginBottom: 6,
+          }}>Name *</label>
+          <input
+            type="text"
+            placeholder="Full name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '9px 12px',
+              borderRadius: 8,
+              border: '1px solid var(--border-default)',
+              background: 'var(--cream)',
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 12,
+              color: '#1a1612',
+              outline: 'none',
+              boxSizing: 'border-box',
+              transition: 'border-color 0.15s ease',
+            }}
+            onFocus={(e) => { e.target.style.borderColor = 'var(--border-hover)'; }}
+            onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; }}
+          />
+        </div>
+
+        {/* Email */}
+        <div style={{ marginBottom: 24 }}>
+          <label style={{
+            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontSize: 11,
+            fontWeight: 600,
+            color: '#1a1612',
+            display: 'block',
+            marginBottom: 6,
+          }}>Email *</label>
+          <input
+            type="email"
+            placeholder="email@example.com"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); if (!emailTouched) setEmailTouched(true); }}
+            onBlur={() => setEmailTouched(true)}
+            style={{
+              width: '100%',
+              padding: '9px 12px',
+              borderRadius: 8,
+              border: `1px solid ${emailInvalid ? 'var(--red)' : 'var(--border-default)'}`,
+              background: 'var(--cream)',
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 12,
+              color: '#1a1612',
+              outline: 'none',
+              boxSizing: 'border-box',
+              transition: 'border-color 0.15s ease',
+            }}
+            onFocus={(e) => { if (!emailInvalid) e.target.style.borderColor = 'var(--border-hover)'; }}
+          />
+          {emailInvalid && (
+            <div style={{
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 10,
+              color: 'var(--red)',
+              marginTop: 4,
+            }}>Invalid email format</div>
+          )}
+        </div>
+
+        {/* Buttons */}
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
+          <button
+            onClick={handleClose}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 8,
+              border: '1px solid var(--border-default)',
+              background: '#fff',
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 12,
+              fontWeight: 600,
+              color: 'var(--brown)',
+              cursor: 'pointer',
+            }}
+          >Cancel</button>
+          <button
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            style={{
+              padding: '8px 16px',
+              borderRadius: 8,
+              border: 'none',
+              background: canSubmit
+                ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
+                : '#a0968c',
+              color: 'var(--btn-text)',
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 12,
+              fontWeight: 600,
+              cursor: canSubmit ? 'pointer' : 'not-allowed',
+              opacity: canSubmit ? 1 : 0.5,
+              boxShadow: canSubmit ? '0 4px 12px rgba(92,82,72,0.18)' : 'none',
+            }}
+          >Add</button>
+        </div>
       </div>
     </div>
   );
