@@ -57,7 +57,7 @@ export default function SearchPage({ onSubmit }) {
       <h1
         className="mb-8 text-center"
         style={{
-          fontFamily: "'Playfair Display', var(--font-body)",
+          fontFamily: 'var(--font-body)',
           fontSize: 'clamp(22px, 4vw, 32px)',
           fontWeight: 700,
           lineHeight: 1.2,

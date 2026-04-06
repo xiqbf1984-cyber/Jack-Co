@@ -13,17 +13,17 @@ export default function HiringRolesList() {
   return (
     <div>
       {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <h3 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 16,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
         }}>Hiring Roles</h3>
         <Link href="/roles" style={{
-          fontFamily: "'Libre Baskerville', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 11,
-          color: '#8b6914',
+          color: 'var(--gold)',
           textDecoration: 'none',
           cursor: 'pointer',
         }}>View all →</Link>
@@ -31,7 +31,7 @@ export default function HiringRolesList() {
 
       {/* List */}
       <div style={{ position: 'relative' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {display.map((role, i) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
@@ -42,7 +42,7 @@ export default function HiringRolesList() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   borderRadius: 10,
                   border: '1px solid var(--border-default)',
                   background: '#fff',
@@ -50,25 +50,25 @@ export default function HiringRolesList() {
                   animation: `fsu .2s ease ${i * 0.04}s both`,
                 }}
               >
-                <Briefcase size={14} style={{ color: '#8b6914', flexShrink: 0 }} />
+                <Briefcase size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 12,
-                    color: '#1a1612',
+                    color: 'var(--brown)',
                     fontWeight: 600,
                   }}>{role.title}</div>
                   <div style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 10,
-                    color: '#9a9184',
+                    color: 'var(--brown-soft)',
                   }}>{role.dept}</div>
                 </div>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: 'var(--font-body)',
                   fontSize: 10,
                   fontWeight: 500,
-                  padding: '3px 8px',
+                  padding: '4px 12px',
                   borderRadius: 12,
                   backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                   color: statusColor,

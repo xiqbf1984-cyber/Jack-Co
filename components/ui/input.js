@@ -10,7 +10,7 @@ const Input = forwardRef(function Input(
   const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       {label && (
         <label
           htmlFor={inputId}
@@ -27,7 +27,7 @@ const Input = forwardRef(function Input(
         value={value}
         onChange={onChange}
         className={cn(
-          'w-full px-3 py-2',
+          'w-full px-4 py-3',
           'border outline-none transition-all duration-200',
           !error && 'focus-border-hover',
           className

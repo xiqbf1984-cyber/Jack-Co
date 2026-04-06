@@ -23,12 +23,12 @@ export default function ChallengesPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <h1 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 20,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
         }}>Challenges</h1>
         <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 16px', textDecoration: 'none' }}>
           <Plus size={14} />
@@ -37,8 +37,8 @@ export default function ChallengesPage() {
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', width: 280, marginBottom: 16 }}>
-        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9a9184' }} />
+      <div style={{ position: 'relative', width: 280, marginBottom: 20 }}>
+        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
         <input
           type="text"
           value={search}
@@ -48,14 +48,14 @@ export default function ChallengesPage() {
             width: '100%',
             paddingLeft: 34,
             paddingRight: 12,
-            paddingTop: 7,
-            paddingBottom: 7,
+            paddingTop: 10,
+            paddingBottom: 10,
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#fff',
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 12,
-            color: '#1a1612',
+            color: 'var(--brown)',
             outline: 'none',
             boxSizing: 'border-box',
           }}
@@ -65,13 +65,13 @@ export default function ChallengesPage() {
       {/* Challenge list */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <Trophy size={32} style={{ color: '#c4b896', marginBottom: 12 }} />
-          <p style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 13, color: '#9a9184' }}>
+          <Trophy size={32} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
             {search ? 'No challenges match your search' : 'No challenges yet'}
           </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map((challenge, i) => {
             const statusInfo = STATUS_MAP[challenge.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
@@ -82,34 +82,34 @@ export default function ChallengesPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '14px 16px',
+                  padding: '16px 20px',
                   borderRadius: 10,
                   border: '1px solid var(--border-default)',
                   background: '#fff',
                   animation: `fsu .2s ease ${i * 0.04}s both`,
                 }}
               >
-                <Trophy size={16} style={{ color: '#8b6914', flexShrink: 0 }} />
+                <Trophy size={16} style={{ color: 'var(--gold)', flexShrink: 0 }} />
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 13,
-                    color: '#1a1612',
+                    color: 'var(--brown)',
                     fontWeight: 600,
                   }}>{challenge.name}</div>
                   <div style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 10,
-                    color: '#9a9184',
+                    color: 'var(--brown-soft)',
                   }}>
                     {challenge.roleTitle} · {challenge.candIds?.length || 0} candidates
                   </div>
                 </div>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: 'var(--font-body)',
                   fontSize: 10,
                   fontWeight: 500,
-                  padding: '3px 10px',
+                  padding: '4px 12px',
                   borderRadius: 12,
                   backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                   color: statusColor,

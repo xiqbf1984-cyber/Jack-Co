@@ -14,7 +14,7 @@ export default function StatCards() {
   const stats = [
     { key: 'roles', label: 'Active Roles', value: roles.filter((r) => r.status === 'active').length, icon: 'roles', color: '#27825b' },
     { key: 'candidates', label: 'Candidates', value: candidates.length, icon: 'candidates', color: '#0077B5' },
-    { key: 'challenges', label: 'Challenges', value: challenges.length, icon: 'challenge', color: '#8b6914' },
+    { key: 'challenges', label: 'Challenges', value: challenges.length, icon: 'challenge', color: 'var(--gold)' },
     { key: 'submissions', label: 'Submissions', value: totalSubmissions, icon: 'eval', color: '#d4880f' },
   ];
 
@@ -22,8 +22,8 @@ export default function StatCards() {
     <div style={{
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: 12,
-      marginBottom: 20,
+      gap: 14,
+      marginBottom: 24,
     }}>
       {stats.map((stat, i) => {
         const Icon = iconMap[stat.icon];
@@ -31,7 +31,7 @@ export default function StatCards() {
           <div
             key={stat.key}
             style={{
-              padding: 16,
+              padding: '18px 20px',
               borderRadius: 14,
               border: '1px solid var(--border-default)',
               background: '#fff',
@@ -53,20 +53,20 @@ export default function StatCards() {
             </div>
             {/* Number */}
             <div style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: 'var(--font-body)',
               fontSize: 20,
               fontWeight: 700,
-              color: '#1a1612',
-              marginTop: 6,
+              color: 'var(--brown)',
+              marginTop: 8,
             }}>
               {stat.value}
             </div>
             {/* Label */}
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 10,
-              color: '#c4b896',
-              marginTop: 2,
+              color: 'var(--brown-light)',
+              marginTop: 4,
             }}>
               {stat.label}
             </div>

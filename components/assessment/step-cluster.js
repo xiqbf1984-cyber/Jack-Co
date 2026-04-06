@@ -23,19 +23,19 @@ export default function StepCluster() {
 
   return (
     <div className="mx-auto" style={{ maxWidth: 720 }}>
-      <h1 className="text-display-page mb-2">Which industry does this role belong to?</h1>
+      <h1 className="text-display-page mb-3">Which industry does this role belong to?</h1>
       {hasJD && (
         <p className="text-body-lg mb-1">
           Based on your JD, we recommend{' '}
           <strong style={{ color: 'var(--gold)' }}>Digital Technology</strong>
         </p>
       )}
-      <p className="text-body-sm mb-6" style={{ color: 'var(--brown-soft)' }}>
+      <p className="text-body-sm mb-8" style={{ color: 'var(--brown-soft)' }}>
         Select the industry cluster that best matches the role you are hiring for.
       </p>
 
       {/* Cluster grid */}
-      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
+      <div className="grid gap-4" style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))' }}>
         {INDUSTRY_CLUSTERS.map((c) => {
           const isActive = c.status === 'active';
           const isRecommended = c.id === RECOMMENDED_CLUSTER && hasJD;

@@ -38,11 +38,11 @@ export default function DashboardPage() {
     <div>
       {/* Welcome */}
       <h1 style={{
-        fontFamily: "'Playfair Display', Georgia, serif",
+        fontFamily: 'var(--font-body)',
         fontSize: 26,
         fontWeight: 700,
-        color: '#1a1612',
-        marginBottom: draft ? 14 : 20,
+        color: 'var(--brown)',
+        marginBottom: draft ? 16 : 24,
       }}>
         Welcome back, {displayName}
       </h1>
@@ -53,43 +53,43 @@ export default function DashboardPage() {
           background: 'rgba(139,105,20,0.08)',
           border: '1px solid rgba(139,105,20,0.22)',
           borderRadius: 12,
-          padding: '14px 18px',
-          marginBottom: 20,
+          padding: '16px 20px',
+          marginBottom: 24,
           display: 'flex',
           alignItems: 'center',
-          gap: 12,
+          gap: 14,
           animation: 'fsu .3s ease both',
         }}>
-          <FileText size={18} style={{ color: '#8b6914', flexShrink: 0 }} />
+          <FileText size={18} style={{ color: 'var(--gold)', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 12,
-              color: '#1a1612',
+              color: 'var(--brown)',
               fontWeight: 600,
             }}>
               You have an unfinished assessment
               {draft.data?.currentStep != null && ` (Step ${draft.data.currentStep + 1} of 8)`}
             </div>
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 10,
-              color: '#9a9184',
+              color: 'var(--brown-soft)',
               marginTop: 2,
             }}>
               Last edited {formatTimeAgo(draft.savedAt)}
             </div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 10 }}>
             <button
               onClick={() => router.push('/assessment/create')}
               style={{
-                padding: '6px 14px',
+                padding: '7px 16px',
                 borderRadius: 8,
                 border: 'none',
                 background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
                 color: 'var(--btn-text)',
-                fontFamily: "'Libre Baskerville', Georgia, serif",
+                fontFamily: 'var(--font-body)',
                 fontSize: 11,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -98,12 +98,12 @@ export default function DashboardPage() {
             <button
               onClick={clearDraft}
               style={{
-                padding: '6px 14px',
+                padding: '7px 16px',
                 borderRadius: 8,
                 border: '1px solid var(--border-default)',
                 background: '#fff',
-                color: '#9a9184',
-                fontFamily: "'Libre Baskerville', Georgia, serif",
+                color: 'var(--brown-soft)',
+                fontFamily: 'var(--font-body)',
                 fontSize: 11,
                 fontWeight: 600,
                 cursor: 'pointer',
@@ -120,8 +120,8 @@ export default function DashboardPage() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: 14,
-        marginBottom: 20,
+        gap: 16,
+        marginBottom: 24,
       }}>
         <QuickActions />
         <CompanyProfileCard />
@@ -131,7 +131,7 @@ export default function DashboardPage() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
-        gap: 14,
+        gap: 16,
       }}>
         <HiringRolesList />
         <RecentCandidatesList />

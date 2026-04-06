@@ -24,8 +24,8 @@ export default function SettingsPage() {
 
   return (
     <div className="page-container" style={{ maxWidth: 720 }}>
-      <h1 className="text-display-page mb-1">Settings</h1>
-      <p className="text-body-lg mb-3">Your hiring manager profile.</p>
+      <h1 className="text-display-page mb-2">Settings</h1>
+      <p className="text-body-lg mb-5">Your hiring manager profile.</p>
 
       {/* Input mode tabs */}
       <div className="flex gap-2.5 mb-4">
@@ -81,7 +81,7 @@ export default function SettingsPage() {
             placeholder="https://linkedin.com/in/yourprofile"
             value={hm.linkedinUrl}
             onChange={(e) => setHM({ linkedinUrl: e.target.value })}
-            className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body"
+            className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
@@ -94,7 +94,7 @@ export default function SettingsPage() {
 
       {/* Manual fields */}
       <div className="animate-fsu">
-        <h3 className="text-display-section mb-4">Personal Information</h3>
+        <h3 className="text-display-section mb-5">Personal Information</h3>
         <div className="grid gap-5 mb-8" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
           {[
             { key: 'name', label: 'Full Name', placeholder: 'Sarah Chen' },
@@ -109,7 +109,7 @@ export default function SettingsPage() {
                 placeholder={field.placeholder}
                 value={hm[field.key]}
                 onChange={(e) => setHM({ [field.key]: e.target.value })}
-                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+                className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
                 style={{
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
@@ -128,7 +128,7 @@ export default function SettingsPage() {
               placeholder="linkedin.com/in/sarahchen"
               value={hm.linkedinUrl}
               onChange={(e) => setHM({ linkedinUrl: e.target.value })}
-              className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+              className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
               style={{
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',

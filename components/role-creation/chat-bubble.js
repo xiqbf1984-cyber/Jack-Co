@@ -8,7 +8,7 @@ export default function ChatBubble({ role, content, animate = false, compact = f
   return (
     <div
       className={cn(
-        'flex items-start gap-2.5',
+        'flex items-start gap-3',
         isAI ? 'self-start' : 'self-end flex-row-reverse',
         animate && 'animate-slide-up'
       )}
@@ -32,7 +32,7 @@ export default function ChatBubble({ role, content, animate = false, compact = f
       <div
         className="leading-relaxed rounded-xl"
         style={{
-          padding: compact ? '6px 12px' : '10px 16px',
+          padding: compact ? '8px 14px' : '12px 16px',
           fontSize: compact ? 12 : 13,
           ...(isAI
             ? {

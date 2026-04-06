@@ -12,17 +12,17 @@ export default function RecentCandidatesList() {
   return (
     <div>
       {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <h3 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 16,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
         }}>Recent Candidates</h3>
         <Link href="/candidates" style={{
-          fontFamily: "'Libre Baskerville', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 11,
-          color: '#8b6914',
+          color: 'var(--gold)',
           textDecoration: 'none',
           cursor: 'pointer',
         }}>View all →</Link>
@@ -30,7 +30,7 @@ export default function RecentCandidatesList() {
 
       {/* List */}
       <div style={{ position: 'relative' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {display.map((cand, i) => {
             const statusInfo = STATUS_MAP[cand.status] || STATUS_MAP.idle;
             const statusColor = `var(--${statusInfo.color})`;
@@ -42,7 +42,7 @@ export default function RecentCandidatesList() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   borderRadius: 10,
                   border: '1px solid var(--border-default)',
                   background: '#fff',
@@ -62,30 +62,30 @@ export default function RecentCandidatesList() {
                   flexShrink: 0,
                 }}>
                   <span style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 8,
                     fontWeight: 700,
-                    color: '#8b6914',
+                    color: 'var(--gold)',
                   }}>{initials}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 12,
-                    color: '#1a1612',
+                    color: 'var(--brown)',
                     fontWeight: 600,
                   }}>{cand.name}</div>
                   <div style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 9,
-                    color: '#c4b896',
+                    color: 'var(--brown-light)',
                   }}>{cand.email}</div>
                 </div>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: 'var(--font-body)',
                   fontSize: 10,
                   fontWeight: 500,
-                  padding: '3px 8px',
+                  padding: '4px 12px',
                   borderRadius: 12,
                   backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                   color: statusColor,

@@ -23,12 +23,12 @@ export default function CandidatesPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <h1 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 20,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
         }}>Candidates</h1>
         <button onClick={openModal} className="btn-primary" style={{ padding: '7px 16px' }}>
           + Add Candidate
@@ -36,8 +36,8 @@ export default function CandidatesPage() {
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', width: 280, marginBottom: 16 }}>
-        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9a9184' }} />
+      <div style={{ position: 'relative', width: 280, marginBottom: 20 }}>
+        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
         <input
           type="text"
           value={search}
@@ -47,14 +47,14 @@ export default function CandidatesPage() {
             width: '100%',
             paddingLeft: 34,
             paddingRight: 12,
-            paddingTop: 7,
-            paddingBottom: 7,
+            paddingTop: 10,
+            paddingBottom: 10,
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#fff',
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 12,
-            color: '#1a1612',
+            color: 'var(--brown)',
             outline: 'none',
             boxSizing: 'border-box',
           }}
@@ -73,15 +73,15 @@ export default function CandidatesPage() {
           <div style={{
             display: 'grid',
             gridTemplateColumns: GRID_COLUMNS,
-            padding: '10px 20px',
+            padding: '12px 20px',
             borderBottom: '1px solid var(--border-default)',
           }}>
             {['CANDIDATE', 'STATUS', 'TIMEZONE', 'EMAIL'].map((h) => (
               <span key={h} style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: 'var(--font-body)',
                 fontSize: 10,
                 fontWeight: 500,
-                color: '#9a9184',
+                color: 'var(--brown-soft)',
                 textTransform: 'uppercase',
               }}>{h}</span>
             ))}
@@ -99,7 +99,7 @@ export default function CandidatesPage() {
                 style={{
                   display: 'grid',
                   gridTemplateColumns: GRID_COLUMNS,
-                  padding: '12px 20px',
+                  padding: '14px 20px',
                   borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
                   alignItems: 'center',
                   animation: `fsu .2s ease ${i * 0.04}s both`,
@@ -118,16 +118,16 @@ export default function CandidatesPage() {
                     flexShrink: 0,
                   }}>
                     <span style={{
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: 'var(--font-body)',
                       fontSize: 8,
                       fontWeight: 700,
-                      color: '#8b6914',
+                      color: 'var(--gold)',
                     }}>{initials}</span>
                   </div>
                   <span style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 12,
-                    color: '#1a1612',
+                    color: 'var(--brown)',
                     fontWeight: 600,
                   }}>{cand.name}</span>
                 </div>
@@ -139,7 +139,7 @@ export default function CandidatesPage() {
                     backgroundColor: statusColor,
                   }} />
                   <span style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 10,
                     color: statusColor,
                   }}>{statusInfo.label}</span>
@@ -147,16 +147,16 @@ export default function CandidatesPage() {
 
                 {/* Timezone */}
                 <span style={{
-                  fontFamily: "'Libre Baskerville', Georgia, serif",
+                  fontFamily: 'var(--font-body)',
                   fontSize: 11,
-                  color: '#1a1612',
+                  color: 'var(--brown)',
                 }}>{cand.tz}</span>
 
                 {/* Email */}
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: 'var(--font-body)',
                   fontSize: 9,
-                  color: '#9a9184',
+                  color: 'var(--brown-soft)',
                   overflow: 'hidden',
                   textOverflow: 'ellipsis',
                   whiteSpace: 'nowrap',
@@ -167,20 +167,20 @@ export default function CandidatesPage() {
 
           {/* Footer */}
           <div style={{
-            padding: '10px 20px',
+            padding: '12px 20px',
             borderTop: '1px solid var(--border-light)',
           }}>
             <span style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 11,
-              color: '#c4b896',
+              color: 'var(--brown-light)',
             }}>Viewing {filtered.length} rows</span>
           </div>
         </div>
       ) : (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <Users size={32} style={{ color: '#c4b896', marginBottom: 12 }} />
-          <p style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 13, color: '#9a9184' }}>
+          <Users size={32} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
             {search ? 'No candidates match your search' : 'No candidates yet'}
           </p>
         </div>

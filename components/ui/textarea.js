@@ -10,7 +10,7 @@ const Textarea = forwardRef(function Textarea(
   const textareaId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className="flex flex-col gap-2">
       {label && (
         <label
           htmlFor={textareaId}
@@ -27,7 +27,7 @@ const Textarea = forwardRef(function Textarea(
         onChange={onChange}
         rows={rows}
         className={cn(
-          'w-full px-3 py-2',
+          'w-full px-4 py-3',
           'border outline-none transition-all duration-200',
           'focus-border-hover resize-y',
           className
