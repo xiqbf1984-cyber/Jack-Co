@@ -32,7 +32,7 @@ export default function StatCards() {
             key={stat.key}
             className="rounded-xl border transition-all duration-200 hover-shadow-card"
             style={{
-              padding: '18px 20px',
+              padding: 'var(--card-padding)',
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
               boxShadow: 'var(--shadow-card)',

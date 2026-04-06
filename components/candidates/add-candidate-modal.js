@@ -46,7 +46,7 @@ export default function AddCandidateModal() {
         className="relative rounded-xl border animate-fade-scale"
         style={{
           width: 380,
-          padding: '20px 24px',
+          padding: 'var(--card-padding)',
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-modal)',
@@ -61,7 +61,7 @@ export default function AddCandidateModal() {
           <X size={14} />
         </button>
 
-        <h2 className="text-display-section mb-0.5" style={{ color: 'var(--brown)' }}>
+        <h2 className="text-display-dialog mb-0.5" style={{ color: 'var(--brown)' }}>
           Add Candidate
         </h2>
         <p className="text-body-xs mb-4">Add a new candidate to your pool.</p>
@@ -92,8 +92,8 @@ export default function AddCandidateModal() {
             />
           </div>
           <div className="flex gap-2.5 justify-end">
-            <button type="button" onClick={close} className="btn-secondary" style={{ padding: '6px 14px' }}>Cancel</button>
-            <button type="submit" className="btn-primary" style={{ padding: '6px 14px' }}>Add Candidate</button>
+            <button type="button" onClick={close} className="btn-secondary" style={{ padding: 'var(--button-padding-y) var(--button-padding-x)' }}>Cancel</button>
+            <button type="submit" className="btn-primary" style={{ padding: 'var(--button-padding-y) var(--button-padding-x)' }}>Add Candidate</button>
           </div>
         </form>
       </div>

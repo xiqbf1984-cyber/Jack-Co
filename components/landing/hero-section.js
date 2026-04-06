@@ -18,7 +18,7 @@ export default function HeroSection({ tab }) {
   const isCompanies = tab === 'For Companies';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 24px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 var(--page-padding-x)' }}>
       <h1>
         {alreadyPlayed ? (
           <span className="text-display-hero">Who do you want to hire?</span>
@@ -34,14 +34,14 @@ export default function HeroSection({ tab }) {
       {done && (
         <p
           className="animate-fsu text-body-lg"
-          style={{ color: 'var(--brown-muted)', maxWidth: 440, marginTop: 16 }}
+          style={{ color: 'var(--brown-muted)', maxWidth: 440, marginTop: 'var(--space-4)' }}
         >
           See How Candidates Actually Work with AI.
         </p>
       )}
 
       {done && isCompanies && (
-        <div className="animate-fsu" style={{ marginTop: 48 }}>
+        <div className="animate-fsu" style={{ marginTop: 'var(--space-12)' }}>
           <HireTypeCards />
         </div>
       )}
@@ -49,7 +49,7 @@ export default function HeroSection({ tab }) {
       {done && !isCompanies && (
         <p
           className="animate-fsu text-body-sm"
-          style={{ color: 'var(--brown-light)', marginTop: 48 }}
+          style={{ color: 'var(--brown-light)', marginTop: 'var(--space-12)' }}
         >
           Candidate features coming soon.
         </p>

@@ -37,7 +37,7 @@ export default function RecentAssessmentsList() {
             href={`/assessment/${challenge.id}`}
             className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover no-underline"
             style={{
-              padding: '12px 16px',
+              padding: 'var(--row-padding-y) var(--row-padding-x)',
               borderColor: 'var(--border-light)',
               backgroundColor: undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,

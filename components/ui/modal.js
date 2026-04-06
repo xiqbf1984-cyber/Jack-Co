@@ -53,7 +53,7 @@ function Modal({ open, onClose, title, children, className }) {
       >
         {/* Header */}
         {title && (
-          <div className="flex items-center justify-between px-6 pt-5 pb-3">
+          <div className="flex items-center justify-between px-6 pt-6 pb-3">
             <h2 className="text-display-dialog">{title}</h2>
             <button
               onClick={onClose}

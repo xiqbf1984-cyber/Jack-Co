@@ -19,7 +19,7 @@ export default function CompanySettingsPage() {
       <h1 className="text-display-page mb-1">Company Profile</h1>
       <p className="text-body-lg mb-3">Update your company information.</p>
 
-      <div className="rounded-xl border" style={{ padding: '20px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+      <div className="rounded-xl border" style={{ padding: 'var(--card-padding)', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
         {/* Logo */}
         <div className="flex items-center gap-4 mb-8">
           <div

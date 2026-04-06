@@ -95,10 +95,10 @@ export default function CandidatesPage() {
       <div className="flex items-center justify-between mb-1">
         <h1 className="text-display-page">Candidates</h1>
         <div className="flex items-center gap-2">
-          <button onClick={openModal} className="btn-primary" style={{ padding: '7px 16px' }}>
+          <button onClick={openModal} className="btn-primary" style={{ padding: 'var(--button-padding-y) var(--button-padding-x)' }}>
             Add Candidate
           </button>
-          <button className="btn-icon" title="View" style={{ width: 32, height: 32 }}>
+          <button className="btn-icon" title="View" style={{ width: 36, height: 36 }}>
             <Settings2 size={14} />
           </button>
         </div>
@@ -143,9 +143,9 @@ export default function CandidatesPage() {
             className="grid items-center border-b"
             style={{
               gridTemplateColumns: GRID_COLUMNS,
-              padding: '10px 24px',
+              padding: 'var(--row-padding-y) var(--card-padding)',
               borderColor: 'var(--border-light)',
-              gap: 12,
+              gap: 'var(--space-3)',
             }}
           >
             <SortHeader field="name">Candidate</SortHeader>
@@ -163,9 +163,9 @@ export default function CandidatesPage() {
               className="grid items-center border-b last:border-b-0 transition-colors duration-150 hover-bg-cream-card-hover"
               style={{
                 gridTemplateColumns: GRID_COLUMNS,
-                padding: '12px 24px',
+                padding: 'var(--row-padding-y) var(--card-padding)',
                 borderColor: 'var(--border-light)',
-                gap: 12,
+                gap: 'var(--space-3)',
                 animation: `fsu 0.2s ease-out ${i * 0.04}s both`,
               }}
             >
@@ -224,7 +224,7 @@ export default function CandidatesPage() {
           {/* Footer */}
           <div
             className="border-t"
-            style={{ padding: '10px 24px', borderColor: 'var(--border-light)' }}
+            style={{ padding: 'var(--row-padding-y) var(--card-padding)', borderColor: 'var(--border-light)' }}
           >
             <span className="text-body-xs" style={{ color: 'var(--brown-soft)' }}>
               Viewing {sorted.length} rows

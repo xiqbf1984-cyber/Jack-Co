@@ -20,8 +20,8 @@ const Button = forwardRef(function Button(
   };
 
   const iconSizes = {
-    default: 'w-9 h-9',
-    small: 'w-7 h-7',
+    default: 'w-10 h-10',
+    small: 'w-8 h-8',
   };
 
   const isIconOnly = variant === 'icon';

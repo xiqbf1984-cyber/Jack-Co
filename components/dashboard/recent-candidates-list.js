@@ -36,7 +36,7 @@ export default function RecentCandidatesList() {
             key={cand.id}
             className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover"
             style={{
-              padding: '18px 24px',
+              padding: 'var(--row-padding-y) var(--row-padding-x)',
               borderColor: 'var(--border-light)',
               backgroundColor: i % 2 === 1 ? 'var(--cream-row-even)' : undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,

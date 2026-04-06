@@ -29,7 +29,7 @@ function ToggleGroup({ options = [], value, onChange, className }) {
         'relative inline-flex items-center p-1',
         className
       )}
-      style={{ backgroundColor: '#5C5248', borderRadius: 'var(--radius-pill)' }}
+      style={{ backgroundColor: 'var(--btn-primary-from)', borderRadius: 'var(--radius-pill)' }}
     >
       {/* Sliding indicator */}
       <div
@@ -37,7 +37,7 @@ function ToggleGroup({ options = [], value, onChange, className }) {
         style={{
           left: `${indicator.left}px`,
           width: `${indicator.width}px`,
-          backgroundColor: '#fcfbf7',
+          backgroundColor: 'var(--cream-card)',
           borderRadius: 'calc(var(--radius-pill) - 2px)',
         }}
       />

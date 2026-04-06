@@ -6,14 +6,14 @@ import { useAuth } from '@clerk/nextjs';
 export default function HireTypeCards() {
   const { isSignedIn } = useAuth();
   return (
-    <div style={{ display: 'flex', gap: 20, justifyContent: 'center' }}>
+    <div style={{ display: 'flex', gap: 'var(--card-gap)', justifyContent: 'center' }}>
       {/* Hiring Human */}
       <Link href={isSignedIn ? '/dashboard' : '/login'} style={{ textDecoration: 'none' }}>
         <div
           style={{
             width: 240,
-            padding: '32px 24px',
-            borderRadius: 16,
+            padding: 'var(--space-8) var(--card-padding)',
+            borderRadius: 'var(--radius-2xl)',
             border: '1px solid var(--border-default)',
             backgroundColor: 'var(--cream-card)',
             boxShadow: 'var(--shadow-card)',
@@ -30,7 +30,7 @@ export default function HireTypeCards() {
             e.currentTarget.style.boxShadow = 'var(--shadow-card)';
           }}
         >
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 8 }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 'var(--space-2)' }}>
             Hiring Human
           </div>
           <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)' }}>
@@ -43,8 +43,8 @@ export default function HireTypeCards() {
       <div
         style={{
           width: 240,
-          padding: '32px 24px',
-          borderRadius: 16,
+          padding: 'var(--space-8) var(--card-padding)',
+          borderRadius: 'var(--radius-2xl)',
           border: '1px solid var(--border-default)',
           backgroundColor: 'var(--cream-card)',
           boxShadow: 'var(--shadow-card)',
@@ -70,7 +70,7 @@ export default function HireTypeCards() {
         >
           Coming soon
         </span>
-        <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 8 }}>
+        <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 'var(--space-2)' }}>
           Hiring AI
         </div>
         <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)' }}>

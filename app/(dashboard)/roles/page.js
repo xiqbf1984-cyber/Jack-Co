@@ -25,7 +25,7 @@ export default function RolesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-1">
         <h1 className="text-display-page">Roles</h1>
-        <Link href="/roles/create" className="btn-primary flex items-center gap-1.5 no-underline" style={{ padding: '7px 16px' }}>
+        <Link href="/roles/create" className="btn-primary flex items-center gap-1.5 no-underline" style={{ padding: 'var(--button-padding-y) var(--button-padding-x)' }}>
           <Plus size={14} />
           Add Role
         </Link>
@@ -76,7 +76,7 @@ export default function RolesPage() {
                 key={role.id}
                 className="flex items-center gap-4 rounded-xl border hover-border-hover hover-shadow-card transition-all cursor-pointer"
                 style={{
-                  padding: '16px 20px',
+                  padding: 'var(--card-padding)',
                   borderColor: 'var(--border-default)',
                   backgroundColor: 'var(--cream-card)',
                   boxShadow: 'var(--shadow-card)',

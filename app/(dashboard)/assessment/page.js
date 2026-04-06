@@ -25,7 +25,7 @@ export default function ChallengesPage() {
     <div className="page-container">
       <div className="flex items-center justify-between mb-1">
         <h1 className="text-display-page">Assessment</h1>
-        <Link href="/assessment/create" className="btn-primary no-underline" style={{ padding: '7px 16px' }}>
+        <Link href="/assessment/create" className="btn-primary no-underline" style={{ padding: 'var(--button-padding-y) var(--button-padding-x)' }}>
           <Plus size={14} /> New Assessment
         </Link>
       </div>
@@ -53,7 +53,7 @@ export default function ChallengesPage() {
               href={`/assessment/${challenge.id}`}
               className="block rounded-xl border transition-all duration-200 no-underline hover-shadow-card"
               style={{
-                padding: '16px 20px',
+                padding: 'var(--card-padding)',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',

@@ -68,7 +68,7 @@ export default function Sidebar() {
         title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         style={{
           position: 'absolute',
-          top: 14,
+          top: 'var(--space-3)',
           right: collapsed ? undefined : 8,
           left: collapsed ? '50%' : undefined,
           transform: collapsed ? 'translateX(-50%)' : undefined,
@@ -169,13 +169,13 @@ export default function Sidebar() {
             }}
           >
             {/* Search */}
-            <div style={{ position: 'relative', marginBottom: 4 }}>
+            <div style={{ position: 'relative', marginBottom: 'var(--space-1)' }}>
               <input
                 type="text"
                 placeholder="Find Team..."
                 style={{
                   width: '100%',
-                  padding: '7px 10px',
+                  padding: 'var(--space-2) var(--space-3)',
                   border: '1px solid var(--border-light)',
                   borderRadius: 6,
                   fontSize: 11,

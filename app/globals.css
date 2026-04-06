@@ -49,16 +49,37 @@
   --shadow-glow-idle: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03);
   --shadow-glow-peak: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04);
 
+  /* Spacing Scale (base = 4px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
   /* Layout Spacing */
-  --page-padding-x: 40px;
-  --page-padding-y: 32px;
+  --page-padding-x: var(--space-10);
+  --page-padding-y: var(--space-8);
   --page-max-width: 1400px;
-  --section-gap: 32px;
-  --card-gap: 16px;
-  --card-padding: 24px;
-  --row-padding-x: 20px;
-  --row-padding-y: 14px;
-  --header-mb: 24px;
+  --section-gap: var(--space-8);
+  --card-gap: var(--space-4);
+  --card-padding: var(--space-6);
+  --row-padding-x: var(--space-5);
+  --row-padding-y: var(--space-3);
+  --header-mb: var(--space-6);
+
+  /* Component Spacing */
+  --input-padding-x: var(--space-3);
+  --input-padding-y: var(--space-2);
+  --button-padding-x: var(--space-4);
+  --button-padding-y: var(--space-2);
+  --form-label-gap: var(--space-1);
+  --form-field-gap: var(--space-5);
+  --topbar-height: 56px;
+  --topbar-padding-x: var(--space-10);
 
   /* Radius */
   --radius-xs: 6px;

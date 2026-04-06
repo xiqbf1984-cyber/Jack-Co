@@ -55,7 +55,7 @@ export default function EvaluationPage() {
               key={stat.label}
               className="rounded-xl border"
               style={{
-                padding: '18px 20px',
+                padding: 'var(--card-padding)',
                 backgroundColor: 'var(--cream-card)',
                 borderColor: 'var(--border-default)',
                 boxShadow: 'var(--shadow-card)',
@@ -84,7 +84,7 @@ export default function EvaluationPage() {
                 key={challenge.id}
                 className="rounded-xl border"
                 style={{
-                  padding: '18px 20px',
+                  padding: 'var(--card-padding)',
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
                   boxShadow: 'var(--shadow-card)',

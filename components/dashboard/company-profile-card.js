@@ -13,7 +13,7 @@ export default function CompanyProfileCard() {
       <div
         className="rounded-xl border h-full flex flex-col"
         style={{
-          padding: '16px',
+          padding: 'var(--card-padding)',
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-card)',
