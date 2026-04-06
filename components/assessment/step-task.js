@@ -232,10 +232,9 @@ export default function StepTask() {
                         width: '100%',
                         textAlign: 'left',
                         padding: '10px 16px 10px 28px',
-                        borderBottom: ti < cat.tasks.length - 1 ? '1px solid var(--border-light)' : 'none',
-                        background: 'none',
                         border: 'none',
                         borderBottom: ti < cat.tasks.length - 1 ? '1px solid var(--border-light)' : 'none',
+                        background: 'none',
                         cursor: 'pointer',
                         transition: 'background-color 0.1s ease',
                       }}

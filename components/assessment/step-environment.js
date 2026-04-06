@@ -152,12 +152,13 @@ export default function StepEnvironment() {
     setChatMessages((prev) => [...prev, { role: 'user', text: userMsg }]);
     setChatInput('');
 
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
         { role: 'ai', text: `I've updated the assessment environment based on your request: "${userMsg}". The changes have been applied.` },
       ]);
     }, 800);
+    return () => clearTimeout(timer);
   }, [chatInput]);
 
   const handleConfirm = () => {
