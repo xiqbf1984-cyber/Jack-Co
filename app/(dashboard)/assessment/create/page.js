@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useAssessmentStore } from '@/stores/assessment-store';
@@ -33,13 +34,21 @@ export default function CreateAssessmentPage() {
 
   var showBack = currentStep >= 1 && currentStep <= 6;
 
+  var [headerEl, setHeaderEl] = useState(null);
+  var [previewEl, setPreviewEl] = useState(null);
+
+  useEffect(function () {
+    var h = document.getElementById('assessment-header-area');
+    var p = document.getElementById('assessment-preview-panel');
+    if (h) setHeaderEl(h);
+    if (p) setPreviewEl(p);
+  }, []);
+
   return (
-    <div style={{ display: 'flex', margin: '-32px -32px -64px -32px', height: '100vh' }}>
-      {/* Left: Operations Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
-        {/* Header + Progress */}
+    <>
+      {/* Header portal: Back + Title + Subtitle + Progress */}
+      {headerEl && createPortal(
         <div style={{ flexShrink: 0, backgroundColor: 'var(--cream)' }}>
-          {/* Back + Title */}
           <div style={{ padding: '14px 24px 0' }}>
             <Link href="/assessment" style={{
               display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--font-body)',
@@ -51,42 +60,38 @@ export default function CreateAssessmentPage() {
             <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>Create Assessment</h1>
             <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Set up a new assessment to evaluate candidates</p>
           </div>
-
-          {/* Progress bar */}
           <div style={{ padding: '0 24px 8px', borderBottom: '1px solid var(--border-default)' }}>
             <WizardProgress />
           </div>
-        </div>
+        </div>,
+        headerEl
+      )}
 
-        {/* Scrollable step content */}
-        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', justifyContent: 'center' }}>
-          <div style={{ width: '100%', maxWidth: 560, padding: '20px 24px 80px' }}>
-            {/* Back button within steps */}
-            {showBack && (
-              <button
-                onClick={function () { goToStep(currentStep - 1); }}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)',
-                  fontSize: 11, color: 'var(--gold)', background: 'none', border: 'none',
-                  cursor: 'pointer', padding: 0, marginBottom: 16,
-                }}
-              >
-                <ArrowLeft size={12} />
-                Back
-              </button>
-            )}
-            <StepComponent key={currentStep} />
-          </div>
+      {/* Preview portal */}
+      {previewEl && createPortal(
+        <LivePreview />,
+        previewEl
+      )}
+
+      {/* Main scrollable step content */}
+      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ width: '100%', maxWidth: 560, padding: '20px 24px 80px' }}>
+          {showBack && (
+            <button
+              onClick={function () { goToStep(currentStep - 1); }}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)',
+                fontSize: 11, color: 'var(--brown-soft)', background: 'none', border: 'none',
+                cursor: 'pointer', padding: 0, marginBottom: 16,
+              }}
+            >
+              <ArrowLeft size={12} />
+              Back
+            </button>
+          )}
+          <StepComponent key={currentStep} />
         </div>
       </div>
-
-      {/* Right: Live Preview */}
-      <div style={{
-        width: 280, flexShrink: 0, borderLeft: '1px solid var(--border-default)',
-        backgroundColor: '#fff', overflowY: 'auto',
-      }}>
-        <LivePreview />
-      </div>
-    </div>
+    </>
   );
 }
