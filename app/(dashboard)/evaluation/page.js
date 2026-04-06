@@ -24,139 +24,202 @@ export default function EvaluationPage() {
     : 0;
   const gradeACount = allResults.filter((r) => r.score >= 93).length;
   const passRate = allResults.length > 0
-    ? Math.round((allResults.filter((r) => r.score >= 75).length / allResults.length) * 100)
+    ? Math.round((allResults.filter((r) => r.score >= 65).length / allResults.length) * 100)
     : 0;
 
-  const stats = [
+  const evalStats = [
     { label: 'Submissions', value: allResults.length, icon: FileCheck, color: '#0077B5' },
     { label: 'Avg Score', value: avgScore, icon: TrendingUp, color: '#8b6914' },
     { label: 'Grade A', value: gradeACount, icon: Award, color: '#27825b' },
     { label: 'Pass Rate', value: `${passRate}%`, icon: BarChart3, color: '#d4880f' },
   ];
 
-  // Group by role
-  const byRole = {};
-  challenges.forEach((c) => {
-    if (!byRole[c.roleTitle]) byRole[c.roleTitle] = [];
-    byRole[c.roleTitle].push(c);
-  });
-
   return (
-    <div className="page-container">
-      <h1 className="text-display-page mb-1">Evaluation</h1>
-      <p className="text-body-lg mb-3">Review scores, grades, and candidate performance.</p>
+    <div>
+      <h1 style={{
+        fontFamily: "'Playfair Display', Georgia, serif",
+        fontSize: 20,
+        fontWeight: 700,
+        color: '#1a1612',
+        marginBottom: 20,
+      }}>Evaluation Dashboard</h1>
 
       {/* Stat cards */}
-      <div className="grid gap-3 mb-6" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-        {stats.map((stat, i) => {
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(4, 1fr)',
+        gap: 12,
+        marginBottom: 24,
+      }}>
+        {evalStats.map((stat, i) => {
           const Icon = stat.icon;
           return (
             <div
               key={stat.label}
-              className="rounded-xl border"
               style={{
-                padding: '18px 20px',
-                backgroundColor: 'var(--cream-card)',
-                borderColor: 'var(--border-default)',
-                boxShadow: 'var(--shadow-card)',
-                animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
+                padding: 16,
+                borderRadius: 14,
+                border: '1px solid var(--border-default)',
+                background: '#fff',
+                textAlign: 'center',
+                animation: `fsu .25s ease ${i * 0.06}s both`,
               }}
             >
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-mono-label">{stat.label}</span>
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: stat.color + '14' }}>
-                  <Icon size={15} style={{ color: stat.color }} />
-                </div>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                backgroundColor: stat.color + '1a',
+              }}>
+                <Icon size={15} style={{ color: stat.color }} />
               </div>
-              <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{stat.value}</div>
+              <div style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 20,
+                fontWeight: 700,
+                color: '#1a1612',
+                marginTop: 6,
+              }}>{stat.value}</div>
+              <div style={{
+                fontFamily: "'Libre Baskerville', Georgia, serif",
+                fontSize: 10,
+                color: '#c4b896',
+                marginTop: 2,
+              }}>{stat.label}</div>
             </div>
           );
         })}
       </div>
 
-      {/* Results by role */}
-      {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
-        <div key={roleTitle} className="mb-6">
-          <h3 className="text-display-section mb-3">{roleTitle}</h3>
-          <div className="space-y-3">
-            {roleChallenges.slice(0, 2).map((challenge) => (
-              <div
-                key={challenge.id}
-                className="rounded-xl border"
-                style={{
-                  padding: '18px 20px',
-                  backgroundColor: 'var(--cream-card)',
-                  borderColor: 'var(--border-default)',
-                  boxShadow: 'var(--shadow-card)',
-                }}
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
-                    {challenge.name}
-                  </span>
-                  <span className="text-mono-tag" style={{ color: 'var(--brown-soft)' }}>
-                    {challenge.skill}
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {(challenge.results || []).map((result) => {
-                    const cand = candidates.find((c) => c.id === result.candId);
-                    const grade = getGrade(result.score);
-                    return (
-                      <div key={result.candId} className="flex items-center gap-4">
-                        <div
-                          className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-mono font-bold shrink-0"
-                          style={{
-                            background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
-                            color: 'var(--brown)',
-                          }}
-                        >
-                          {cand?.avatar || '??'}
-                        </div>
-                        <span className="text-body-xs w-28 shrink-0" style={{ color: 'var(--brown)' }}>
-                          {cand?.name || 'Unknown'}
-                        </span>
-                        <div className="flex-1 h-2.5 rounded-full overflow-hidden" style={{ backgroundColor: 'var(--cream-row-even)' }}>
-                          <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{
-                              width: `${result.score}%`,
-                              backgroundColor: grade.color,
-                            }}
-                          />
-                        </div>
-                        <span className="text-mono-data w-10 text-right" style={{ color: 'var(--brown)' }}>
-                          {result.score}
-                        </span>
-                        <span
-                          className="text-mono-data w-8 text-center font-bold"
-                          style={{ color: grade.color }}
-                        >
-                          {grade.letter}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            ))}
-            {roleChallenges.length > 2 && (
-              <button
-                className="text-body-xs font-semibold hover:underline"
-                style={{ color: 'var(--gold)', background: 'none', border: 'none', cursor: 'pointer' }}
-              >
-                View all {roleChallenges.length} assessments →
-              </button>
-            )}
+      {/* Results grouped by challenge */}
+      {challenges.map((challenge) => {
+        if (!challenge.results || challenge.results.length === 0) return null;
+        return (
+          <div key={challenge.id} style={{ marginBottom: 20 }}>
+            {/* Group header */}
+            <div style={{
+              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontSize: 12,
+              color: '#9a9184',
+              fontWeight: 600,
+              marginBottom: 8,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+            }}>
+              <span style={{
+                display: 'inline-block',
+                width: 20,
+                borderTop: '1px solid var(--border-light)',
+              }} />
+              {challenge.name} — {challenge.roleTitle}
+              <span style={{
+                flex: 1,
+                borderTop: '1px solid var(--border-light)',
+              }} />
+            </div>
+
+            {/* Score rows */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+              {challenge.results.map((result) => {
+                const cand = candidates.find((c) => c.id === result.candId);
+                const grade = getGrade(result.score);
+                const initials = cand?.avatar || '??';
+
+                return (
+                  <div
+                    key={result.candId}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 12,
+                      padding: '10px 14px',
+                      borderRadius: 10,
+                      border: '1px solid var(--border-default)',
+                      background: '#fff',
+                    }}
+                  >
+                    {/* Avatar */}
+                    <div style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: 6,
+                      background: 'linear-gradient(135deg, rgba(139,105,20,0.13), rgba(196,163,50,0.13))',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                    }}>
+                      <span style={{
+                        fontFamily: "'DM Mono', monospace",
+                        fontSize: 8,
+                        fontWeight: 700,
+                        color: '#8b6914',
+                      }}>{initials}</span>
+                    </div>
+
+                    {/* Name */}
+                    <span style={{
+                      fontFamily: "'Libre Baskerville', Georgia, serif",
+                      fontSize: 12,
+                      color: '#1a1612',
+                      flex: 1,
+                    }}>{cand?.name || 'Unknown'}</span>
+
+                    {/* Progress bar */}
+                    <div style={{
+                      width: 80,
+                      height: 5,
+                      borderRadius: 3,
+                      backgroundColor: 'var(--border-default)',
+                      overflow: 'hidden',
+                      flexShrink: 0,
+                    }}>
+                      <div style={{
+                        width: `${result.score}%`,
+                        height: '100%',
+                        borderRadius: 3,
+                        backgroundColor: grade.color,
+                        transition: 'width 0.5s ease',
+                      }} />
+                    </div>
+
+                    {/* Score */}
+                    <span style={{
+                      fontFamily: "'DM Mono', monospace",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: '#1a1612',
+                      width: 26,
+                      textAlign: 'right',
+                    }}>{result.score}</span>
+
+                    {/* Grade letter */}
+                    <span style={{
+                      fontFamily: "'DM Mono', monospace",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      color: grade.color,
+                      width: 16,
+                      textAlign: 'center',
+                    }}>{grade.letter}</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {allResults.length === 0 && (
-        <div className="text-center py-20">
-          <BarChart3 size={40} className="mx-auto mb-4" style={{ color: 'var(--brown-light)' }} />
-          <p className="text-body-sm font-semibold mb-1" style={{ color: 'var(--brown)' }}>No evaluations yet</p>
-          <p className="text-body-xs">Results will appear as candidates complete assessments.</p>
+        <div style={{ textAlign: 'center', padding: '60px 0' }}>
+          <BarChart3 size={32} style={{ color: '#c4b896', marginBottom: 12 }} />
+          <p style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 13, color: '#9a9184' }}>
+            No evaluations yet. Results will appear as candidates complete assessments.
+          </p>
         </div>
       )}
     </div>

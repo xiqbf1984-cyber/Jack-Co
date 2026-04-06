@@ -1,14 +1,15 @@
 'use client';
 
 import Link from 'next/link';
-import { Plus, Trophy, Users, BarChart3 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Briefcase, Trophy, Users, BarChart3 } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 
 const actions = [
-  { label: 'Add a Role', icon: Plus, color: '#27825b', href: '/roles/create' },
-  { label: 'Add a Candidate', icon: Users, color: '#0077B5', href: null },
-  { label: 'Create an Assessment', icon: Trophy, color: '#8b6914', href: '/assessment/create' },
-  { label: 'View Evaluation', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
+  { label: 'Add a Role', desc: 'Create a new job description', icon: Briefcase, color: '#27825b', href: '/roles/create' },
+  { label: 'Add a Challenge', desc: 'Design an assessment', icon: Trophy, color: '#8b6914', href: '/assessment/create' },
+  { label: 'Add Candidate', desc: 'Add to your pool', icon: Users, color: '#0077B5', href: null },
+  { label: 'View Evaluations', desc: 'Check assessment results', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
 ];
 
 export default function QuickActions() {
@@ -16,36 +17,65 @@ export default function QuickActions() {
 
   return (
     <div>
-      <h3 className="text-display-section mb-3">Quick Actions</h3>
-      <div className="grid gap-3" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <h3 style={{
+        fontFamily: "'Playfair Display', Georgia, serif",
+        fontSize: 16,
+        fontWeight: 700,
+        color: '#1a1612',
+        marginBottom: 10,
+      }}>Quick Actions</h3>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
         {actions.map((action, i) => {
           const Icon = action.icon;
           const inner = (
             <div
-              className="flex flex-col items-center gap-2 rounded-xl border transition-all duration-200 cursor-pointer hover-shadow-card text-center"
+              key={action.label}
               style={{
-                padding: '14px 10px',
-                backgroundColor: 'var(--cream-card)',
-                borderColor: 'var(--border-default)',
-                boxShadow: 'var(--shadow-card)',
-                animation: `fsu 0.25s ease-out ${i * 0.05}s both`,
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                padding: '12px 14px',
+                borderRadius: 12,
+                border: `1px solid ${action.color}33`,
+                background: `${action.color}06`,
+                cursor: 'pointer',
+                animation: `fsu .2s ease ${i * 0.04}s both`,
+                transition: 'box-shadow 0.15s ease',
               }}
+              onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 2px 8px ${action.color}18`; }}
+              onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none'; }}
             >
-              <div
-                className="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
-                style={{ backgroundColor: action.color + '14' }}
-              >
-                <Icon size={16} style={{ color: action.color }} />
+              <div style={{
+                width: 30,
+                height: 30,
+                borderRadius: 8,
+                background: `${action.color}18`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+              }}>
+                <Icon size={14} style={{ color: action.color }} />
               </div>
-              <div className="text-body-sm font-semibold" style={{ color: 'var(--brown)', lineHeight: '1.3' }}>
-                {action.label}
+              <div>
+                <div style={{
+                  fontFamily: "'Libre Baskerville', Georgia, serif",
+                  fontSize: 12,
+                  color: '#1a1612',
+                  fontWeight: 600,
+                }}>{action.label}</div>
+                <div style={{
+                  fontFamily: "'Libre Baskerville', Georgia, serif",
+                  fontSize: 10,
+                  color: '#9a9184',
+                }}>{action.desc}</div>
               </div>
             </div>
           );
 
           if (action.href) {
             return (
-              <Link key={action.label} href={action.href} className="no-underline">
+              <Link key={action.label} href={action.href} style={{ textDecoration: 'none' }}>
                 {inner}
               </Link>
             );
