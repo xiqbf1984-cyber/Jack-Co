@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Users } from 'lucide-react';
+import { Search, Users, Filter, MoreHorizontal } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
-const GRID_COLUMNS = '2fr 1fr 1fr 0.7fr';
+const avatarColors = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3b82f6', '#ef4444', '#14b8a6'];
 
 export default function CandidatesPage() {
   const candidates = useAppStore((s) => s.candidates);
@@ -21,97 +21,125 @@ export default function CandidatesPage() {
   }, [candidates, search]);
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-        <h1 style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 20,
-          fontWeight: 700,
-          color: 'var(--brown)',
-        }}>Candidates</h1>
-        <button onClick={openModal} className="btn-primary" style={{ padding: '7px 16px' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div>
+          <h1 style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 22,
+            fontWeight: 600,
+            color: 'var(--brown)',
+          }}>Candidates</h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+            marginTop: 4,
+          }}>Manage your candidate pool and track their progress</p>
+        </div>
+        <button onClick={openModal} className="btn-primary" style={{ padding: '8px 16px', fontSize: 13 }}>
           + Add Candidate
         </button>
       </div>
 
-      {/* Search */}
-      <div style={{ position: 'relative', width: 280, marginBottom: 20 }}>
-        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search candidates..."
-          style={{
-            width: '100%',
-            paddingLeft: 34,
-            paddingRight: 12,
-            paddingTop: 10,
-            paddingBottom: 10,
-            borderRadius: 8,
-            border: '1px solid var(--border-default)',
-            background: '#fff',
-            fontFamily: 'var(--font-body)',
-            fontSize: 12,
-            color: 'var(--brown)',
-            outline: 'none',
-            boxSizing: 'border-box',
-          }}
-        />
+      {/* Search + Filter bar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ position: 'relative', width: 280 }}>
+          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search candidates..."
+            style={{
+              width: '100%',
+              paddingLeft: 34,
+              paddingRight: 12,
+              paddingTop: 9,
+              paddingBottom: 9,
+              borderRadius: 8,
+              border: '1px solid var(--border-default)',
+              background: '#fff',
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              color: 'var(--brown)',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+        <button style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '9px 14px',
+          borderRadius: 8,
+          border: '1px solid var(--border-default)',
+          background: '#fff',
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-soft)',
+          cursor: 'pointer',
+        }}>
+          <Filter size={13} />
+          Status
+        </button>
       </div>
 
       {/* Table */}
       {filtered.length > 0 ? (
-        <div style={{
-          background: '#fff',
-          border: '1px solid var(--border-default)',
-          borderRadius: 14,
-          overflow: 'hidden',
-        }}>
-          {/* Header */}
+        <div>
+          {/* Header row */}
           <div style={{
             display: 'grid',
-            gridTemplateColumns: GRID_COLUMNS,
-            padding: '12px 20px',
+            gridTemplateColumns: '35% 15% 15% 15% 15% 5%',
+            padding: '0 16px',
+            height: 40,
+            alignItems: 'center',
             borderBottom: '1px solid var(--border-default)',
           }}>
-            {['CANDIDATE', 'STATUS', 'TIMEZONE', 'EMAIL'].map((h) => (
-              <span key={h} style={{
+            {['CANDIDATE', 'STATUS', 'TIMEZONE', 'TRIALS', 'LAST ACTIVE', ''].map((h) => (
+              <span key={h || 'actions'} style={{
                 fontFamily: 'var(--font-body)',
-                fontSize: 10,
+                fontSize: 11,
                 fontWeight: 500,
                 color: 'var(--brown-soft)',
                 textTransform: 'uppercase',
+                letterSpacing: '0.03em',
               }}>{h}</span>
             ))}
           </div>
 
-          {/* Rows */}
+          {/* Data rows */}
           {filtered.map((cand, i) => {
             const statusInfo = STATUS_MAP[cand.status] || STATUS_MAP.idle;
             const statusColor = `var(--${statusInfo.color})`;
             const initials = cand.avatar || cand.name.split(' ').map((w) => w[0]).join('').toUpperCase().slice(0, 2);
+            const bgColor = avatarColors[i % avatarColors.length];
 
             return (
               <div
                 key={cand.id}
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: GRID_COLUMNS,
-                  padding: '14px 20px',
-                  borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
+                  gridTemplateColumns: '35% 15% 15% 15% 15% 5%',
+                  padding: '0 16px',
+                  height: 64,
                   alignItems: 'center',
-                  animation: `fsu .2s ease ${i * 0.04}s both`,
+                  borderBottom: '1px solid var(--border-light)',
+                  transition: 'background-color 0.1s ease',
                 }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.015)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
               >
                 {/* Candidate */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
                   <div style={{
-                    width: 26,
-                    height: 26,
-                    borderRadius: 6,
-                    background: 'linear-gradient(135deg, rgba(139,105,20,0.13), rgba(196,163,50,0.13))',
+                    width: 32,
+                    height: 32,
+                    borderRadius: '50%',
+                    backgroundColor: bgColor,
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -119,17 +147,27 @@ export default function CandidatesPage() {
                   }}>
                     <span style={{
                       fontFamily: 'var(--font-body)',
-                      fontSize: 8,
-                      fontWeight: 700,
-                      color: 'var(--gold)',
+                      fontSize: 11,
+                      fontWeight: 600,
+                      color: '#fff',
                     }}>{initials}</span>
                   </div>
-                  <span style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 12,
-                    color: 'var(--brown)',
-                    fontWeight: 600,
-                  }}>{cand.name}</span>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 13,
+                      fontWeight: 500,
+                      color: 'var(--brown)',
+                    }}>{cand.name}</div>
+                    <div style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 11,
+                      color: 'var(--brown-light)',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                    }}>{cand.email}</div>
+                  </div>
                 </div>
 
                 {/* Status */}
@@ -140,39 +178,51 @@ export default function CandidatesPage() {
                   }} />
                   <span style={{
                     fontFamily: 'var(--font-body)',
-                    fontSize: 10,
-                    color: statusColor,
+                    fontSize: 12,
+                    color: 'var(--brown)',
                   }}>{statusInfo.label}</span>
                 </div>
 
                 {/* Timezone */}
                 <span style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: 11,
+                  fontSize: 12,
                   color: 'var(--brown)',
                 }}>{cand.tz}</span>
 
-                {/* Email */}
+                {/* Trials */}
                 <span style={{
                   fontFamily: 'var(--font-body)',
-                  fontSize: 9,
+                  fontSize: 12,
+                  color: 'var(--brown)',
+                }}>{cand.trials}</span>
+
+                {/* Last Active */}
+                <span style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 12,
                   color: 'var(--brown-soft)',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                }}>{cand.email}</span>
+                }}>{cand.lastActive}</span>
+
+                {/* Actions */}
+                <button style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 4,
+                  color: 'var(--brown-light)',
+                }}>
+                  <MoreHorizontal size={16} />
+                </button>
               </div>
             );
           })}
 
           {/* Footer */}
-          <div style={{
-            padding: '12px 20px',
-            borderTop: '1px solid var(--border-light)',
-          }}>
+          <div style={{ padding: '12px 16px' }}>
             <span style={{
               fontFamily: 'var(--font-body)',
-              fontSize: 11,
+              fontSize: 12,
               color: 'var(--brown-light)',
             }}>Viewing {filtered.length} rows</span>
           </div>

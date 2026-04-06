@@ -19,9 +19,7 @@ export default function DashboardLayout({ children }) {
         transition: 'margin-left 0.2s ease',
       }}>
         <div style={{
-          maxWidth: 960,
-          margin: '0 auto',
-          padding: '32px 5% 64px',
+          padding: '32px 32px 64px',
         }}>
           {children}
         </div>

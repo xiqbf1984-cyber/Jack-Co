@@ -1,36 +1,75 @@
 'use client';
 
 import { useAssessmentStore } from '@/stores/assessment-store';
+import { Users, Paperclip, Check } from 'lucide-react';
 
-function Placeholder() {
+function SectionDivider({ label }) {
   return (
-    <span
-      className="font-mono text-[11px] tracking-wider"
-      style={{ color: 'var(--brown-light)' }}
-    >
-      {'·····················'}
-    </span>
+    <div style={{
+      fontFamily: "'DM Mono', monospace",
+      fontSize: 9,
+      color: 'var(--brown-muted)',
+      textTransform: 'uppercase',
+      letterSpacing: '0.8px',
+      marginTop: 20,
+      marginBottom: 10,
+      display: 'flex',
+      alignItems: 'center',
+      gap: 8,
+    }}>
+      <span style={{ flex: 1, borderTop: '1px solid var(--border-light)' }} />
+      {label}
+      <span style={{ flex: 1, borderTop: '1px solid var(--border-light)' }} />
+    </div>
   );
 }
 
-function SectionHeader({ children }) {
+function SummaryRow({ label, value }) {
   return (
-    <h4 className="text-mono-label mb-2 mt-5 first:mt-0">{children}</h4>
-  );
-}
-
-function Row({ label, value }) {
-  return (
-    <div className="flex justify-between items-start gap-3 py-1.5">
-      <span className="text-body-xs shrink-0">{label}</span>
-      <span className="text-body-sm text-right" style={{ color: 'var(--brown)' }}>
-        {value || <Placeholder />}
+    <div style={{
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '8px 0',
+      borderBottom: '1px solid var(--border-light)',
+    }}>
+      <span style={{
+        fontFamily: "'DM Mono', monospace",
+        fontSize: 10,
+        color: 'var(--brown-muted)',
+      }}>{label}</span>
+      <span style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 11,
+        color: value ? 'var(--brown)' : 'var(--brown-light)',
+        maxWidth: 160,
+        textAlign: 'right',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+      }}>
+        {value || '(pending)'}
       </span>
     </div>
   );
 }
 
+function PlaceholderText({ text }) {
+  return (
+    <p style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 10,
+      color: 'var(--brown-light)',
+      fontStyle: 'italic',
+      lineHeight: 1.5,
+    }}>
+      {text}
+    </p>
+  );
+}
+
 export default function LivePreview() {
+  const currentStep = useAssessmentStore((s) => s.currentStep);
   const role = useAssessmentStore((s) => s.role);
   const cluster = useAssessmentStore((s) => s.cluster);
   const pathway = useAssessmentStore((s) => s.pathway);
@@ -42,125 +81,175 @@ export default function LivePreview() {
   const rubrics = useAssessmentStore((s) => s.rubrics);
 
   return (
-    <div style={{ padding: 24, borderLeft: '1px solid var(--border-light)' }}>
+    <div style={{ padding: '24px 20px' }}>
       {/* Header */}
-      <h3
-        className="text-display-section mb-1"
-        style={{ fontSize: 14 }}
-      >
+      <h3 style={{
+        fontFamily: "'Playfair Display', serif",
+        fontSize: 15,
+        color: 'var(--brown)',
+        marginBottom: 2,
+      }}>
         Assessment Preview
       </h3>
-      <div
-        className="h-px mb-4"
-        style={{ backgroundColor: 'var(--border-light)' }}
-      />
-
-      {/* Summary */}
-      <SectionHeader>SUMMARY</SectionHeader>
-      <div
-        className="rounded-lg p-3 mb-1"
-        style={{ backgroundColor: 'var(--cream)' }}
-      >
-        <Row label="Industry" value={cluster.name} />
-        <Row label="Pathway" value={pathway.name} />
-        <Row label="Role" value={selectedRole.name || role.title} />
-        <Row label="Task" value={task.name} />
+      <div style={{
+        fontFamily: "'DM Mono', monospace",
+        fontSize: 9,
+        color: 'var(--brown-light)',
+        marginBottom: 16,
+      }}>
+        Live Preview
       </div>
 
-      {/* Business Context */}
-      <SectionHeader>BUSINESS CONTEXT</SectionHeader>
-      <div
-        className="rounded-lg p-3 mb-1"
-        style={{ backgroundColor: 'var(--cream)' }}
-      >
-        {context.description ? (
-          <p className="text-body-sm" style={{ color: 'var(--brown)' }}>
-            {context.description.length > 180
-              ? context.description.slice(0, 180) + '...'
+      {/* Candidate count (after step 6) */}
+      {candidates.length > 0 && (
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+          padding: '8px 12px',
+          borderRadius: 8,
+          backgroundColor: 'var(--cream)',
+          marginBottom: 16,
+          animation: 'fsu .25s ease',
+        }}>
+          <Users size={13} style={{ color: 'var(--brown-muted)' }} />
+          <span style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: 'var(--brown)',
+          }}>
+            {candidates.length} candidate{candidates.length !== 1 ? 's' : ''}
+          </span>
+        </div>
+      )}
+
+      {/* SUMMARY */}
+      <SectionDivider label="SUMMARY" />
+      <div>
+        <SummaryRow label="Industry" value={cluster.name} />
+        <SummaryRow label="Pathway" value={pathway.name} />
+        <SummaryRow label="Role" value={selectedRole.name || role.title} />
+        <SummaryRow label="Task" value={task.name ? `${task.code} ${task.name}` : ''} />
+      </div>
+
+      {/* BUSINESS CONTEXT */}
+      <SectionDivider label="BUSINESS CONTEXT" />
+      {context.description ? (
+        <div style={{ animation: 'fsu .25s ease' }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: 'var(--brown)',
+            lineHeight: 1.5,
+            marginBottom: 8,
+          }}>
+            {context.description.length > 160
+              ? context.description.slice(0, 160) + '...'
               : context.description}
           </p>
-        ) : (
-          <p className="text-body-xs" style={{ color: 'var(--brown-light)' }}>
-            Complete Step 5
-          </p>
-        )}
-      </div>
+          {context.files && context.files.length > 0 && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              color: 'var(--brown-muted)',
+            }}>
+              <Paperclip size={10} />
+              {context.files.length} file{context.files.length !== 1 ? 's' : ''} attached
+            </div>
+          )}
+        </div>
+      ) : (
+        <PlaceholderText text="Complete Step 5 to fill this section" />
+      )}
 
-      {/* Assessment Environment */}
-      <SectionHeader>ASSESSMENT ENVIRONMENT</SectionHeader>
-      <div
-        className="rounded-lg p-3 mb-1"
-        style={{ backgroundColor: 'var(--cream)' }}
-      >
-        {environment.contextText ? (
-          <div className="space-y-1">
-            <p className="text-body-sm" style={{ color: 'var(--brown)' }}>
-              {environment.contextText.length > 120
-                ? environment.contextText.slice(0, 120) + '...'
-                : environment.contextText}
-            </p>
-            {environment.deliverables.length > 0 && (
-              <p className="text-body-xs" style={{ color: 'var(--brown-soft)' }}>
-                {environment.deliverables.length} deliverable{environment.deliverables.length !== 1 ? 's' : ''}
-              </p>
-            )}
+      {/* ASSESSMENT ENV */}
+      <SectionDivider label="ASSESSMENT ENV" />
+      {environment.contextText ? (
+        <div style={{ animation: 'fsu .25s ease' }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 4,
+            marginBottom: 6,
+          }}>
+            <Check size={11} style={{ color: 'var(--accent-green)' }} />
+            <span style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: 'var(--accent-green)',
+            }}>Generated</span>
           </div>
-        ) : (
-          <p className="text-body-xs" style={{ color: 'var(--brown-light)' }}>
-            Complete Step 6
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 10,
+            color: 'var(--brown-muted)',
+            lineHeight: 1.4,
+          }}>
+            Context: {environment.contextText.slice(0, 80)}...
           </p>
-        )}
-      </div>
+          {environment.deliverables.length > 0 && (
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              color: 'var(--brown-muted)',
+              marginTop: 2,
+            }}>
+              Deliverables: {environment.deliverables.length} items
+            </p>
+          )}
+          {environment.resources.length > 0 && (
+            <p style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              color: 'var(--brown-muted)',
+              marginTop: 2,
+            }}>
+              Resources: {environment.resources.length} items
+            </p>
+          )}
+        </div>
+      ) : (
+        <PlaceholderText text="Complete Step 6 to fill this section" />
+      )}
 
-      {/* Candidates */}
-      <SectionHeader>CANDIDATES</SectionHeader>
-      <div
-        className="rounded-lg p-3 mb-1"
-        style={{ backgroundColor: 'var(--cream)' }}
-      >
-        {candidates.length > 0 ? (
-          <div className="space-y-1">
-            {candidates.map((c) => (
-              <div key={c.id} className="flex items-center gap-2">
-                <div
-                  className="w-5 h-5 rounded-full flex items-center justify-center text-[11px] font-semibold"
-                  style={{
-                    backgroundColor: 'var(--border-default)',
-                    color: 'var(--brown)',
-                  }}
-                >
-                  {(c.name || c.email || '?').charAt(0).toUpperCase()}
-                </div>
-                <span className="text-body-sm" style={{ color: 'var(--brown)' }}>
-                  {c.name || c.email}
-                </span>
+      {/* CANDIDATES */}
+      {candidates.length > 0 && (
+        <>
+          <SectionDivider label="CANDIDATES" />
+          <div style={{ animation: 'fsu .25s ease' }}>
+            {candidates.map((c, i) => (
+              <div key={c.id} style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 10,
+                color: 'var(--brown)',
+                lineHeight: 1.6,
+              }}>
+                {i + 1}. {c.email}{c.name ? ` (${c.name})` : ''}{c.timezone ? ` — ${c.timezone.split('/').pop()}` : ''}{c.duration ? ` — ${c.duration}` : ''}
               </div>
             ))}
           </div>
-        ) : (
-          <p className="text-body-xs" style={{ color: 'var(--brown-light)' }}>
-            Complete Step 7
-          </p>
-        )}
-      </div>
+        </>
+      )}
 
-      {/* Rubrics */}
-      <SectionHeader>RUBRICS</SectionHeader>
-      <div
-        className="rounded-lg p-3"
-        style={{ backgroundColor: 'var(--cream)' }}
-      >
-        {rubrics.dimensions.length > 0 ? (
-          <p className="text-body-sm" style={{ color: 'var(--brown)' }}>
-            {rubrics.dimensions.length} dimension{rubrics.dimensions.length !== 1 ? 's' : ''}
-            {rubrics.totalRubrics > 0 && ` / ${rubrics.totalRubrics} rubrics`}
+      {/* RUBRICS */}
+      <SectionDivider label="RUBRICS" />
+      {rubrics.dimensions.length > 0 ? (
+        <div style={{ animation: 'fsu .25s ease' }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: 'var(--brown)',
+          }}>
+            {rubrics.dimensions.length} dims · {rubrics.totalRubrics} rubrics
+            {rubrics.redFlags?.length > 0 ? ` · ${rubrics.redFlags.length} red flags` : ''}
           </p>
-        ) : (
-          <p className="text-body-xs" style={{ color: 'var(--brown-light)' }}>
-            Complete Step 8
-          </p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <PlaceholderText text="Complete Step 8 to fill this section" />
+      )}
     </div>
   );
 }

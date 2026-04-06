@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { MOCK_ROLES, MOCK_CANDIDATES, MOCK_CHALLENGES } from '@/lib/constants';
+import { MOCK_ROLES, MOCK_CANDIDATES, MOCK_ASSESSMENTS } from '@/lib/constants';
 
 export const useAppStore = create((set, get) => ({
   hiringManager: {
@@ -23,7 +23,7 @@ export const useAppStore = create((set, get) => ({
 
   roles: MOCK_ROLES,
   candidates: MOCK_CANDIDATES,
-  challenges: MOCK_CHALLENGES,
+  assessments: MOCK_ASSESSMENTS,
 
   addCandidateModalOpen: false,
   sidebarCollapsed: false,
@@ -44,8 +44,8 @@ export const useAppStore = create((set, get) => ({
   addCandidate: (candidate) => set((s) => ({
     candidates: [...s.candidates, { id: Date.now(), trials: 0, lastActive: '\u2014', ...candidate }],
   })),
-  addChallenge: (challenge) => set((s) => ({
-    challenges: [{ id: 'ch-' + Date.now(), ...challenge }, ...s.challenges],
+  addAssessment: (assessment) => set((s) => ({
+    assessments: [{ id: 'a-' + Date.now(), ...assessment }, ...s.assessments],
   })),
 
   openAddCandidateModal: () => set({ addCandidateModalOpen: true }),

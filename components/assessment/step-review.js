@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { RUBRIC_FRAMEWORKS } from '@/lib/constants';
-import Link from 'next/link';
-import { ChevronDown, ChevronUp, Trash2, Plus, CheckCircle, Loader2 } from 'lucide-react';
+import { useAppStore } from '@/stores/app-store';
+import { ChevronDown, ChevronUp, Trash2, Plus, Loader2, Mail } from 'lucide-react';
 
 const mockRubrics = [
   {
@@ -62,99 +62,369 @@ const redFlags = [
   { id: 'rf2', title: 'Fabricated data', description: 'Invented ticket data or statistics', score: -327 },
 ];
 
+const weightColors = {
+  Essential: 'var(--accent-green)',
+  Important: 'var(--gold)',
+  Optional: 'var(--brown-light)',
+};
+
 const weightOptions = ['Essential', 'Important', 'Optional'];
 
 function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }) {
   const [expanded, setExpanded] = useState(false);
 
   return (
-    <div className="border rounded-xl overflow-hidden" style={{ borderColor: 'var(--border-default)' }}>
+    <div style={{
+      borderBottom: expanded ? '2px solid var(--border-light)' : undefined,
+    }}>
+      {/* Row */}
       <div
-        className="flex items-center justify-between px-4 py-3 cursor-pointer hover-bg-cream-card-hover transition-colors"
-        style={{ backgroundColor: 'var(--cream-card)' }}
         onClick={() => setExpanded(!expanded)}
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '2fr 3fr 0.5fr',
+          padding: '12px 14px',
+          borderTop: '1px solid var(--border-light)',
+          cursor: 'pointer',
+          transition: 'background-color 0.1s ease',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--cream-card)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
       >
-        <div className="flex items-center gap-3">
-          <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
-            {dimension.name}
-          </span>
-          <span className="text-mono-tag" style={{ color: 'var(--brown-soft)' }}>
-            {dimension.rubrics.length} rubrics
-          </span>
-        </div>
-        {expanded ? <ChevronUp size={16} style={{ color: 'var(--brown-soft)' }} /> : <ChevronDown size={16} style={{ color: 'var(--brown-soft)' }} />}
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--brown)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 6,
+        }}>
+          {expanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+          {dimension.name}
+        </span>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--brown-muted)',
+        }}>
+          {dimension.description}
+        </span>
+        <span style={{
+          fontFamily: "'DM Mono', monospace",
+          fontSize: 12,
+          color: 'var(--brown)',
+          textAlign: 'right',
+        }}>
+          {dimension.rubrics.length}
+        </span>
       </div>
 
+      {/* Expanded */}
       {expanded && (
-        <div className="border-t animate-fsu" style={{ borderColor: 'var(--border-light)' }}>
-          <div className="px-4 py-2 text-body-xs" style={{ color: 'var(--brown-soft)', backgroundColor: 'var(--cream-sidebar)' }}>
-            {dimension.description}
-          </div>
+        <div style={{
+          padding: '14px 18px 16px',
+          backgroundColor: 'var(--cream-card)',
+          animation: 'fsd .15s ease',
+        }}>
           {dimension.rubrics.map((rubric) => (
-            <div key={rubric.id} className="flex items-center gap-3 px-4 py-3 border-t" style={{ borderColor: 'var(--border-light)' }}>
-              <div className="flex-1">
-                <div className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>{rubric.title}</div>
-                <div className="text-body-xs">{rubric.description}</div>
+            <div key={rubric.id} style={{
+              padding: '12px 0',
+              borderBottom: '1px solid var(--border-light)',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 12,
+                    color: 'var(--brown)',
+                  }}>
+                    {rubric.title}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 11,
+                    color: 'var(--brown-muted)',
+                    marginTop: 3,
+                    lineHeight: 1.4,
+                  }}>
+                    {rubric.description}
+                  </div>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+                  <span style={{
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: 10,
+                    color: weightColors[rubric.weight] || 'var(--brown-light)',
+                  }}>
+                    {rubric.weight} ({rubric.score})
+                  </span>
+                  <select
+                    value={rubric.weight}
+                    onChange={(e) => onUpdateRubric(rubric.id, { weight: e.target.value })}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      padding: '2px 4px',
+                      borderRadius: 4,
+                      border: '1px solid var(--border-default)',
+                      backgroundColor: 'var(--cream)',
+                      fontFamily: "'DM Mono', monospace",
+                      fontSize: 9,
+                      color: 'var(--brown)',
+                      outline: 'none',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    {weightOptions.map((w) => <option key={w} value={w}>{w}</option>)}
+                  </select>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onDeleteRubric(rubric.id); }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}
+                  >
+                    <Trash2 size={12} style={{ color: 'var(--brown-light)' }} />
+                  </button>
+                </div>
               </div>
-              <select
-                value={rubric.weight}
-                onChange={(e) => onUpdateRubric(rubric.id, { weight: e.target.value })}
-                className="px-2 py-1 rounded border text-mono-tag outline-none font-mono cursor-pointer"
-                style={{ borderColor: 'var(--border-default)', backgroundColor: 'var(--cream)', color: 'var(--brown)' }}
-              >
-                {weightOptions.map((w) => (
-                  <option key={w} value={w}>{w}</option>
-                ))}
-              </select>
-              <button
-                onClick={() => onDeleteRubric(rubric.id)}
-                className="w-7 h-7 rounded flex items-center justify-center bg-transparent border-none cursor-pointer hover-bg-dim"
-                style={{ color: 'var(--brown-soft)' }}
-              >
-                <Trash2 size={13} />
-              </button>
             </div>
           ))}
+
+          {/* Pitfalls */}
           {dimension.pitfalls.length > 0 && (
             <>
-              <div className="px-4 py-2 text-mono-label" style={{ backgroundColor: 'var(--cream-sidebar)' }}>
+              <div style={{
+                fontFamily: "'DM Mono', monospace",
+                fontSize: 9,
+                color: 'var(--brown-muted)',
+                textTransform: 'uppercase',
+                marginTop: 12,
+                marginBottom: 8,
+              }}>
                 Pitfalls & Red Flags
               </div>
               {dimension.pitfalls.map((pitfall) => (
-                <div key={pitfall.id} className="flex items-center gap-3 px-4 py-3 border-t" style={{ borderColor: 'var(--border-light)' }}>
-                  <span className="text-body-xs" style={{ color: 'var(--red)' }}>⚠</span>
-                  <div className="flex-1">
-                    <div className="text-body-sm" style={{ color: 'var(--brown)' }}>{pitfall.title}</div>
-                    <div className="text-body-xs">{pitfall.description}</div>
+                <div key={pitfall.id} style={{
+                  padding: '10px 0',
+                  borderBottom: '1px solid var(--border-light)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 8,
+                }}>
+                  <span style={{ color: 'var(--red)', fontSize: 12 }}>⚠</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--red)' }}>{pitfall.title}</div>
+                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)', marginTop: 2 }}>{pitfall.description}</div>
                   </div>
-                  <span className="text-mono-data" style={{ color: 'var(--red)' }}>{pitfall.score}</span>
+                  <span style={{
+                    fontFamily: "'DM Mono', monospace",
+                    fontSize: 10,
+                    color: 'var(--red)',
+                  }}>
+                    {pitfall.weight} ({pitfall.score})
+                  </span>
                 </div>
               ))}
             </>
           )}
-          <div className="px-4 py-2 border-t" style={{ borderColor: 'var(--border-light)' }}>
-            <button
-              onClick={onAddRubric}
-              className="flex items-center gap-1.5 text-body-xs font-semibold bg-transparent border-none cursor-pointer font-body"
-              style={{ color: 'var(--gold)' }}
-            >
-              <Plus size={12} /> Add rubric
-            </button>
-          </div>
+
+          {/* Add rubric */}
+          <button
+            onClick={onAddRubric}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              marginTop: 10,
+              padding: '6px 10px',
+              borderRadius: 8,
+              border: '1px dashed var(--border-default)',
+              backgroundColor: 'transparent',
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: 'var(--gold)',
+              cursor: 'pointer',
+            }}
+          >
+            <Plus size={12} /> Add custom rubric
+          </button>
         </div>
       )}
     </div>
   );
 }
 
+// ====== SUCCESS PAGE ======
+
+function SuccessPage({ task, role, candidateCount, onDashboard, onCreateAnother }) {
+  const steps = [
+    { icon: '📧', title: 'Candidates notified', desc: 'Email invitations sent within 5 minutes with assessment details and time window.' },
+    { icon: '⏱', title: 'Assessment window opens', desc: "Each candidate's timer starts based on their schedule." },
+    { icon: '📊', title: 'Results appear', desc: 'Scores populate in Evaluation dashboard as candidates submit.' },
+    { icon: '🔔', title: 'Completion notification', desc: 'Email when all candidates have submitted or windows expire.' },
+  ];
+
+  return (
+    <div style={{
+      textAlign: 'center',
+      padding: '30px 0',
+      animation: 'fadeScale .3s ease',
+    }}>
+      {/* Icon */}
+      <div style={{
+        width: 60,
+        height: 60,
+        borderRadius: 16,
+        backgroundColor: 'rgba(39,130,91,0.12)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 24,
+      }}>
+        <Mail size={28} style={{ color: 'var(--accent-green)' }} />
+      </div>
+
+      <h1 style={{
+        fontFamily: "'Playfair Display', serif",
+        fontSize: 24,
+        color: 'var(--brown)',
+        marginBottom: 8,
+      }}>
+        Assessment Sent
+      </h1>
+
+      <p style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 14,
+        color: 'var(--brown-muted)',
+        marginBottom: 4,
+      }}>
+        {task.name || 'Assessment'}
+      </p>
+
+      <p style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 13,
+        color: 'var(--brown-light)',
+        marginBottom: 32,
+      }}>
+        {candidateCount} candidate{candidateCount !== 1 ? 's' : ''} will receive their invitation.
+      </p>
+
+      {/* What happens next */}
+      <div style={{
+        fontFamily: "'DM Mono', monospace",
+        fontSize: 10,
+        color: 'var(--brown-muted)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.8px',
+        marginBottom: 14,
+      }}>
+        ── What happens next ──
+      </div>
+
+      <div style={{ maxWidth: 420, margin: '0 auto' }}>
+        {steps.map((step, i) => (
+          <div key={step.title} style={{
+            display: 'flex',
+            gap: 12,
+            padding: '14px 16px',
+            borderRadius: 12,
+            border: '1px solid var(--border-default)',
+            backgroundColor: '#fff',
+            marginBottom: 8,
+            textAlign: 'left',
+            animation: `fsu .2s ease ${i * 0.08}s both`,
+          }}>
+            <div style={{
+              width: 32,
+              height: 32,
+              borderRadius: 8,
+              backgroundColor: 'var(--cream-row-even)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+              fontSize: 14,
+            }}>
+              {step.icon}
+            </div>
+            <div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: 'var(--brown)',
+              }}>
+                {step.title}
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: 'var(--brown-muted)',
+                marginTop: 3,
+                lineHeight: 1.4,
+              }}>
+                {step.desc}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Reminders */}
+      <div style={{
+        fontFamily: "'DM Mono', monospace",
+        fontSize: 10,
+        color: 'var(--brown-muted)',
+        textTransform: 'uppercase',
+        marginTop: 28,
+        marginBottom: 12,
+      }}>
+        ── Reminders ──
+      </div>
+
+      <div style={{
+        maxWidth: 420,
+        margin: '0 auto',
+        textAlign: 'left',
+        fontFamily: 'var(--font-body)',
+        fontSize: 11,
+        color: 'var(--brown-muted)',
+        lineHeight: 1.6,
+      }}>
+        <p style={{ marginBottom: 4 }}>• Monitor progress in real-time on the Assessments tab</p>
+        <p style={{ marginBottom: 4 }}>• Candidates who haven't started after 24h receive an automatic reminder</p>
+        <p style={{ marginBottom: 4 }}>• You can extend deadlines or resend invitations anytime</p>
+      </div>
+
+      {/* Buttons */}
+      <div style={{
+        display: 'flex',
+        gap: 12,
+        justifyContent: 'center',
+        marginTop: 28,
+      }}>
+        <button onClick={onDashboard} className="btn-primary">
+          Go to Dashboard
+        </button>
+        <button onClick={onCreateAnother} className="btn-secondary">
+          Create Another Assessment
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ====== MAIN COMPONENT ======
+
 export default function StepReview() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [sent, setSent] = useState(false);
   const [dimensions, setDimensions] = useState([]);
-  const completeStep = useAssessmentStore((s) => s.completeStep);
+
   const candidates = useAssessmentStore((s) => s.candidates);
   const task = useAssessmentStore((s) => s.task);
   const role = useAssessmentStore((s) => s.role);
+  const reset = useAssessmentStore((s) => s.reset);
+  const addAssessment = useAppStore((s) => s.addAssessment);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -201,15 +471,44 @@ export default function StepReview() {
   };
 
   const handleSend = () => {
+    // Add assessment to global store
+    addAssessment({
+      name: task.name || 'New Assessment',
+      roleId: null,
+      roleTitle: role.title,
+      status: 'published',
+      skill: task.categoryName,
+      task: task.name,
+      candIds: candidates.map((c) => c.id),
+      results: [],
+    });
     setSent(true);
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 animate-fi">
-        <Loader2 size={32} className="animate-spin mb-4" style={{ color: 'var(--gold)' }} />
-        <p className="text-body-sm" style={{ color: 'var(--brown)' }}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '60px 20px',
+      }}>
+        <Loader2 size={28} className="animate-spin" style={{ color: 'var(--gold)', marginBottom: 16 }} />
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-muted)',
+        }}>
           Building assessment environment and generating evaluation rubrics...
+        </p>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--brown-light)',
+          marginTop: 4,
+        }}>
+          This usually takes a few seconds.
         </p>
       </div>
     );
@@ -217,106 +516,163 @@ export default function StepReview() {
 
   if (sent) {
     return (
-      <div className="text-center py-12 animate-fade-scale">
-        <CheckCircle size={48} className="mx-auto mb-4" style={{ color: 'var(--accent-green)' }} />
-        <h2 className="text-display-dialog mb-2">Assessment Sent</h2>
-        <p className="text-body-sm mb-2" style={{ color: 'var(--brown)' }}>
-          {task.name || 'Assessment'} for {role.title || 'Role'}
-        </p>
-        <p className="text-body-xs mb-8">
-          {candidates.length} candidate{candidates.length !== 1 ? 's' : ''} will receive their invitation.
-        </p>
-
-        <div className="max-w-md mx-auto text-left rounded-xl border p-5 mb-8" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
-          <h3 className="text-display-section mb-4">What happens next</h3>
-          <div className="space-y-3">
-            {[
-              { icon: '📧', title: 'Candidates notified', desc: 'Email invitations sent within 5 minutes.' },
-              { icon: '⏱', title: 'Assessment window opens', desc: 'Timer starts based on scheduled start time.' },
-              { icon: '📊', title: 'Results appear', desc: 'Scores populate as candidates submit.' },
-              { icon: '🔔', title: 'Completion notification', desc: 'You\'ll receive an email when all candidates finish.' },
-            ].map((item) => (
-              <div key={item.title} className="flex gap-3">
-                <span className="text-[16px]">{item.icon}</span>
-                <div>
-                  <div className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>{item.title}</div>
-                  <div className="text-body-xs">{item.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex gap-3 justify-center">
-          <Link href="/dashboard" className="btn-secondary no-underline">Go to Dashboard</Link>
-          <button className="btn-primary" onClick={() => { setSent(false); setLoading(true); setTimeout(() => setLoading(false), 2000); }}>
-            Create Another Assessment
-          </button>
-        </div>
-      </div>
+      <SuccessPage
+        task={task}
+        role={role}
+        candidateCount={candidates.length}
+        onDashboard={() => { reset(); router.push('/dashboard'); }}
+        onCreateAnother={() => { reset(); }}
+      />
     );
   }
 
   const totalRubrics = dimensions.reduce((sum, d) => sum + d.rubrics.length, 0);
 
   return (
-    <div className="animate-fade-scale">
-      <h2 className="text-display-dialog mb-4">Evaluation Rubrics</h2>
+    <div>
+      {/* AI bubble */}
+      <div style={{
+        padding: '14px 18px',
+        borderRadius: 14,
+        backgroundColor: 'rgba(139,105,20,0.04)',
+        border: '1px solid var(--border-light)',
+        marginBottom: 20,
+      }}>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown)',
+          lineHeight: 1.6,
+          margin: 0,
+        }}>
+          Here are the evaluation rubrics for this assessment. You can adjust weights, add or remove rubrics, and confirm when ready.
+        </p>
+      </div>
 
-      {/* Summary */}
-      <div className="rounded-xl border p-4 mb-4" style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)' }}>
-        <div className="grid gap-4 text-center" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          <div>
-            <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{dimensions.length}</div>
-            <div className="text-mono-label">Dimensions</div>
+      {/* Rubrics table */}
+      <div style={{
+        backgroundColor: '#fff',
+        border: '1px solid var(--border-default)',
+        borderRadius: 14,
+        padding: 20,
+        marginBottom: 20,
+      }}>
+        <h2 style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: 16,
+          color: 'var(--brown)',
+          marginBottom: 14,
+        }}>
+          Evaluation Rubrics
+        </h2>
+
+        <div style={{
+          border: '1px solid var(--border-default)',
+          borderRadius: 10,
+          overflow: 'hidden',
+        }}>
+          {/* Header */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 3fr 0.5fr',
+            padding: '10px 14px',
+            backgroundColor: 'var(--cream-row-even)',
+          }}>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'var(--brown-muted)' }}>DIMENSION</span>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'var(--brown-muted)' }}>WHAT WE LOOK FOR</span>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'var(--brown-muted)', textAlign: 'right' }}>#</span>
           </div>
-          <div>
-            <div className="text-mono-display" style={{ color: 'var(--brown)' }}>{totalRubrics}</div>
-            <div className="text-mono-label">Rubrics</div>
+
+          {/* Dimension rows */}
+          {dimensions.map((dim) => (
+            <DimensionRow
+              key={dim.id}
+              dimension={dim}
+              onUpdateRubric={handleUpdateRubric}
+              onDeleteRubric={handleDeleteRubric}
+              onAddRubric={() => handleAddRubric(dim.id)}
+            />
+          ))}
+
+          {/* Red flags row */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '2fr 3fr 0.5fr',
+            padding: '12px 14px',
+            borderTop: '2px solid var(--border-light)',
+          }}>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--red)' }}>Red Flags</span>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)' }}>Disqualification</span>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: 'var(--brown)', textAlign: 'right' }}>{redFlags.length}</span>
           </div>
-          <div>
-            <div className="text-mono-display" style={{ color: 'var(--red)' }}>{redFlags.length}</div>
-            <div className="text-mono-label">Red Flags</div>
-          </div>
+        </div>
+
+        {/* Total */}
+        <div style={{
+          textAlign: 'right',
+          marginTop: 8,
+          fontFamily: "'DM Mono', monospace",
+          fontSize: 11,
+          color: 'var(--brown-muted)',
+        }}>
+          Total: {totalRubrics + redFlags.length}
         </div>
       </div>
 
-      {/* Scoring system */}
-      <div className="rounded-xl border p-4 mb-6" style={{ backgroundColor: 'var(--cream-sidebar)', borderColor: 'var(--border-default)' }}>
-        <h4 className="text-mono-label mb-2">Scoring System</h4>
-        <div className="grid gap-3 text-body-xs" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
-          <div><span className="font-semibold" style={{ color: 'var(--accent-green)' }}>Essential</span> (8-10): Core requirement</div>
-          <div><span className="font-semibold" style={{ color: 'var(--gold)' }}>Important</span> (4-7): Expected feature</div>
-          <div><span className="font-semibold" style={{ color: 'var(--brown-soft)' }}>Optional</span> (2-3): Bonus polish</div>
+      {/* Scoring system card */}
+      <div style={{
+        backgroundColor: '#fff',
+        border: '1px solid var(--border-default)',
+        borderRadius: 14,
+        padding: '18px 20px',
+        marginBottom: 24,
+      }}>
+        <div style={{
+          fontFamily: "'DM Mono', monospace",
+          fontSize: 10,
+          color: 'var(--brown-muted)',
+          textTransform: 'uppercase',
+          marginBottom: 12,
+        }}>
+          SCORING SYSTEM
         </div>
-      </div>
 
-      {/* Dimensions */}
-      <div className="space-y-3 mb-6">
-        {dimensions.map((dim) => (
-          <DimensionRow
-            key={dim.id}
-            dimension={dim}
-            onUpdateRubric={handleUpdateRubric}
-            onDeleteRubric={handleDeleteRubric}
-            onAddRubric={() => handleAddRubric(dim.id)}
-          />
+        {/* Positive scores */}
+        {[
+          { cls: 'Essential', range: '8-10', meaning: 'Core requirement', color: 'var(--accent-green)' },
+          { cls: 'Important', range: '4-7', meaning: 'Expected feature', color: 'var(--gold)' },
+          { cls: 'Optional', range: '2-3', meaning: 'Bonus polish', color: 'var(--brown-light)' },
+        ].map((row) => (
+          <div key={row.cls} style={{ display: 'flex', gap: 16, padding: '5px 0' }}>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: row.color, width: 70 }}>{row.cls}</span>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--brown-muted)', width: 50 }}>{row.range}</span>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)' }}>{row.meaning}</span>
+          </div>
         ))}
-      </div>
 
-      {/* Red Flags */}
-      <div className="rounded-xl border p-4 mb-6" style={{ backgroundColor: 'rgba(192,57,43,0.03)', borderColor: 'rgba(192,57,43,0.2)' }}>
-        <h4 className="text-mono-label mb-2" style={{ color: 'var(--red)' }}>Red Flags (Instant Disqualification)</h4>
-        {redFlags.map((rf) => (
-          <div key={rf.id} className="flex items-center gap-2 py-1.5">
-            <span style={{ color: 'var(--red)' }}>⛔</span>
-            <span className="text-body-sm" style={{ color: 'var(--brown)' }}>{rf.title}</span>
-            <span className="text-mono-data ml-auto" style={{ color: 'var(--red)' }}>{rf.score}</span>
+        <div style={{ height: 1, backgroundColor: 'var(--border-light)', margin: '8px 0' }} />
+
+        {/* Negative scores */}
+        {[
+          { cls: 'Critical', range: '-8 to -9', meaning: 'Severe error' },
+          { cls: 'Major', range: '-4 to -6', meaning: 'Significant defect' },
+          { cls: 'Minor', range: '-2 to -3', meaning: 'Small issue' },
+          { cls: 'Red Flag', range: '-327', meaning: 'Instant disqualification' },
+        ].map((row) => (
+          <div key={row.cls} style={{ display: 'flex', gap: 16, padding: '5px 0' }}>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--red)', width: 70 }}>{row.cls}</span>
+            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--brown-muted)', width: 50 }}>{row.range}</span>
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)' }}>{row.meaning}</span>
           </div>
         ))}
       </div>
 
-      <button className="btn-primary w-full py-3" onClick={handleSend}>
+      {/* Confirm button */}
+      <button
+        className="btn-primary"
+        style={{ width: '100%', justifyContent: 'center' }}
+        onClick={handleSend}
+      >
         Confirm Rubrics & Send to Candidates
       </button>
     </div>

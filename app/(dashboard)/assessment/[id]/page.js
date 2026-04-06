@@ -20,18 +20,18 @@ const tabs = [
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
-export default function ChallengeDetailPage() {
+export default function AssessmentDetailPage() {
   const { id } = useParams();
-  const challenges = useAppStore((s) => s.challenges);
+  const assessments = useAppStore((s) => s.assessments);
   const candidates = useAppStore((s) => s.candidates);
-  const challenge = challenges.find((c) => c.id === id);
+  const assessment = assessments.find((a) => a.id === id);
   const [activeTab, setActiveTab] = useState('overview');
 
-  if (!challenge) {
+  if (!assessment) {
     return (
       <div className="page-container">
         <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline" style={{ color: 'var(--gold)' }}>
-          <ArrowLeft size={14} /> Back to Assessment
+          <ArrowLeft size={14} /> Back to Assessments
         </Link>
         <p className="text-body-sm" style={{ color: 'var(--brown-soft)' }}>Assessment not found.</p>
       </div>
@@ -43,14 +43,14 @@ export default function ChallengeDetailPage() {
   return (
     <div className="page-container">
       <Link href="/assessment" className="text-body-xs flex items-center gap-1 mb-4 no-underline hover:underline" style={{ color: 'var(--gold)' }}>
-        <ArrowLeft size={14} /> Back to Assessment
+        <ArrowLeft size={14} /> Back to Assessments
       </Link>
 
       <div className="flex items-center gap-3 mb-4">
-        <h1 className="text-display-page">{challenge.name}</h1>
-        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ backgroundColor: (statusColors[challenge.status] || '#c4b896') + '14' }}>
-          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: statusColors[challenge.status] }} />
-          <span className="text-mono-tag" style={{ color: statusColors[challenge.status] }}>{challenge.status}</span>
+        <h1 className="text-display-page">{assessment.name}</h1>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ backgroundColor: (statusColors[assessment.status] || '#c4b896') + '14' }}>
+          <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: statusColors[assessment.status] }} />
+          <span className="text-mono-tag" style={{ color: statusColors[assessment.status] }}>{assessment.status}</span>
         </div>
       </div>
 
@@ -81,10 +81,10 @@ export default function ChallengeDetailPage() {
         <div className="space-y-4 animate-fsu">
           <div className="rounded-xl border" style={{ padding: '20px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
             <div className="grid gap-5" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-              <div><span className="text-mono-label block mb-2">Role</span><span className="text-body-sm">{challenge.roleTitle}</span></div>
-              <div><span className="text-mono-label block mb-2">Skill</span><span className="text-body-sm">{challenge.skill}</span></div>
-              <div><span className="text-mono-label block mb-2">Task</span><span className="text-body-sm">{challenge.task}</span></div>
-              <div><span className="text-mono-label block mb-2">Candidates</span><span className="text-body-sm">{challenge.candIds?.length || 0}</span></div>
+              <div><span className="text-mono-label block mb-2">Role</span><span className="text-body-sm">{assessment.roleTitle}</span></div>
+              <div><span className="text-mono-label block mb-2">Skill</span><span className="text-body-sm">{assessment.skill}</span></div>
+              <div><span className="text-mono-label block mb-2">Task</span><span className="text-body-sm">{assessment.task}</span></div>
+              <div><span className="text-mono-label block mb-2">Candidates</span><span className="text-body-sm">{assessment.candIds?.length || 0}</span></div>
             </div>
           </div>
         </div>
@@ -93,7 +93,7 @@ export default function ChallengeDetailPage() {
       {/* Candidates Tab */}
       {activeTab === 'candidates' && (
         <div className="space-y-3 animate-fsu">
-          {(challenge.results || []).map((result) => {
+          {(assessment.results || []).map((result) => {
             const cand = candidates.find((c) => c.id === result.candId);
             const grade = getGrade(result.score);
             return (
@@ -115,7 +115,7 @@ export default function ChallengeDetailPage() {
               </div>
             );
           })}
-          {(!challenge.results || challenge.results.length === 0) && (
+          {(!assessment.results || assessment.results.length === 0) && (
             <p className="text-body-xs text-center py-8" style={{ color: 'var(--brown-soft)' }}>No submissions yet.</p>
           )}
         </div>

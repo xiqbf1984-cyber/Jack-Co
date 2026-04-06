@@ -12,8 +12,8 @@ const statusColors = {
 };
 
 export default function RecentAssessmentsList() {
-  const challenges = useAppStore((s) => s.challenges);
-  const display = challenges.slice(0, 4);
+  const assessments = useAppStore((s) => s.assessments);
+  const display = assessments.slice(0, 4);
 
   return (
     <div className="h-full flex flex-col">
@@ -31,10 +31,10 @@ export default function RecentAssessmentsList() {
         className="rounded-xl border overflow-hidden relative flex-1"
         style={{ backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}
       >
-        {display.map((challenge, i) => (
+        {display.map((assessment, i) => (
           <Link
-            key={challenge.id}
-            href={`/assessment/${challenge.id}`}
+            key={assessment.id}
+            href={`/assessment/${assessment.id}`}
             className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover no-underline"
             style={{
               padding: '12px 16px',
@@ -45,19 +45,19 @@ export default function RecentAssessmentsList() {
           >
             <div className="flex flex-col gap-0.5">
               <span className="text-body-sm font-semibold" style={{ color: 'var(--brown)' }}>
-                {challenge.name}
+                {assessment.name}
               </span>
               <span className="text-body-xs" style={{ color: '#7a7068' }}>
-                {challenge.roleTitle} &middot; {challenge.candIds?.length || 0} candidates
+                {assessment.roleTitle} &middot; {assessment.candIds?.length || 0} candidates
               </span>
             </div>
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: statusColors[challenge.status] || '#a09878' }}
+                style={{ backgroundColor: statusColors[assessment.status] || '#a09878' }}
               />
-              <span className="text-mono-tag" style={{ color: statusColors[challenge.status] || 'var(--brown-soft)' }}>
-                {challenge.status}
+              <span className="text-mono-tag" style={{ color: statusColors[assessment.status] || 'var(--brown-soft)' }}>
+                {assessment.status}
               </span>
             </div>
           </Link>

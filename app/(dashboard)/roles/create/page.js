@@ -63,53 +63,31 @@ function generateJD(answers, matched, company) {
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div className="flex items-center justify-center gap-0 py-4 px-6">
+    <div style={{
+      display: 'flex',
+      gap: 6,
+      padding: '14px 32px 10px',
+      borderBottom: '1px solid var(--border-default)',
+      marginBottom: 0,
+    }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
         var isDone = i < currentStage;
 
-        return (
-          <div key={stage.key} className="flex items-center">
-            <div className="flex flex-col items-center gap-1">
-              <div
-                className="w-3 h-3 rounded-full transition-all duration-300"
-                style={{
-                  backgroundColor: isDone
-                    ? 'var(--accent-green)'
-                    : isCurrent
-                    ? 'var(--gold)'
-                    : 'var(--border-default)',
-                  boxShadow: isCurrent
-                    ? '0 0 0 4px rgba(139, 105, 20, 0.15)'
-                    : 'none',
-                }}
-              />
-              <span
-                className="text-body-xs font-medium whitespace-nowrap"
-                style={{
-                  color: isDone
-                    ? 'var(--accent-green)'
-                    : isCurrent
-                    ? 'var(--gold)'
-                    : 'var(--brown-soft)',
-                }}
-              >
-                {stage.label}
-              </span>
-            </div>
+        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
+        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
 
-            {i < STAGES.length - 1 && (
-              <div
-                className="w-16 mx-2 transition-colors duration-300"
-                style={{
-                  height: 2,
-                  marginTop: -14,
-                  backgroundColor: isDone
-                    ? 'var(--accent-green)'
-                    : 'var(--border-default)',
-                }}
-              />
-            )}
+        return (
+          <div key={stage.key} style={{ flex: 1 }}>
+            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
+            <div style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 9,
+              marginTop: 5,
+              textAlign: 'center',
+              color: labelColor,
+              userSelect: 'none',
+            }}>{stage.label}</div>
           </div>
         );
       })}
@@ -260,10 +238,10 @@ export default function RoleCreatePage() {
   var isCompact = stage >= 2;
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', margin: '-32px -32px -64px -32px', height: '100vh' }}>
       <ProgressIndicator currentStage={stage} />
 
-      <div className="flex-1 overflow-hidden">
+      <div style={{ flex: 1, overflow: 'hidden' }}>
         {stage === 0 && <SearchPage onSubmit={handleSearchSubmit} />}
 
         {stage >= 1 && (

@@ -2,8 +2,6 @@
 
 import { WIZARD_STEPS } from '@/lib/constants';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
 
 export default function WizardProgress() {
   const currentStep = useAssessmentStore((s) => s.currentStep);
@@ -12,89 +10,51 @@ export default function WizardProgress() {
   const goToStep = useAssessmentStore((s) => s.goToStep);
 
   return (
-    <div className="flex items-center w-full mx-auto" style={{ maxWidth: 720 }}>
+    <div style={{ display: 'flex', gap: 6 }}>
       {WIZARD_STEPS.map((step, i) => {
         const isCompleted = completedSteps.includes(i);
         const isCurrent = currentStep === i;
-        const isClickable = i <= maxReachedStep;
-        const isLast = i === WIZARD_STEPS.length - 1;
+        const isClickable = isCompleted;
 
-        // Determine the line color (line AFTER this step)
-        const lineCompleted = completedSteps.includes(i);
+        let barColor = 'var(--border-default)';
+        let labelColor = 'var(--border-default)';
+
+        if (isCompleted) {
+          barColor = 'var(--accent-green)';
+          labelColor = 'var(--accent-green)';
+        } else if (isCurrent) {
+          barColor = 'var(--gold)';
+          labelColor = 'var(--gold)';
+        }
 
         return (
           <div
             key={step.id}
-            className={cn('flex items-center', !isLast && 'flex-1')}
+            style={{
+              flex: 1,
+              cursor: isClickable ? 'pointer' : 'default',
+            }}
+            onClick={() => isClickable && goToStep(i)}
           >
-            <button
-              type="button"
-              onClick={() => isClickable && goToStep(i)}
-              disabled={!isClickable}
-              className={cn(
-                'flex flex-col items-center gap-1.5 transition-all duration-200',
-                isClickable ? 'cursor-pointer' : 'cursor-not-allowed'
-              )}
-              title={step.label}
-            >
-              {/* Dot */}
-              <div
-                className={cn(
-                  'rounded-full flex items-center justify-center transition-all duration-200',
-                  isCompleted && 'text-white',
-                  isCurrent && 'text-white animate-glow',
-                )}
-                style={{
-                  width: isCurrent ? 28 : 24,
-                  height: isCurrent ? 28 : 24,
-                  backgroundColor: isCompleted
-                    ? 'var(--accent-green)'
-                    : isCurrent
-                      ? 'var(--gold)'
-                      : 'var(--cream)',
-                  border: isCompleted
-                    ? '2px solid var(--accent-green)'
-                    : isCurrent
-                      ? '2px solid var(--gold)'
-                      : '2px solid var(--border-default)',
-                }}
-              >
-                {isCompleted ? (
-                  <Check size={12} strokeWidth={3} />
-                ) : isCurrent ? (
-                  <span className="text-xs font-bold">{i + 1}</span>
-                ) : null}
-              </div>
-
-              {/* Label */}
-              <span
-                className="whitespace-nowrap"
-                style={{ fontSize: 10 }}
-                style={{
-                  color: isCompleted
-                    ? 'var(--accent-green)'
-                    : isCurrent
-                      ? 'var(--gold)'
-                      : 'var(--brown-soft)',
-                  fontWeight: (isCompleted || isCurrent) ? 600 : 400,
-                }}
-              >
-                {step.label}
-              </span>
-            </button>
-
-            {/* Connector line */}
-            {!isLast && (
-              <div
-                className="flex-1 mx-2 rounded-full transition-colors duration-300"
-                style={{
-                  height: 2,
-                  backgroundColor: lineCompleted
-                    ? 'var(--accent-green)'
-                    : 'var(--border-default)',
-                }}
-              />
-            )}
+            {/* Color bar */}
+            <div style={{
+              height: 3,
+              borderRadius: 2,
+              backgroundColor: barColor,
+              transition: 'background-color 0.2s ease',
+            }} />
+            {/* Label */}
+            <div style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 9,
+              marginTop: 5,
+              textAlign: 'center',
+              color: labelColor,
+              transition: 'color 0.2s ease',
+              userSelect: 'none',
+            }}>
+              {step.label}
+            </div>
           </div>
         );
       })}

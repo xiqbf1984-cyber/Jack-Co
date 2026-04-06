@@ -12,11 +12,11 @@ function getGrade(score) {
 }
 
 export default function EvaluationPage() {
-  const challenges = useAppStore((s) => s.challenges);
+  const assessments = useAppStore((s) => s.assessments);
   const candidates = useAppStore((s) => s.candidates);
 
-  const allResults = challenges.flatMap((c) =>
-    (c.results || []).map((r) => ({ ...r, challengeName: c.name, roleTitle: c.roleTitle }))
+  const allResults = assessments.flatMap((c) =>
+    (c.results || []).map((r) => ({ ...r, assessmentName: c.name, roleTitle: c.roleTitle }))
   );
 
   const avgScore = allResults.length > 0
@@ -36,13 +36,20 @@ export default function EvaluationPage() {
 
   return (
     <div>
-      <h1 style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 20,
-        fontWeight: 700,
-        color: 'var(--brown)',
-        marginBottom: 20,
-      }}>Evaluation Dashboard</h1>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 22,
+          fontWeight: 600,
+          color: 'var(--brown)',
+        }}>Evaluation Dashboard</h1>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-soft)',
+          marginTop: 4,
+        }}>Review candidate scores and assessment results</p>
+      </div>
 
       {/* Stat cards */}
       <div style={{
@@ -94,11 +101,11 @@ export default function EvaluationPage() {
         })}
       </div>
 
-      {/* Results grouped by challenge */}
-      {challenges.map((challenge) => {
-        if (!challenge.results || challenge.results.length === 0) return null;
+      {/* Results grouped by assessment */}
+      {assessments.map((assessment) => {
+        if (!assessment.results || assessment.results.length === 0) return null;
         return (
-          <div key={challenge.id} style={{ marginBottom: 24 }}>
+          <div key={assessment.id} style={{ marginBottom: 24 }}>
             {/* Group header */}
             <div style={{
               fontFamily: 'var(--font-body)',
@@ -115,7 +122,7 @@ export default function EvaluationPage() {
                 width: 20,
                 borderTop: '1px solid var(--border-light)',
               }} />
-              {challenge.name} — {challenge.roleTitle}
+              {assessment.name} — {assessment.roleTitle}
               <span style={{
                 flex: 1,
                 borderTop: '1px solid var(--border-light)',
@@ -124,7 +131,7 @@ export default function EvaluationPage() {
 
             {/* Score rows */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {challenge.results.map((result) => {
+              {assessment.results.map((result) => {
                 const cand = candidates.find((c) => c.id === result.candId);
                 const grade = getGrade(result.score);
                 const initials = cand?.avatar || '??';
