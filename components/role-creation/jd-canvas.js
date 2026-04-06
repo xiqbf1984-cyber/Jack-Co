@@ -45,7 +45,7 @@ export default function JDCanvas({
         <div>
           <h2
             style={{
-              fontFamily: "'Playfair Display', var(--font-body)",
+              fontFamily: 'var(--font-body)',
               fontSize: 18,
               fontWeight: 700,
               color: 'var(--brown)',
@@ -57,7 +57,7 @@ export default function JDCanvas({
             <div
               className="flex items-center gap-1 mt-1"
               style={{
-                fontFamily: "'DM Mono', monospace, var(--font-body)",
+                fontFamily: 'var(--font-body)',
                 fontSize: 10,
                 color: matchScore > 0
                   ? 'var(--accent-green)'
@@ -116,7 +116,7 @@ export default function JDCanvas({
           onChange={function (e) { onChange?.(e.target.value); }}
           className="flex-1 w-full resize-y bg-transparent focus:outline-none"
           style={{
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 13,
             lineHeight: 1.8,
             color: 'var(--brown)',

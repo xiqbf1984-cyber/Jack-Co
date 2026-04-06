@@ -14,15 +14,15 @@ export default function RecentCandidatesList() {
       {/* Title row */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <h3 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 16,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
         }}>Recent Candidates</h3>
         <Link href="/candidates" style={{
-          fontFamily: "'Libre Baskerville', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 11,
-          color: '#8b6914',
+          color: 'var(--gold)',
           textDecoration: 'none',
           cursor: 'pointer',
         }}>View all →</Link>
@@ -62,27 +62,27 @@ export default function RecentCandidatesList() {
                   flexShrink: 0,
                 }}>
                   <span style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 8,
                     fontWeight: 700,
-                    color: '#8b6914',
+                    color: 'var(--gold)',
                   }}>{initials}</span>
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{
-                    fontFamily: "'Libre Baskerville', Georgia, serif",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 12,
-                    color: '#1a1612',
+                    color: 'var(--brown)',
                     fontWeight: 600,
                   }}>{cand.name}</div>
                   <div style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: 'var(--font-body)',
                     fontSize: 9,
-                    color: '#c4b896',
+                    color: 'var(--brown-light)',
                   }}>{cand.email}</div>
                 </div>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: 'var(--font-body)',
                   fontSize: 10,
                   fontWeight: 500,
                   padding: '4px 12px',

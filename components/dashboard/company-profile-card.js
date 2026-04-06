@@ -14,10 +14,10 @@ export default function CompanyProfileCard() {
     return (
       <div>
         <h3 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 16,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
           marginBottom: 12,
         }}>Company Profile</h3>
         <div style={{
@@ -28,18 +28,18 @@ export default function CompanyProfileCard() {
           textAlign: 'center',
           animation: 'fsu .25s ease 0.1s both',
         }}>
-          <Building2 size={28} style={{ color: '#c4b896', marginBottom: 12 }} />
+          <Building2 size={28} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
           <div style={{
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 13,
-            color: '#1a1612',
+            color: 'var(--brown)',
             fontWeight: 600,
             marginBottom: 6,
           }}>Set up your company profile</div>
           <div style={{
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 11,
-            color: '#9a9184',
+            color: 'var(--brown-soft)',
             marginBottom: 16,
             lineHeight: 1.6,
           }}>This info appears in JDs and candidate invitations.</div>
@@ -53,9 +53,9 @@ export default function CompanyProfileCard() {
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#faf6ef',
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 11,
-            color: '#8b6914',
+            color: 'var(--gold)',
             textDecoration: 'none',
             cursor: 'pointer',
           }}>Complete Profile</Link>
@@ -67,10 +67,10 @@ export default function CompanyProfileCard() {
   return (
     <div>
       <h3 style={{
-        fontFamily: "'Playfair Display', Georgia, serif",
+        fontFamily: 'var(--font-body)',
         fontSize: 16,
         fontWeight: 700,
-        color: '#1a1612',
+        color: 'var(--brown)',
         marginBottom: 12,
       }}>Company Profile</h3>
       <div style={{
@@ -96,20 +96,20 @@ export default function CompanyProfileCard() {
               color: '#fff',
               fontSize: 16,
               fontWeight: 700,
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: 'var(--font-body)',
             }}>{initial}</span>
           </div>
           <div>
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 14,
-              color: '#1a1612',
+              color: 'var(--brown)',
               fontWeight: 600,
             }}>{company.name}</div>
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 10,
-              color: '#9a9184',
+              color: 'var(--brown-soft)',
             }}>{company.industry}</div>
           </div>
         </div>
@@ -118,24 +118,24 @@ export default function CompanyProfileCard() {
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: company.description ? 0 : 12 }}>
           {company.location && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Building2 size={12} style={{ color: '#c4b896' }} />
-              <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 11, color: '#9a9184' }}>
+              <Building2 size={12} style={{ color: 'var(--brown-light)' }} />
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>
                 {company.location}
               </span>
             </div>
           )}
           {company.size && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Users size={12} style={{ color: '#c4b896' }} />
-              <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 11, color: '#9a9184' }}>
+              <Users size={12} style={{ color: 'var(--brown-light)' }} />
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>
                 {company.size}
               </span>
             </div>
           )}
           {company.website && (
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Link2 size={12} style={{ color: '#c4b896' }} />
-              <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 11, color: '#9a9184' }}>
+              <Link2 size={12} style={{ color: 'var(--brown-light)' }} />
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>
                 {company.website}
               </span>
             </div>
@@ -145,9 +145,9 @@ export default function CompanyProfileCard() {
         {/* Description */}
         {company.description && (
           <div style={{
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 11,
-            color: '#9a9184',
+            color: 'var(--brown-soft)',
             lineHeight: 1.6,
             marginTop: 12,
             marginBottom: 12,
@@ -171,14 +171,14 @@ export default function CompanyProfileCard() {
           borderRadius: 8,
           border: '1px solid var(--border-default)',
           background: '#faf6ef',
-          fontFamily: "'Libre Baskerville', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 11,
-          color: '#8b6914',
+          color: 'var(--gold)',
           textDecoration: 'none',
           cursor: 'pointer',
           marginTop: 12,
         }}>
-          <Pencil size={12} style={{ color: '#8b6914' }} />
+          <Pencil size={12} style={{ color: 'var(--gold)' }} />
           Edit Profile
         </Link>
       </div>

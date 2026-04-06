@@ -102,27 +102,27 @@ export default function AddCandidateModal() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#9a9184',
+            color: 'var(--brown-soft)',
           }}
         >
           <X size={16} />
         </button>
 
         <h2 style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: 'var(--font-body)',
           fontSize: 18,
           fontWeight: 700,
-          color: '#1a1612',
+          color: 'var(--brown)',
           marginBottom: 24,
         }}>Add Candidate</h2>
 
         {/* Name */}
         <div style={{ marginBottom: 18 }}>
           <label style={{
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 11,
             fontWeight: 600,
-            color: '#1a1612',
+            color: 'var(--brown)',
             display: 'block',
             marginBottom: 8,
           }}>Name *</label>
@@ -137,9 +137,9 @@ export default function AddCandidateModal() {
               borderRadius: 8,
               border: '1px solid var(--border-default)',
               background: 'var(--cream)',
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 12,
-              color: '#1a1612',
+              color: 'var(--brown)',
               outline: 'none',
               boxSizing: 'border-box',
               transition: 'border-color 0.15s ease',
@@ -152,10 +152,10 @@ export default function AddCandidateModal() {
         {/* Email */}
         <div style={{ marginBottom: 28 }}>
           <label style={{
-            fontFamily: "'Libre Baskerville', Georgia, serif",
+            fontFamily: 'var(--font-body)',
             fontSize: 11,
             fontWeight: 600,
-            color: '#1a1612',
+            color: 'var(--brown)',
             display: 'block',
             marginBottom: 8,
           }}>Email *</label>
@@ -171,9 +171,9 @@ export default function AddCandidateModal() {
               borderRadius: 8,
               border: `1px solid ${emailInvalid ? 'var(--red)' : 'var(--border-default)'}`,
               background: 'var(--cream)',
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 12,
-              color: '#1a1612',
+              color: 'var(--brown)',
               outline: 'none',
               boxSizing: 'border-box',
               transition: 'border-color 0.15s ease',
@@ -182,7 +182,7 @@ export default function AddCandidateModal() {
           />
           {emailInvalid && (
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 10,
               color: 'var(--red)',
               marginTop: 4,
@@ -199,7 +199,7 @@ export default function AddCandidateModal() {
               borderRadius: 8,
               border: '1px solid var(--border-default)',
               background: '#fff',
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 12,
               fontWeight: 600,
               color: 'var(--brown)',
@@ -217,7 +217,7 @@ export default function AddCandidateModal() {
                 ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
                 : '#a0968c',
               color: 'var(--btn-text)',
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 12,
               fontWeight: 600,
               cursor: canSubmit ? 'pointer' : 'not-allowed',

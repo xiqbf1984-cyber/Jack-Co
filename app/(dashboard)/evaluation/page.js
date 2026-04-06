@@ -29,7 +29,7 @@ export default function EvaluationPage() {
 
   const evalStats = [
     { label: 'Submissions', value: allResults.length, icon: FileCheck, color: '#0077B5' },
-    { label: 'Avg Score', value: avgScore, icon: TrendingUp, color: '#8b6914' },
+    { label: 'Avg Score', value: avgScore, icon: TrendingUp, color: 'var(--gold)' },
     { label: 'Grade A', value: gradeACount, icon: Award, color: '#27825b' },
     { label: 'Pass Rate', value: `${passRate}%`, icon: BarChart3, color: '#d4880f' },
   ];
@@ -37,10 +37,10 @@ export default function EvaluationPage() {
   return (
     <div>
       <h1 style={{
-        fontFamily: "'Playfair Display', Georgia, serif",
+        fontFamily: 'var(--font-body)',
         fontSize: 20,
         fontWeight: 700,
-        color: '#1a1612',
+        color: 'var(--brown)',
         marginBottom: 20,
       }}>Evaluation Dashboard</h1>
 
@@ -77,16 +77,16 @@ export default function EvaluationPage() {
                 <Icon size={15} style={{ color: stat.color }} />
               </div>
               <div style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: 'var(--font-body)',
                 fontSize: 20,
                 fontWeight: 700,
-                color: '#1a1612',
+                color: 'var(--brown)',
                 marginTop: 6,
               }}>{stat.value}</div>
               <div style={{
-                fontFamily: "'Libre Baskerville', Georgia, serif",
+                fontFamily: 'var(--font-body)',
                 fontSize: 10,
-                color: '#c4b896',
+                color: 'var(--brown-light)',
                 marginTop: 2,
               }}>{stat.label}</div>
             </div>
@@ -101,9 +101,9 @@ export default function EvaluationPage() {
           <div key={challenge.id} style={{ marginBottom: 24 }}>
             {/* Group header */}
             <div style={{
-              fontFamily: "'Libre Baskerville', Georgia, serif",
+              fontFamily: 'var(--font-body)',
               fontSize: 12,
-              color: '#9a9184',
+              color: 'var(--brown-soft)',
               fontWeight: 600,
               marginBottom: 10,
               display: 'flex',
@@ -154,18 +154,18 @@ export default function EvaluationPage() {
                       flexShrink: 0,
                     }}>
                       <span style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: 'var(--font-body)',
                         fontSize: 8,
                         fontWeight: 700,
-                        color: '#8b6914',
+                        color: 'var(--gold)',
                       }}>{initials}</span>
                     </div>
 
                     {/* Name */}
                     <span style={{
-                      fontFamily: "'Libre Baskerville', Georgia, serif",
+                      fontFamily: 'var(--font-body)',
                       fontSize: 12,
-                      color: '#1a1612',
+                      color: 'var(--brown)',
                       flex: 1,
                     }}>{cand?.name || 'Unknown'}</span>
 
@@ -189,17 +189,17 @@ export default function EvaluationPage() {
 
                     {/* Score */}
                     <span style={{
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: 'var(--font-body)',
                       fontSize: 12,
                       fontWeight: 700,
-                      color: '#1a1612',
+                      color: 'var(--brown)',
                       width: 26,
                       textAlign: 'right',
                     }}>{result.score}</span>
 
                     {/* Grade letter */}
                     <span style={{
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: 'var(--font-body)',
                       fontSize: 12,
                       fontWeight: 700,
                       color: grade.color,
@@ -216,8 +216,8 @@ export default function EvaluationPage() {
 
       {allResults.length === 0 && (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <BarChart3 size={32} style={{ color: '#c4b896', marginBottom: 12 }} />
-          <p style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 13, color: '#9a9184' }}>
+          <BarChart3 size={32} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
             No evaluations yet. Results will appear as candidates complete assessments.
           </p>
         </div>

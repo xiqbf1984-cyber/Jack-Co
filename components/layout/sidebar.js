@@ -1,32 +1,45 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { useAppStore } from '@/stores/app-store';
 import { SIDEBAR_NAV } from '@/lib/constants';
 import {
   LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
   Settings, HelpCircle, Bell, Sun, Moon,
+  ChevronDown, Search, Check, Plus, PanelLeftClose, PanelLeftOpen,
 } from 'lucide-react';
 
 const iconMap = {
   LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
 };
 
-const EXPANDED_WIDTH = 200;
-const COLLAPSED_WIDTH = 60;
+const EXPANDED_WIDTH = 220;
+const COLLAPSED_WIDTH = 64;
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const router = useRouter();
   const { user } = useUser();
-  const [hovered, setHovered] = useState(false);
+  const [wsOpen, setWsOpen] = useState(false);
   const [theme, setTheme] = useState('light');
+  const dropdownRef = useRef(null);
+  const collapsed = useAppStore((s) => s.sidebarCollapsed);
+  const toggleSidebar = useAppStore((s) => s.toggleSidebar);
 
-  const expanded = hovered;
-  const sidebarWidth = expanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH;
+  const sidebarWidth = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setWsOpen(false);
+      }
+    }
+    if (wsOpen) document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [wsOpen]);
 
   const userName = user?.firstName || user?.username || 'User';
   const userEmail = user?.emailAddresses?.[0]?.emailAddress || '';
@@ -34,8 +47,6 @@ export default function Sidebar() {
 
   return (
     <aside
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
       style={{
         position: 'fixed',
         left: 0,
@@ -47,67 +58,276 @@ export default function Sidebar() {
         flexDirection: 'column',
         backgroundColor: 'var(--cream-sidebar)',
         borderRight: '1px solid var(--border-light)',
-        transition: 'width .25s cubic-bezier(.4,0,.2,1)',
+        transition: 'width 0.2s ease',
         overflow: 'hidden',
       }}
     >
-      {/* ── Logo Area ── */}
-      <div
-        onClick={() => router.push('/')}
+      {/* Collapse toggle — top-right */}
+      <button
+        onClick={toggleSidebar}
+        title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         style={{
+          position: 'absolute',
+          top: 14,
+          right: collapsed ? undefined : 8,
+          left: collapsed ? '50%' : undefined,
+          transform: collapsed ? 'translateX(-50%)' : undefined,
+          width: 28,
+          height: 28,
+          borderRadius: 6,
           display: 'flex',
           alignItems: 'center',
-          gap: 10,
-          padding: expanded ? '16px 16px' : '16px 0',
-          justifyContent: expanded ? 'flex-start' : 'center',
-          borderBottom: '1px solid var(--border-light)',
+          justifyContent: 'center',
+          background: 'transparent',
+          border: 'none',
           cursor: 'pointer',
-          transition: 'padding .25s cubic-bezier(.4,0,.2,1)',
-          flexShrink: 0,
+          zIndex: 10,
+          color: 'var(--brown-soft)',
+          transition: 'all 0.15s ease',
         }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.05)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
       >
-        <div
+        {collapsed ? <PanelLeftOpen size={15} strokeWidth={1.5} /> : <PanelLeftClose size={15} strokeWidth={1.5} />}
+      </button>
+      {/* ── Workspace Switcher ── */}
+      <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
+        <button
+          onClick={() => { if (!collapsed) setWsOpen(!wsOpen); }}
           style={{
-            width: 32,
-            height: 32,
-            borderRadius: 8,
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #8b6914, #c4a332)',
-            flexShrink: 0,
+            gap: 10,
+            width: '100%',
+            padding: collapsed ? '14px 0' : '14px 40px 14px 16px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
+            border: 'none',
+            borderBottom: '1px solid var(--border-light)',
+            background: 'transparent',
+            cursor: collapsed ? 'default' : 'pointer',
+            textAlign: 'left',
+            transition: 'padding 0.2s ease',
           }}
         >
-          <span style={{
-            color: '#fff',
-            fontSize: 16,
-            fontWeight: 700,
-            fontFamily: "'Playfair Display', Georgia, serif",
-          }}>J</span>
-        </div>
-        {expanded && (
-          <span style={{
-            fontSize: 14,
-            fontWeight: 700,
-            fontFamily: "'Playfair Display', Georgia, serif",
-            color: 'var(--brown)',
-            whiteSpace: 'nowrap',
-          }}>
-            Jack-Co
-          </span>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+              flexShrink: 0,
+            }}
+          >
+            <span style={{ color: 'var(--btn-text)', fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-body)' }}>N</span>
+          </div>
+          {!collapsed && (
+            <>
+              <span style={{
+                flex: 1,
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: 'var(--font-body)',
+                color: 'var(--brown)',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+              }}>
+                NeoHuman
+              </span>
+              <ChevronDown
+                size={14}
+                style={{
+                  color: 'var(--brown-soft)',
+                  flexShrink: 0,
+                  transition: 'transform 0.2s',
+                  transform: wsOpen ? 'rotate(180deg)' : 'rotate(0deg)',
+                }}
+              />
+            </>
+          )}
+        </button>
+
+        {/* Dropdown */}
+        {wsOpen && !collapsed && (
+          <div
+            className="animate-fsd"
+            style={{
+              position: 'absolute',
+              top: '100%',
+              left: 8,
+              right: 8,
+              zIndex: 50,
+              backgroundColor: 'var(--cream-card)',
+              border: '1px solid var(--border-default)',
+              borderRadius: 10,
+              boxShadow: 'var(--shadow-dropdown)',
+              padding: 6,
+              marginTop: 4,
+            }}
+          >
+            {/* Search */}
+            <div style={{ position: 'relative', marginBottom: 4 }}>
+              <input
+                type="text"
+                placeholder="Find Team..."
+                style={{
+                  width: '100%',
+                  padding: '7px 10px',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: 6,
+                  fontSize: 11,
+                  fontFamily: 'var(--font-body)',
+                  color: 'var(--brown)',
+                  backgroundColor: 'var(--cream)',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              />
+              <span style={{
+                position: 'absolute',
+                right: 8,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                fontSize: 11,
+                fontFamily: 'var(--font-body)',
+                color: 'var(--brown-soft)',
+                backgroundColor: 'var(--cream-sidebar)',
+                padding: '1px 5px',
+                borderRadius: 4,
+              }}>
+                Esc
+              </span>
+            </div>
+
+            {/* Current org */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                padding: '8px 8px',
+                borderRadius: 6,
+                backgroundColor: 'rgba(0,0,0,0.02)',
+                cursor: 'default',
+              }}
+            >
+              <div style={{
+                width: 20, height: 20, borderRadius: 10,
+                background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+                flexShrink: 0,
+              }} />
+              <span style={{ flex: 1, fontSize: 12, fontFamily: 'var(--font-body)', fontWeight: 600, color: 'var(--brown)' }}>
+                NeoHuman
+              </span>
+              <Check size={14} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+            </div>
+
+            {/* Divider */}
+            <div style={{ height: 1, backgroundColor: 'var(--border-light)', margin: '6px 0' }} />
+
+            {/* Create Team */}
+            <button
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 8,
+                width: '100%',
+                padding: '8px 8px',
+                border: 'none',
+                borderRadius: 6,
+                background: 'transparent',
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+            >
+              <div style={{
+                width: 20, height: 20, borderRadius: 10,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: '1px dashed var(--border-hover)',
+              }}>
+                <Plus size={11} style={{ color: 'var(--brown-soft)' }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', fontWeight: 600, color: 'var(--brown)' }}>Create Team</div>
+                <div style={{ fontSize: 11, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', marginTop: 1 }}>Collaborate with others in a shared workspace</div>
+              </div>
+            </button>
+          </div>
         )}
       </div>
+
+      {/* ── Global Search ── */}
+      {!collapsed && (
+        <div style={{ padding: '10px 12px 6px' }}>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 8,
+              padding: '7px 10px',
+              borderRadius: 8,
+              border: '1px solid var(--border-light)',
+              backgroundColor: 'var(--cream)',
+              cursor: 'pointer',
+            }}
+          >
+            <Search size={13} style={{ color: 'var(--brown-soft)', flexShrink: 0 }} />
+            <span style={{ flex: 1, fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)' }}>Search</span>
+            <span style={{
+              fontSize: 11,
+              fontFamily: 'var(--font-body)',
+              color: 'var(--brown-soft)',
+              backgroundColor: 'var(--cream-sidebar)',
+              padding: '1px 5px',
+              borderRadius: 4,
+              border: '1px solid var(--border-light)',
+            }}>
+              ⌘K
+            </span>
+          </div>
+        </div>
+      )}
+
+      {collapsed && (
+        <div style={{ padding: '10px 0 6px', display: 'flex', justifyContent: 'center' }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 8,
+              border: '1px solid var(--border-light)',
+              backgroundColor: 'var(--cream)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+            }}
+          >
+            <Search size={14} style={{ color: 'var(--brown-soft)' }} />
+          </div>
+        </div>
+      )}
 
       {/* ── Navigation ── */}
       <nav style={{
         flex: 1,
-        padding: expanded ? '12px 8px' : '12px 0',
+        padding: collapsed ? '8px 8px' : '8px 10px',
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
         overflowY: 'auto',
-        transition: 'padding .25s cubic-bezier(.4,0,.2,1)',
+        transition: 'padding 0.2s ease',
       }}>
+        {!collapsed && (
+          <span className="text-mono-label" style={{ padding: '4px 10px 6px' }}>
+            Navigation
+          </span>
+        )}
         {SIDEBAR_NAV.map((item) => {
           const Icon = iconMap[item.icon];
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
@@ -115,46 +335,31 @@ export default function Sidebar() {
             <Link
               key={item.id}
               href={item.href}
-              title={!expanded ? item.label : undefined}
+              title={collapsed ? item.label : undefined}
               style={{
                 display: 'flex',
                 alignItems: 'center',
                 gap: 10,
-                padding: expanded ? '10px 16px' : '10px 0',
-                justifyContent: expanded ? 'flex-start' : 'center',
-                margin: expanded ? '0 8px' : '0',
+                padding: collapsed ? '9px 0' : '8px 10px',
+                justifyContent: collapsed ? 'center' : 'flex-start',
                 borderRadius: 8,
                 textDecoration: 'none',
-                fontSize: 12,
-                fontFamily: "'Libre Baskerville', Georgia, serif",
-                fontWeight: 400,
-                color: isActive ? '#1a1612' : '#9a9184',
-                backgroundColor: isActive ? '#f0ebe2' : 'transparent',
+                fontSize: 13,
+                fontFamily: 'var(--font-body)',
+                fontWeight: isActive ? 600 : 400,
+                color: isActive ? 'var(--gold)' : 'var(--brown)',
+                backgroundColor: isActive ? 'rgba(139,105,20,0.06)' : 'transparent',
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.backgroundColor = '#faf6ef';
-                  e.currentTarget.style.color = '#1a1612';
-                }
+                if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)';
               }}
               onMouseLeave={(e) => {
-                if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#9a9184';
-                }
+                if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';
               }}
             >
-              <Icon
-                size={20}
-                strokeWidth={1.5}
-                style={{
-                  flexShrink: 0,
-                  color: isActive ? '#8b6914' : '#c4b896',
-                  transition: 'color 0.15s ease',
-                }}
-              />
-              {expanded && <span>{item.label}</span>}
+              <Icon size={17} strokeWidth={isActive ? 2 : 1.5} style={{ flexShrink: 0 }} />
+              {!collapsed && <span>{item.label}</span>}
             </Link>
           );
         })}
@@ -162,143 +367,88 @@ export default function Sidebar() {
 
       {/* ── Bottom Section ── */}
       <div style={{
-        padding: expanded ? '10px 16px 14px' : '10px 0 14px',
+        padding: collapsed ? '8px 8px 10px' : '8px 10px 10px',
         borderTop: '1px solid var(--border-light)',
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        transition: 'padding .25s cubic-bezier(.4,0,.2,1)',
-        flexShrink: 0,
+        transition: 'padding 0.2s ease',
       }}>
-        {/* Plan */}
-        {expanded && (
-          <div style={{
-            padding: '4px 8px 8px',
-            fontSize: 9,
-            fontFamily: "'DM Mono', monospace",
-            color: '#c4b896',
-            fontWeight: 500,
-          }}>
-            Plan: FREE
-          </div>
+        {!collapsed && (
+          <span className="text-mono-label" style={{ padding: '4px 10px 6px' }}>
+            Preferences
+          </span>
         )}
 
         {/* Settings */}
         <Link
           href="/settings"
-          title={!expanded ? 'Settings' : undefined}
+          title={collapsed ? 'Settings' : undefined}
           style={{
             display: 'flex', alignItems: 'center', gap: 10,
-            padding: expanded ? '8px 8px' : '8px 0',
-            justifyContent: expanded ? 'flex-start' : 'center',
-            margin: expanded ? '0 8px' : '0',
+            padding: collapsed ? '8px 0' : '7px 10px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
             borderRadius: 8, textDecoration: 'none', fontSize: 12,
-            fontFamily: "'Libre Baskerville', Georgia, serif",
-            color: '#9a9184', transition: 'all 0.15s ease',
+            fontFamily: 'var(--font-body)', color: 'var(--brown)', transition: 'all 0.15s ease',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#faf6ef';
-            e.currentTarget.style.color = '#1a1612';
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent';
-            e.currentTarget.style.color = '#9a9184';
-          }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
-          <Settings size={20} strokeWidth={1.5} style={{ color: '#c4b896', flexShrink: 0 }} />
-          {expanded && <span>Settings</span>}
+          <Settings size={15} strokeWidth={1.5} />
+          {!collapsed && <span>Settings</span>}
         </Link>
 
-        {/* Help & Support (non-interactive) */}
-        <div
-          title={!expanded ? 'Help & Support' : undefined}
+        {/* Help */}
+        <button
+          title={collapsed ? 'Help & Support' : undefined}
           style={{
             display: 'flex', alignItems: 'center', gap: 10,
-            padding: expanded ? '8px 8px' : '8px 0',
-            justifyContent: expanded ? 'flex-start' : 'center',
-            margin: expanded ? '0 8px' : '0',
-            borderRadius: 8, fontSize: 12,
-            fontFamily: "'Libre Baskerville', Georgia, serif",
-            color: '#9a9184', cursor: 'default',
+            padding: collapsed ? '8px 0' : '7px 10px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
+            borderRadius: 8, fontSize: 12, fontFamily: 'var(--font-body)',
+            color: 'var(--brown)', background: 'transparent', border: 'none',
+            cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.15s ease',
           }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
-          <HelpCircle size={20} strokeWidth={1.5} style={{ color: '#c4b896', flexShrink: 0 }} />
-          {expanded && <span>Help & Support</span>}
-        </div>
+          <HelpCircle size={15} strokeWidth={1.5} />
+          {!collapsed && <span>Help & Support</span>}
+        </button>
 
-        {/* Notifications (non-interactive, with red dot) */}
-        <div
-          title={!expanded ? 'Notifications' : undefined}
+        {/* Notifications */}
+        <button
+          title={collapsed ? 'Notifications' : undefined}
           style={{
             display: 'flex', alignItems: 'center', gap: 10,
-            padding: expanded ? '8px 8px' : '8px 0',
-            justifyContent: expanded ? 'flex-start' : 'center',
-            margin: expanded ? '0 8px' : '0',
-            borderRadius: 8, fontSize: 12,
-            fontFamily: "'Libre Baskerville', Georgia, serif",
-            color: '#9a9184', cursor: 'default',
+            padding: collapsed ? '8px 0' : '7px 10px',
+            justifyContent: collapsed ? 'center' : 'flex-start',
+            borderRadius: 8, fontSize: 12, fontFamily: 'var(--font-body)',
+            color: 'var(--brown)', background: 'transparent', border: 'none',
+            cursor: 'pointer', width: '100%', textAlign: 'left', transition: 'all 0.15s ease',
             position: 'relative',
           }}
+          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)'; }}
+          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
         >
-          <div style={{ position: 'relative', flexShrink: 0 }}>
-            <Bell size={20} strokeWidth={1.5} style={{ color: '#c4b896' }} />
-            <span style={{
-              position: 'absolute',
-              top: -1,
-              right: -1,
-              width: 6, height: 6, borderRadius: '50%',
-              backgroundColor: 'var(--red)',
-            }} />
-          </div>
-          {expanded && <span>Notifications</span>}
-        </div>
-
-        {/* User info */}
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 8,
-          padding: expanded ? '8px 8px' : '8px 0',
-          justifyContent: expanded ? 'flex-start' : 'center',
-          marginTop: 4,
-          cursor: 'default',
-        }}>
-          <div style={{
-            width: 24, height: 24, borderRadius: 6,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 10, fontWeight: 700,
-            fontFamily: "'DM Mono', monospace",
-            background: 'linear-gradient(135deg, #8b6914, #c4a332)',
-            color: '#fff', flexShrink: 0,
-          }}>
-            {userInitial}
-          </div>
-          {expanded && (
-            <div style={{ minWidth: 0, overflow: 'hidden' }}>
-              <div style={{
-                fontSize: 9,
-                fontFamily: "'DM Mono', monospace",
-                color: '#9a9184',
-                overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-              }}>
-                {userEmail || 'user@email.com'}
-              </div>
-            </div>
-          )}
-        </div>
+          <Bell size={15} strokeWidth={1.5} />
+          {!collapsed && <span>Notifications</span>}
+          <span style={{
+            position: 'absolute',
+            top: collapsed ? 6 : 5,
+            left: collapsed ? 'calc(50% + 6px)' : 22,
+            width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--red)',
+          }} />
+        </button>
 
         {/* Light/Dark toggle */}
-        {expanded && (
-          <div style={{
-            display: 'flex', borderRadius: 8, padding: 2, marginTop: 4,
-            backgroundColor: 'var(--cream-row-even)',
-          }}>
+        {!collapsed && (
+          <div style={{ display: 'flex', borderRadius: 8, padding: 2, marginTop: 4, backgroundColor: 'var(--cream-row-even)' }}>
             <button
               onClick={() => setTheme('light')}
               style={{
                 flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                padding: '5px 0', borderRadius: 6, fontSize: 11,
-                fontFamily: "'Libre Baskerville', Georgia, serif",
+                padding: '5px 0', borderRadius: 6, fontSize: 11, fontFamily: 'var(--font-body)',
                 backgroundColor: theme === 'light' ? 'var(--cream-card)' : 'transparent',
                 color: theme === 'light' ? 'var(--brown)' : 'var(--brown-light)',
                 border: 'none', cursor: 'pointer', transition: 'all 0.2s ease',
@@ -307,20 +457,50 @@ export default function Sidebar() {
               <Sun size={11} /> Light
             </button>
             <button
+              onClick={() => setTheme('dark')}
               style={{
                 flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4,
-                padding: '5px 0', borderRadius: 6, fontSize: 11,
-                fontFamily: "'Libre Baskerville', Georgia, serif",
-                backgroundColor: 'transparent',
-                color: 'var(--brown-light)',
-                border: 'none', cursor: 'not-allowed', transition: 'all 0.2s ease',
-                opacity: 0.5,
+                padding: '5px 0', borderRadius: 6, fontSize: 11, fontFamily: 'var(--font-body)',
+                backgroundColor: theme === 'dark' ? 'var(--cream-card)' : 'transparent',
+                color: theme === 'dark' ? 'var(--brown)' : 'var(--brown-light)',
+                border: 'none', cursor: 'pointer', transition: 'all 0.2s ease',
               }}
             >
               <Moon size={11} /> Dark
             </button>
           </div>
         )}
+
+        {/* User info (Clerk) */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 8,
+          padding: collapsed ? '8px 0' : '8px 8px',
+          justifyContent: collapsed ? 'center' : 'flex-start',
+          marginTop: 4,
+          borderRadius: 8,
+          backgroundColor: 'rgba(0,0,0,0.02)',
+        }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 11, fontFamily: 'var(--font-body)', fontWeight: 700,
+            background: 'linear-gradient(135deg, rgba(139,105,20,0.22), rgba(92,82,72,0.22))',
+            color: 'var(--brown)', flexShrink: 0,
+          }}>
+            {userInitial}
+          </div>
+          {!collapsed && (
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 11, fontWeight: 600, fontFamily: 'var(--font-body)', color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {userName}
+              </div>
+              <div style={{ fontSize: 11, fontFamily: 'var(--font-body)', color: 'var(--brown-soft)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {userEmail}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
   );
