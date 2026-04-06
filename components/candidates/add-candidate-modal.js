@@ -69,7 +69,9 @@ export default function AddCandidateModal() {
       <div style={{
         position: 'absolute',
         inset: 0,
-        backgroundColor: 'rgba(26,22,18,0.4)',
+        backgroundColor: 'rgba(26,22,18,0.35)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
         animation: 'fi .15s ease both',
       }} />
 
@@ -110,25 +112,32 @@ export default function AddCandidateModal() {
 
         <h2 style={{
           fontFamily: 'var(--font-body)',
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 700,
           color: 'var(--brown)',
-          marginBottom: 24,
+          marginBottom: 4,
         }}>Add Candidate</h2>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--brown-soft)',
+          marginBottom: 20,
+          lineHeight: 1.5,
+        }}>Add a new candidate to your organization. They will be available to invite to trials.</p>
 
         {/* Name */}
         <div style={{ marginBottom: 18 }}>
           <label style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 600,
             color: 'var(--brown)',
             display: 'block',
             marginBottom: 8,
-          }}>Name *</label>
+          }}>Name</label>
           <input
             type="text"
-            placeholder="Full name"
+            placeholder="John Doe"
             value={name}
             onChange={(e) => setName(e.target.value)}
             style={{
@@ -153,15 +162,15 @@ export default function AddCandidateModal() {
         <div style={{ marginBottom: 28 }}>
           <label style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 11,
+            fontSize: 12,
             fontWeight: 600,
             color: 'var(--brown)',
             display: 'block',
             marginBottom: 8,
-          }}>Email *</label>
+          }}>Email</label>
           <input
             type="email"
-            placeholder="email@example.com"
+            placeholder="john@example.com"
             value={email}
             onChange={(e) => { setEmail(e.target.value); if (!emailTouched) setEmailTouched(true); }}
             onBlur={() => setEmailTouched(true)}
@@ -191,21 +200,7 @@ export default function AddCandidateModal() {
         </div>
 
         {/* Buttons */}
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end' }}>
-          <button
-            onClick={handleClose}
-            style={{
-              padding: '10px 24px',
-              borderRadius: 8,
-              border: '1px solid var(--border-default)',
-              background: '#fff',
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              fontWeight: 600,
-              color: 'var(--brown)',
-              cursor: 'pointer',
-            }}
-          >Cancel</button>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-end', borderTop: '1px solid var(--border-light)', paddingTop: 16 }}>
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
@@ -224,7 +219,7 @@ export default function AddCandidateModal() {
               opacity: canSubmit ? 1 : 0.5,
               boxShadow: canSubmit ? '0 4px 12px rgba(92,82,72,0.18)' : 'none',
             }}
-          >Add</button>
+          >Add Candidate</button>
         </div>
       </div>
     </div>

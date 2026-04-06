@@ -399,7 +399,9 @@ export default function SearchPage({ onSubmit }) {
         <div style={{
           position: 'fixed', inset: 0, zIndex: 1000,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          backgroundColor: 'rgba(0,0,0,0.3)',
+          backgroundColor: 'rgba(26,22,18,0.35)',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)',
         }} onClick={() => setShowLinkModal(false)}>
           <div style={{
             background: '#fff',
