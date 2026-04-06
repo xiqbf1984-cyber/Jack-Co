@@ -90,9 +90,6 @@ function ProgressIndicator({ currentStage }) {
     <div style={{
       display: 'flex',
       gap: 6,
-      padding: '14px 32px 10px',
-      borderBottom: '1px solid var(--border-default)',
-      marginBottom: 0,
     }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
@@ -141,12 +138,10 @@ export default function RoleCreatePage() {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
 
-  // Get body element for portal rendering (modals must escape split layout)
   useEffect(function () {
     setBodyEl(document.body);
   }, []);
 
-  // Watch for the portal target element
   useEffect(function () {
     if (stage < 2) return;
     var check = function () {
@@ -158,7 +153,6 @@ export default function RoleCreatePage() {
     return function () { clearInterval(timer); };
   }, [stage]);
 
-  // Toggle right panel visibility via custom event
   useEffect(function () {
     if (stage >= 2) {
       window.dispatchEvent(
@@ -314,37 +308,37 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: 'hidden',
     }}>
-      {/* Back button + Progress */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        gap: 12,
-        padding: '10px 24px 0',
-        borderBottom: 'none',
-        flexShrink: 0,
-      }}>
-        <button
-          onClick={handleBack}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 5,
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            color: 'var(--gold)',
-            background: 'none',
-            border: 'none',
-            cursor: 'pointer',
-            padding: '4px 0',
-            flexShrink: 0,
-          }}
-        >
-          <ArrowLeft size={13} />
-          Back
-        </button>
+      {/* Header: Back + Title + Subtitle + Progress */}
+      <div style={{ flexShrink: 0, backgroundColor: 'var(--cream)' }}>
+        <div style={{ padding: '14px 24px 0' }}>
+          <button
+            onClick={handleBack}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+              fontFamily: 'var(--font-body)',
+              fontSize: 12,
+              color: 'var(--brown-soft)',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 0,
+              marginBottom: 10,
+            }}
+          >
+            <ArrowLeft size={13} />
+            Back to Roles
+          </button>
+          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>Create a Role</h1>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Define a new role and generate a job description</p>
+        </div>
+        <div style={{ padding: '0 24px 8px', borderBottom: '1px solid var(--border-default)' }}>
+          <ProgressIndicator currentStage={stage} />
+        </div>
       </div>
-      <ProgressIndicator currentStage={stage} />
 
+      {/* Content */}
       <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
         {stage === 0 && <SearchPage onSubmit={handleSearchSubmit} />}
 
@@ -382,7 +376,7 @@ export default function RoleCreatePage() {
           jdPortalTarget
         )}
 
-      {/* Success modal – portal to body so it escapes the split layout */}
+      {/* Success modal */}
       {showSuccessModal && bodyEl &&
         createPortal(
           <SaveSuccessModal

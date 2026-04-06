@@ -1,8 +1,10 @@
 'use client';
 
-import { useMemo, useState, useCallback } from 'react';
+import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Save, Download, Link2, Check, X, Bold, Italic, List, Heading, Bookmark } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { Save, Download, Link2, Check, X, Bold, Italic, List, Heading, Bookmark, Pencil, Eye } from 'lucide-react';
 
 function CopyLinkModal({ link, onClose }) {
   var [copied, setCopied] = useState(false);
@@ -52,6 +54,116 @@ function CopyLinkModal({ link, onClose }) {
   );
 }
 
+/* ── Markdown renderer components ── */
+const markdownComponents = {
+  h1: ({ children }) => (
+    <h1 style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 26,
+      fontWeight: 700,
+      color: 'var(--brown)',
+      lineHeight: 1.25,
+      marginBottom: 6,
+      marginTop: 0,
+    }}>{children}</h1>
+  ),
+  h2: ({ children }) => (
+    <h2 style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 20,
+      fontWeight: 700,
+      color: 'var(--brown)',
+      lineHeight: 1.3,
+      marginTop: 28,
+      marginBottom: 10,
+    }}>{children}</h2>
+  ),
+  h3: ({ children }) => (
+    <h3 style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 16,
+      fontWeight: 700,
+      color: 'var(--brown)',
+      lineHeight: 1.35,
+      marginTop: 22,
+      marginBottom: 8,
+    }}>{children}</h3>
+  ),
+  h4: ({ children }) => (
+    <h4 style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 14,
+      fontWeight: 700,
+      color: 'var(--brown)',
+      lineHeight: 1.4,
+      marginTop: 18,
+      marginBottom: 6,
+    }}>{children}</h4>
+  ),
+  p: ({ children }) => (
+    <p style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 14,
+      color: 'var(--brown)',
+      lineHeight: 1.7,
+      marginTop: 0,
+      marginBottom: 14,
+    }}>{children}</p>
+  ),
+  ul: ({ children }) => (
+    <ul style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 14,
+      color: 'var(--brown)',
+      lineHeight: 1.7,
+      paddingLeft: 22,
+      marginTop: 0,
+      marginBottom: 14,
+    }}>{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 14,
+      color: 'var(--brown)',
+      lineHeight: 1.7,
+      paddingLeft: 22,
+      marginTop: 0,
+      marginBottom: 14,
+    }}>{children}</ol>
+  ),
+  li: ({ children }) => (
+    <li style={{
+      marginBottom: 4,
+    }}>{children}</li>
+  ),
+  strong: ({ children }) => (
+    <strong style={{ fontWeight: 700, color: 'var(--brown)' }}>{children}</strong>
+  ),
+  em: ({ children }) => (
+    <em style={{ fontStyle: 'italic', color: 'var(--brown-muted)' }}>{children}</em>
+  ),
+  hr: () => (
+    <hr style={{
+      border: 'none',
+      borderTop: '1px solid var(--border-light)',
+      margin: '20px 0',
+    }} />
+  ),
+  a: ({ children, href }) => (
+    <a href={href} style={{ color: 'var(--gold)', textDecoration: 'underline' }} target="_blank" rel="noopener noreferrer">{children}</a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote style={{
+      borderLeft: '3px solid var(--gold)',
+      paddingLeft: 16,
+      margin: '14px 0',
+      color: 'var(--brown-muted)',
+      fontStyle: 'italic',
+    }}>{children}</blockquote>
+  ),
+};
+
 export default function JDCanvas({
   content = '',
   onChange,
@@ -63,6 +175,8 @@ export default function JDCanvas({
   portalTarget,
 }) {
   var [showLinkModal, setShowLinkModal] = useState(false);
+  var [editing, setEditing] = useState(false);
+  var textareaRef = useRef(null);
 
   var wordCount = useMemo(function () {
     if (!content.trim()) return 0;
@@ -71,8 +185,30 @@ export default function JDCanvas({
 
   var isEmpty = !content.trim();
 
+  // Focus textarea when entering edit mode
+  useEffect(function () {
+    if (editing && textareaRef.current) {
+      textareaRef.current.focus();
+      // Place cursor at end
+      var len = textareaRef.current.value.length;
+      textareaRef.current.setSelectionRange(len, len);
+    }
+  }, [editing]);
+
   function insertMarkdown(prefix, suffix) {
-    var textarea = document.querySelector('#jd-textarea');
+    if (!editing) {
+      setEditing(true);
+      // Defer insertion until textarea is mounted
+      setTimeout(function () {
+        doInsert(prefix, suffix);
+      }, 50);
+      return;
+    }
+    doInsert(prefix, suffix);
+  }
+
+  function doInsert(prefix, suffix) {
+    var textarea = textareaRef.current;
     if (!textarea) return;
     var start = textarea.selectionStart;
     var end = textarea.selectionEnd;
@@ -110,7 +246,7 @@ export default function JDCanvas({
         boxShadow: 'var(--shadow-card)',
       }}
     >
-      {/* Tab header – single "JD" tab */}
+      {/* Tab header */}
       <div
         style={{
           display: 'flex',
@@ -137,63 +273,132 @@ export default function JDCanvas({
           </div>
         </div>
 
-        {/* Matched role indicator */}
-        {matchedRoleName && matchScore > 0 && (
-          <div className="flex items-center gap-1" style={{
-            fontFamily: 'var(--font-body)', fontSize: 10,
-            color: 'var(--accent-green)',
-          }}>
-            <Check size={10} strokeWidth={2.5} />
-            Matched: {matchedRoleName}
-          </div>
-        )}
-      </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Matched role indicator */}
+          {matchedRoleName && matchScore > 0 && (
+            <div className="flex items-center gap-1" style={{
+              fontFamily: 'var(--font-body)', fontSize: 10,
+              color: 'var(--accent-green)',
+            }}>
+              <Check size={10} strokeWidth={2.5} />
+              Matched: {matchedRoleName}
+            </div>
+          )}
 
-      {/* Formatting toolbar */}
-      <div style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '6px 16px',
-        borderBottom: '1px solid var(--border-light)',
-      }}>
-        <div style={{ display: 'flex', gap: 2 }}>
-          {[
-            { icon: Heading, action: function () { insertMarkdown('## ', ''); }, title: 'Heading' },
-            { icon: Bold, action: function () { insertMarkdown('**', '**'); }, title: 'Bold' },
-            { icon: Italic, action: function () { insertMarkdown('*', '*'); }, title: 'Italic' },
-            { icon: List, action: function () { insertMarkdown('- ', ''); }, title: 'List' },
-          ].map(function (tool) {
-            var Icon = tool.icon;
-            return (
-              <button key={tool.title} type="button" onClick={tool.action} title={tool.title}
-                style={{
-                  width: 28, height: 28, borderRadius: 6, border: 'none', background: 'transparent',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  cursor: 'pointer', color: 'var(--brown-soft)', transition: 'all 0.1s ease',
-                }}
-                onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; e.currentTarget.style.color = 'var(--brown)'; }}
-                onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brown-soft)'; }}
-              >
-                <Icon size={14} />
-              </button>
-            );
-          })}
+          {/* Edit / Preview toggle */}
+          <button
+            onClick={function () { setEditing(!editing); }}
+            title={editing ? 'Preview' : 'Edit markdown'}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4,
+              padding: '4px 10px',
+              borderRadius: 6,
+              border: '1px solid var(--border-default)',
+              background: editing ? 'rgba(139,105,20,0.06)' : 'transparent',
+              color: editing ? 'var(--gold)' : 'var(--brown-soft)',
+              fontFamily: 'var(--font-body)',
+              fontSize: 10,
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+            }}
+          >
+            {editing ? <><Eye size={11} /> Preview</> : <><Pencil size={11} /> Edit</>}
+          </button>
         </div>
       </div>
 
-      {/* Body – editable JD */}
-      <div className="flex-1 p-4 overflow-hidden flex flex-col">
-        <textarea
-          id="jd-textarea"
-          value={content}
-          onChange={function (e) { onChange?.(e.target.value); }}
-          className="flex-1 w-full resize-y bg-transparent focus:outline-none"
-          style={{
-            fontFamily: 'var(--font-body)', fontSize: 13, lineHeight: 1.8, color: 'var(--brown)',
-            borderRadius: 12, border: '1px solid var(--border-default)', backgroundColor: 'var(--cream-card)',
-            padding: 16, minHeight: 300,
-          }}
-          placeholder="Your job description will appear here..."
-        />
+      {/* Formatting toolbar – visible when editing */}
+      {editing && (
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '6px 16px',
+          borderBottom: '1px solid var(--border-light)',
+          animation: 'fsd .1s ease',
+        }}>
+          <div style={{ display: 'flex', gap: 2 }}>
+            {[
+              { icon: Heading, action: function () { insertMarkdown('## ', ''); }, title: 'Heading' },
+              { icon: Bold, action: function () { insertMarkdown('**', '**'); }, title: 'Bold' },
+              { icon: Italic, action: function () { insertMarkdown('*', '*'); }, title: 'Italic' },
+              { icon: List, action: function () { insertMarkdown('- ', ''); }, title: 'List' },
+            ].map(function (tool) {
+              var Icon = tool.icon;
+              return (
+                <button key={tool.title} type="button" onClick={tool.action} title={tool.title}
+                  style={{
+                    width: 28, height: 28, borderRadius: 6, border: 'none', background: 'transparent',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    cursor: 'pointer', color: 'var(--brown-soft)', transition: 'all 0.1s ease',
+                  }}
+                  onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; e.currentTarget.style.color = 'var(--brown)'; }}
+                  onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brown-soft)'; }}
+                >
+                  <Icon size={14} />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Body – rendered markdown or edit textarea */}
+      <div className="flex-1 overflow-auto" style={{ minHeight: 0 }}>
+        {editing ? (
+          /* Edit mode: raw textarea */
+          <textarea
+            ref={textareaRef}
+            value={content}
+            onChange={function (e) { onChange?.(e.target.value); }}
+            className="w-full h-full resize-none bg-transparent focus:outline-none"
+            style={{
+              fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.7, color: 'var(--brown)',
+              padding: '20px 28px', border: 'none', backgroundColor: 'var(--cream-card)',
+              minHeight: '100%', boxSizing: 'border-box',
+            }}
+            placeholder="Write your job description here..."
+          />
+        ) : (
+          /* Preview mode: rendered rich text */
+          <div
+            style={{
+              padding: '28px 32px 40px',
+              cursor: isEmpty ? 'default' : 'text',
+            }}
+            onDoubleClick={function () { setEditing(true); }}
+          >
+            {isEmpty ? (
+              <div style={{
+                textAlign: 'center',
+                padding: '60px 20px',
+              }}>
+                <p style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13,
+                  color: 'var(--brown-soft)',
+                  marginBottom: 8,
+                }}>
+                  Your job description will appear here
+                </p>
+                <p style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  color: 'var(--brown-light)',
+                }}>
+                  Answer the questions on the left to generate it
+                </p>
+              </div>
+            ) : (
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                components={markdownComponents}
+              >
+                {content}
+              </ReactMarkdown>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Footer with word count + action buttons */}
@@ -205,9 +410,11 @@ export default function JDCanvas({
         borderTop: '1px solid var(--border-light)',
         backgroundColor: 'var(--cream)',
         gap: 8,
+        flexShrink: 0,
       }}>
         <div className="text-body-xs" style={{ color: 'var(--brown-soft)' }}>
           {wordCount} words
+          {editing && <span style={{ marginLeft: 8, color: 'var(--brown-light)' }}>· Editing</span>}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>

@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, Star, PlusCircle, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAssessment, onStay }) {
   return (
@@ -21,8 +21,8 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
         borderRadius: 20,
         padding: '36px 32px 28px',
         width: '100%',
-        maxWidth: 460,
-        boxShadow: '0 20px 60px rgba(0,0,0,0.15)',
+        maxWidth: 440,
+        boxShadow: '0 20px 60px rgba(0,0,0,.15)',
         animation: 'fadeScale 0.3s ease both',
       }}>
         {/* Success icon */}
@@ -32,15 +32,17 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
           marginBottom: 20,
         }}>
           <div style={{
-            width: 52,
-            height: 52,
+            width: 48,
+            height: 48,
             borderRadius: '50%',
             backgroundColor: 'rgba(39, 130, 91, 0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-            <CheckCircle size={28} style={{ color: 'var(--accent-green)' }} />
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M5 13l4 4L19 7" stroke="var(--accent-green)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </div>
 
@@ -68,7 +70,7 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
 
         {/* Action options */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {/* Create assessment – primary action */}
+          {/* Create assessment */}
           <button
             type="button"
             onClick={onGoToAssessment}
@@ -78,23 +80,15 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
               gap: 14,
               padding: '16px 18px',
               borderRadius: 14,
-              border: '1.5px solid rgba(39, 130, 91, 0.3)',
-              backgroundColor: 'rgba(39, 130, 91, 0.06)',
+              border: '1.5px solid rgba(39, 130, 91, 0.25)',
+              backgroundColor: 'rgba(39, 130, 91, 0.04)',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
               textAlign: 'left',
             }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(39, 130, 91, 0.12)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'rgba(39, 130, 91, 0.06)'; }}
+            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(39, 130, 91, 0.08)'; }}
+            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'rgba(39, 130, 91, 0.04)'; }}
           >
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              backgroundColor: 'rgba(39, 130, 91, 0.18)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              <Star size={18} style={{ color: 'var(--accent-green)' }} />
-            </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
                 Create an Assessment
@@ -103,7 +97,7 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
                 Set up an AI assessment for this role
               </div>
             </div>
-            <ArrowRight size={16} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />
+            <ArrowRight size={16} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
           </button>
 
           {/* Create another role */}
@@ -116,23 +110,15 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
               gap: 14,
               padding: '16px 18px',
               borderRadius: 14,
-              border: '1.5px solid rgba(139, 105, 20, 0.3)',
-              backgroundColor: 'rgba(139, 105, 20, 0.04)',
+              border: '1.5px solid rgba(139, 105, 20, 0.2)',
+              backgroundColor: 'rgba(139, 105, 20, 0.03)',
               cursor: 'pointer',
               transition: 'all 0.15s ease',
               textAlign: 'left',
             }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(139, 105, 20, 0.1)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'rgba(139, 105, 20, 0.04)'; }}
+            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(139, 105, 20, 0.07)'; }}
+            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'rgba(139, 105, 20, 0.03)'; }}
           >
-            <div style={{
-              width: 36, height: 36, borderRadius: 10,
-              backgroundColor: 'rgba(139, 105, 20, 0.15)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              flexShrink: 0,
-            }}>
-              <PlusCircle size={18} style={{ color: 'var(--gold)' }} />
-            </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
                 Create Another Role
@@ -141,11 +127,11 @@ export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAss
                 Start a new JD from scratch
               </div>
             </div>
-            <ArrowRight size={16} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+            <ArrowRight size={16} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
           </button>
         </div>
 
-        {/* Stay on page – text link */}
+        {/* Stay link */}
         <div style={{ textAlign: 'center', marginTop: 18 }}>
           <button
             type="button"
