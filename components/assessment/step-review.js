@@ -110,7 +110,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
           {dimension.description}
         </span>
         <span style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 12,
           color: 'var(--brown)',
           textAlign: 'right',
@@ -152,7 +152,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
                   <span style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     fontSize: 10,
                     color: weightColors[rubric.weight] || 'var(--brown-light)',
                   }}>
@@ -167,7 +167,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
                       borderRadius: 4,
                       border: '1px solid var(--border-default)',
                       backgroundColor: 'var(--cream)',
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: "var(--font-mono)",
                       fontSize: 9,
                       color: 'var(--brown)',
                       outline: 'none',
@@ -191,7 +191,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
           {dimension.pitfalls.length > 0 && (
             <>
               <div style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "var(--font-mono)",
                 fontSize: 9,
                 color: 'var(--brown-muted)',
                 textTransform: 'uppercase',
@@ -214,7 +214,7 @@ function DimensionRow({ dimension, onUpdateRubric, onDeleteRubric, onAddRubric }
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)', marginTop: 2 }}>{pitfall.description}</div>
                   </div>
                   <span style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     fontSize: 10,
                     color: 'var(--red)',
                   }}>
@@ -310,7 +310,7 @@ function SuccessPage({ task, role, candidateCount, onDashboard, onCreateAnother 
 
       {/* What happens next */}
       <div style={{
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "var(--font-mono)",
         fontSize: 10,
         color: 'var(--brown-muted)',
         textTransform: 'uppercase',
@@ -370,7 +370,7 @@ function SuccessPage({ task, role, candidateCount, onDashboard, onCreateAnother 
 
       {/* Reminders */}
       <div style={{
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "var(--font-mono)",
         fontSize: 10,
         color: 'var(--brown-muted)',
         textTransform: 'uppercase',
@@ -578,9 +578,9 @@ export default function StepReview() {
             padding: '10px 14px',
             backgroundColor: 'var(--cream-row-even)',
           }}>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'var(--brown-muted)' }}>DIMENSION</span>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'var(--brown-muted)' }}>WHAT WE LOOK FOR</span>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 9, color: 'var(--brown-muted)', textAlign: 'right' }}>#</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: 'var(--brown-muted)' }}>DIMENSION</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: 'var(--brown-muted)' }}>WHAT WE LOOK FOR</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 9, color: 'var(--brown-muted)', textAlign: 'right' }}>#</span>
           </div>
 
           {/* Dimension rows */}
@@ -603,7 +603,7 @@ export default function StepReview() {
           }}>
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--red)' }}>Red Flags</span>
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)' }}>Disqualification</span>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 12, color: 'var(--brown)', textAlign: 'right' }}>{redFlags.length}</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: 'var(--brown)', textAlign: 'right' }}>{redFlags.length}</span>
           </div>
         </div>
 
@@ -611,7 +611,7 @@ export default function StepReview() {
         <div style={{
           textAlign: 'right',
           marginTop: 8,
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 11,
           color: 'var(--brown-muted)',
         }}>
@@ -628,7 +628,7 @@ export default function StepReview() {
         marginBottom: 24,
       }}>
         <div style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 10,
           color: 'var(--brown-muted)',
           textTransform: 'uppercase',
@@ -644,8 +644,8 @@ export default function StepReview() {
           { cls: 'Optional', range: '2-3', meaning: 'Bonus polish', color: 'var(--brown-light)' },
         ].map((row) => (
           <div key={row.cls} style={{ display: 'flex', gap: 16, padding: '5px 0' }}>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: row.color, width: 70 }}>{row.cls}</span>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--brown-muted)', width: 50 }}>{row.range}</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: row.color, width: 70 }}>{row.cls}</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: 'var(--brown-muted)', width: 50 }}>{row.range}</span>
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)' }}>{row.meaning}</span>
           </div>
         ))}
@@ -660,8 +660,8 @@ export default function StepReview() {
           { cls: 'Red Flag', range: '-327', meaning: 'Instant disqualification' },
         ].map((row) => (
           <div key={row.cls} style={{ display: 'flex', gap: 16, padding: '5px 0' }}>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--red)', width: 70 }}>{row.cls}</span>
-            <span style={{ fontFamily: "'DM Mono', monospace", fontSize: 10, color: 'var(--brown-muted)', width: 50 }}>{row.range}</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: 'var(--red)', width: 70 }}>{row.cls}</span>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, color: 'var(--brown-muted)', width: 50 }}>{row.range}</span>
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)' }}>{row.meaning}</span>
           </div>
         ))}

@@ -32,6 +32,13 @@ export const useAppStore = create((set, get) => ({
   setHiringManager: (data) => set((s) => ({ hiringManager: { ...s.hiringManager, ...data } })),
   setCompany: (data) => set((s) => ({ company: { ...s.company, ...data } })),
 
+  removeRole: (id) => set((s) => ({ roles: s.roles.filter((r) => r.id !== id) })),
+  updateRole: (id, data) => set((s) => ({ roles: s.roles.map((r) => r.id === id ? { ...r, ...data } : r) })),
+  duplicateRole: (id) => set((s) => {
+    var role = s.roles.find((r) => r.id === id);
+    if (!role) return {};
+    return { roles: [{ ...role, id: Date.now(), title: role.title + ' (Copy)', status: 'draft', createdAt: new Date().toISOString() }, ...s.roles] };
+  }),
   addRole: (role) => set((s) => ({
     roles: [{
       id: Date.now(),
@@ -42,7 +49,10 @@ export const useAppStore = create((set, get) => ({
     }, ...s.roles],
   })),
   addCandidate: (candidate) => set((s) => ({
-    candidates: [...s.candidates, { id: Date.now(), trials: 0, lastActive: '\u2014', ...candidate }],
+    candidates: [...s.candidates, { id: Date.now(), assessments: 0, lastActive: '\u2014', ...candidate }],
+  })),
+  removeCandidate: (id) => set((s) => ({
+    candidates: s.candidates.filter((c) => c.id !== id),
   })),
   addAssessment: (assessment) => set((s) => ({
     assessments: [{ id: 'a-' + Date.now(), ...assessment }, ...s.assessments],

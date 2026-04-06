@@ -49,7 +49,7 @@ export default function CreateAssessmentPage() {
               Back to Assessments
             </Link>
             <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>Create Assessment</h1>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Set up a new work trial to evaluate candidates</p>
+            <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Set up a new assessment to evaluate candidates</p>
           </div>
 
           {/* Progress bar */}

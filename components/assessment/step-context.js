@@ -156,7 +156,7 @@ export default function StepContext() {
           Upload reference files
         </span>
         <span style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 9,
           color: 'var(--brown-light)',
           marginTop: 4,
@@ -273,7 +273,7 @@ export default function StepContext() {
                 {/* Label for first */}
                 {pred.label && (
                   <div style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     fontSize: 9,
                     color: 'var(--gold)',
                     marginBottom: 6,

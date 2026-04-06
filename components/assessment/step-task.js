@@ -99,7 +99,7 @@ export default function StepTask() {
               {/* Star label for first */}
               {i === 0 && (
                 <div style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 8,
                   color: 'var(--gold)',
                   marginBottom: 8,
@@ -135,7 +135,7 @@ export default function StepTask() {
                 ].map((col) => (
                   <div key={col.label}>
                     <div style={{
-                      fontFamily: "'DM Mono', monospace",
+                      fontFamily: "var(--font-mono)",
                       fontSize: 8,
                       color: 'var(--brown-light)',
                       marginBottom: 4,
@@ -166,7 +166,7 @@ export default function StepTask() {
         paddingTop: 16,
       }}>
         <div style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 10,
           color: 'var(--brown-muted)',
           textTransform: 'uppercase',
@@ -212,7 +212,7 @@ export default function StepTask() {
                   {cat.code}: {cat.name}
                 </span>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 9,
                   color: 'var(--brown-light)',
                 }}>
@@ -243,7 +243,7 @@ export default function StepTask() {
                       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
                     >
                       <span style={{
-                        fontFamily: "'DM Mono', monospace",
+                        fontFamily: "var(--font-mono)",
                         fontSize: 10,
                         color: 'var(--brown-light)',
                         marginRight: 8,

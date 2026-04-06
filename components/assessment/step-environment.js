@@ -59,7 +59,7 @@ function EditableSection({ title, text, onSave }) {
         marginBottom: 10,
       }}>
         <span style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 10,
           color: 'var(--brown-muted)',
           textTransform: 'uppercase',
@@ -235,7 +235,7 @@ export default function StepEnvironment() {
       }}>
         {/* Title */}
         <div style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 10,
           color: 'var(--gold)',
           marginBottom: 14,
@@ -287,7 +287,7 @@ export default function StepEnvironment() {
             marginBottom: 10,
           }}>
             <span style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "var(--font-mono)",
               fontSize: 10,
               color: 'var(--brown-muted)',
               textTransform: 'uppercase',
@@ -324,7 +324,7 @@ export default function StepEnvironment() {
             marginBottom: 10,
           }}>
             <span style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "var(--font-mono)",
               fontSize: 10,
               color: 'var(--brown-muted)',
               textTransform: 'uppercase',
@@ -347,7 +347,7 @@ export default function StepEnvironment() {
                 borderBottom: i < doc.resources.length - 1 ? '1px solid var(--border-light)' : 'none',
               }}>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 10,
                   color: 'var(--brown-light)',
                   width: 20,
@@ -357,14 +357,14 @@ export default function StepEnvironment() {
                 </span>
                 <span style={{ flex: 1 }}>{r.name}</span>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 9,
                   color: 'var(--brown-light)',
                 }}>
                   {r.type}
                 </span>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 9,
                   color: 'var(--brown-light)',
                 }}>

@@ -9,7 +9,7 @@ const avatarColors = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#3
 
 const STATUS_OPTIONS = [
   { value: 'idle', label: 'Idle' },
-  { value: 'active', label: 'In Trial' },
+  { value: 'active', label: 'Active' },
   { value: 'completed', label: 'Completed' },
 ];
 
@@ -375,7 +375,7 @@ export default function CandidatesPage() {
               { label: 'Candidate', sortable: true },
               { label: 'Status', sortable: true },
               { label: 'Timezone', sortable: false },
-              { label: 'Trials', sortable: true },
+              { label: 'Assessments', sortable: true },
               { label: 'Last Active', sortable: true },
               { label: '', sortable: false },
             ].map((h, i) => (
@@ -486,12 +486,12 @@ export default function CandidatesPage() {
                   color: 'var(--brown)',
                 }}>{cand.tz}</span>
 
-                {/* Trials */}
+                {/* Assessments */}
                 <span style={{
                   fontFamily: 'var(--font-body)',
                   fontSize: 12,
                   color: 'var(--brown)',
-                }}>{cand.trials}</span>
+                }}>{cand.assessments}</span>
 
                 {/* Last Active */}
                 <span style={{
