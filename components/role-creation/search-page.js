@@ -1,26 +1,20 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowUp, Paperclip, Link2, X, FileText, Check, Code2, Briefcase, Settings } from 'lucide-react';
+import { ArrowUp, Paperclip, Link2, X, FileText } from 'lucide-react';
+import CategoryDropdown from './category-dropdown';
 
-const TYPEWRITER_TEXT = 'Who are you looking for?';
+const TYPEWRITER_TEXT = 'What role do you want to recruit?';
 const TYPEWRITER_SPEED = 38;
-
-const EXAMPLE_SUGGESTIONS = [
-  { icon: Code2, label: 'Backend Engineer in London' },
-  { icon: Briefcase, label: 'Product Manager, Remote (US)' },
-  { icon: Settings, label: 'Senior Designer in SF' },
-];
 
 export default function SearchPage({ onSubmit }) {
   const [input, setInput] = useState('');
   const [twText, setTwText] = useState('');
   const [twDone, setTwDone] = useState(false);
-  const [keepPrivate, setKeepPrivate] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
-  const [showFileModal, setShowFileModal] = useState(false);
   const [linkValue, setLinkValue] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [ghostText, setGhostText] = useState('');
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -44,8 +38,18 @@ export default function SearchPage({ onSubmit }) {
     onSubmit?.(text);
   }
 
-  function handleSuggestionClick(label) {
-    setInput(label);
+  function handleCategoryPreview(prompt) {
+    if (!input.trim()) {
+      setGhostText(prompt || '');
+    }
+  }
+
+  function handleCategorySelect(prompt) {
+    setInput(prev => {
+      var trimmed = prev.trim();
+      return trimmed ? trimmed + ', ' + prompt : prompt;
+    });
+    setGhostText('');
     textareaRef.current?.focus();
   }
 
@@ -69,7 +73,6 @@ export default function SearchPage({ onSubmit }) {
       var trimmed = prev.trim();
       return trimmed ? trimmed + '\n[Attached: ' + names + ']' : '[Attached: ' + names + ']';
     });
-    setShowFileModal(false);
     e.target.value = '';
     textareaRef.current?.focus();
   }
@@ -134,68 +137,54 @@ export default function SearchPage({ onSubmit }) {
             boxShadow: hasInput ? '0 2px 12px rgba(0,0,0,0.04)' : undefined,
             animation: !hasInput ? 'inputGlow 3s infinite' : undefined,
           }}>
-            <textarea
-              ref={textareaRef}
-              rows={3}
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSubmit();
-                }
-              }}
-              placeholder="Paste a link to your JD or describe your next hire..."
-              style={{
-                width: '100%',
-                padding: '18px 20px 8px',
-                border: 'none',
-                background: 'transparent',
-                fontFamily: 'var(--font-body)',
-                fontSize: 14,
-                color: 'var(--brown)',
-                lineHeight: 1.6,
-                resize: 'none',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
-            />
-
-            {/* Keep role private checkbox */}
-            <div style={{
-              padding: '0 20px 4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}>
-              <button
-                type="button"
-                onClick={() => setKeepPrivate(!keepPrivate)}
-                style={{
-                  width: 14,
-                  height: 14,
-                  borderRadius: 3,
-                  border: '1.5px solid ' + (keepPrivate ? 'var(--gold)' : 'var(--border-default)'),
-                  background: keepPrivate ? 'var(--gold)' : 'transparent',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 0,
-                  transition: 'all 0.15s ease',
+            {/* Textarea with ghost text overlay */}
+            <div style={{ position: 'relative' }}>
+              {ghostText && !input && (
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  padding: '18px 20px 8px',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  color: 'var(--brown)',
+                  lineHeight: 1.6,
+                  opacity: 0.25,
+                  pointerEvents: 'none',
+                  whiteSpace: 'pre-wrap',
+                }}>
+                  {ghostText}
+                </div>
+              )}
+              <textarea
+                ref={textareaRef}
+                rows={3}
+                value={input}
+                onChange={(e) => { setInput(e.target.value); setGhostText(''); }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSubmit();
+                  }
                 }}
-              >
-                {keepPrivate && <Check size={9} color="#fff" strokeWidth={3} />}
-              </button>
-              <span style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                color: 'var(--brown-soft)',
-                userSelect: 'none',
-                cursor: 'pointer',
-              }} onClick={() => setKeepPrivate(!keepPrivate)}>
-                Keep role private
-              </span>
+                placeholder={ghostText ? '' : 'Paste a link to your JD or describe your next hire...'}
+                style={{
+                  width: '100%',
+                  padding: '18px 20px 8px',
+                  border: 'none',
+                  background: 'transparent',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  color: 'var(--brown)',
+                  lineHeight: 1.6,
+                  resize: 'none',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                  position: 'relative',
+                  zIndex: 1,
+                }}
+              />
             </div>
 
             {/* Uploaded files */}
@@ -299,52 +288,16 @@ export default function SearchPage({ onSubmit }) {
             </div>
           </div>
 
-          {/* Example suggestions */}
+          {/* Category tags with dropdowns – replaces old example suggestions */}
           <div style={{
             display: 'flex',
             justifyContent: 'center',
-            flexWrap: 'wrap',
-            gap: 10,
             marginTop: 20,
           }}>
-            {EXAMPLE_SUGGESTIONS.map((s) => {
-              var Icon = s.icon;
-              return (
-                <button
-                  key={s.label}
-                  type="button"
-                  onClick={() => handleSuggestionClick(s.label)}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 7,
-                    padding: '8px 16px',
-                    borderRadius: 20,
-                    border: '1px solid var(--border-default)',
-                    backgroundColor: '#fff',
-                    color: 'var(--brown)',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 12,
-                    cursor: 'pointer',
-                    transition: 'all 0.15s ease',
-                    whiteSpace: 'nowrap',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-hover)';
-                    e.currentTarget.style.backgroundColor = 'var(--cream)';
-                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--border-default)';
-                    e.currentTarget.style.backgroundColor = '#fff';
-                    e.currentTarget.style.boxShadow = 'none';
-                  }}
-                >
-                  <Icon size={13} style={{ color: 'var(--brown-soft)' }} />
-                  {s.label}
-                </button>
-              );
-            })}
+            <CategoryDropdown
+              onPreview={handleCategoryPreview}
+              onSelect={handleCategorySelect}
+            />
           </div>
         </form>
       </div>

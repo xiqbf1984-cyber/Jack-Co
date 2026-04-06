@@ -4,8 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 
 export default function RoleCreateLayout({ children }) {
   var [rightPanelVisible, setRightPanelVisible] = useState(false);
-  var [splitRatio, setSplitRatio] = useState(0.5); // 50:50 split
-  var containerWidth = useRef(0);
+  var [splitRatio, setSplitRatio] = useState(0.42);
   var isDragging = useRef(false);
   var containerRef = useRef(null);
 
@@ -22,7 +21,7 @@ export default function RoleCreateLayout({ children }) {
       var rect = containerRef.current.getBoundingClientRect();
       var px = e.clientX - rect.left;
       var ratio = px / rect.width;
-      var clamped = Math.max(0.25, Math.min(0.65, ratio));
+      var clamped = Math.max(0.28, Math.min(0.60, ratio));
       setSplitRatio(clamped);
     }
 
@@ -53,17 +52,26 @@ export default function RoleCreateLayout({ children }) {
   return (
     <div
       ref={containerRef}
-      className="flex h-full overflow-hidden"
-      style={{ backgroundColor: 'var(--cream)' }}
+      style={{
+        /* Counter the dashboard layout's padding so we fill edge-to-edge */
+        margin: '-32px -32px -64px -32px',
+        height: '100vh',
+        display: 'flex',
+        backgroundColor: 'var(--cream)',
+        overflow: 'hidden',
+      }}
     >
-      {/* Left panel */}
+      {/* Left panel – chat */}
       <div
-        className="flex flex-col overflow-hidden"
         style={{
           flex: rightPanelVisible ? 'none' : '1',
           width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
-          minWidth: rightPanelVisible ? 300 : undefined,
+          minWidth: rightPanelVisible ? 320 : undefined,
           transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
+          display: 'flex',
+          flexDirection: 'column',
+          overflow: 'hidden',
+          position: 'relative',
         }}
       >
         {typeof children === 'object' && children}
@@ -73,16 +81,20 @@ export default function RoleCreateLayout({ children }) {
       {rightPanelVisible && (
         <div
           onMouseDown={handleMouseDown}
-          className="shrink-0 flex items-center justify-center transition-colors"
           style={{
             width: 6,
             cursor: 'col-resize',
             backgroundColor: 'var(--border-light)',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.15s ease',
+            zIndex: 2,
           }}
           onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
           onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
         >
-          {/* Visual handle */}
           <div
             style={{
               width: 3,
@@ -94,14 +106,16 @@ export default function RoleCreateLayout({ children }) {
         </div>
       )}
 
-      {/* Right panel - JD canvas */}
+      {/* Right panel – JD canvas */}
       {rightPanelVisible && (
         <div
           id="jd-canvas-panel"
-          className="flex flex-col overflow-hidden animate-canvas-in"
+          className="flex flex-col"
           style={{
             flex: 1,
-            minWidth: 340,
+            minWidth: 380,
+            overflow: 'hidden',
+            animation: 'canvasIn 0.35s ease-out',
           }}
         />
       )}
