@@ -78,6 +78,10 @@ function StatusFilterDropdown({ selected, onChange }) {
 function RoleActions({ roleId }) {
   var [open, setOpen] = useState(false);
   var ref = useRef(null);
+  var removeRole = useAppStore(function (s) { return s.removeRole; });
+  var updateRole = useAppStore(function (s) { return s.updateRole; });
+  var duplicateRole = useAppStore(function (s) { return s.duplicateRole; });
+
   useEffect(function () {
     function handleClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
     document.addEventListener('mousedown', handleClick);
@@ -85,11 +89,11 @@ function RoleActions({ roleId }) {
   }, []);
 
   var items = [
-    { icon: StopCircle, label: 'Stop Hiring', color: 'var(--brown)' },
-    { icon: Copy, label: 'Copy Role', color: 'var(--brown)' },
-    { icon: Lock, label: 'Make Private', color: 'var(--brown)' },
-    { icon: Archive, label: 'Archive Role', color: 'var(--brown)' },
-    { icon: Trash2, label: 'Delete Role', color: 'var(--red)' },
+    { icon: StopCircle, label: 'Stop Hiring', color: 'var(--brown)', action: function () { updateRole(roleId, { status: 'draft' }); } },
+    { icon: Copy, label: 'Copy Role', color: 'var(--brown)', action: function () { duplicateRole(roleId); } },
+    { icon: Lock, label: 'Make Private', color: 'var(--brown)', action: function () { /* visual only */ } },
+    { icon: Archive, label: 'Archive Role', color: 'var(--brown)', action: function () { updateRole(roleId, { status: 'archived' }); } },
+    { icon: Trash2, label: 'Delete Role', color: 'var(--red)', action: function () { removeRole(roleId); } },
   ];
 
   return (
@@ -104,7 +108,7 @@ function RoleActions({ roleId }) {
           {items.map(function (item) {
             var Icon = item.icon;
             return (
-              <button key={item.label} onClick={function () { setOpen(false); }} style={{
+              <button key={item.label} onClick={function () { item.action(); setOpen(false); }} style={{
                 display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '9px 14px', border: 'none', background: 'transparent',
                 fontFamily: 'var(--font-body)', fontSize: 12, color: item.color, cursor: 'pointer', textAlign: 'left',
               }}

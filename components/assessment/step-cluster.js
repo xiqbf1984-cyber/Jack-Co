@@ -101,7 +101,7 @@ export default function StepCluster() {
                   position: 'absolute',
                   top: 8,
                   right: 10,
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 8,
                   color: 'var(--brown-light)',
                   backgroundColor: 'var(--cream-row-even)',

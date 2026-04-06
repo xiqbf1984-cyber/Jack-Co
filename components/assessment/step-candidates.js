@@ -60,7 +60,7 @@ function CandidateDetailCard({ candidate, onUpdate, onRemove, defaultExpanded })
         </span>
         {candidate.duration && !expanded && (
           <span style={{
-            fontFamily: "'DM Mono', monospace",
+            fontFamily: "var(--font-mono)",
             fontSize: 9,
             color: 'var(--brown-soft)',
           }}>
@@ -267,7 +267,7 @@ function CandidateDetailCard({ candidate, onUpdate, onRemove, defaultExpanded })
             }}>
               <MapPin size={12} style={{ color: 'var(--brown-light)' }} />
               <span style={{
-                fontFamily: "'DM Mono', monospace",
+                fontFamily: "var(--font-mono)",
                 fontSize: 11,
                 color: 'var(--brown)',
                 fontWeight: 700,
@@ -505,7 +505,7 @@ export default function StepCandidates() {
                   flexShrink: 0,
                 }}>
                   <span style={{
-                    fontFamily: "'DM Mono', monospace",
+                    fontFamily: "var(--font-mono)",
                     fontSize: 9,
                     fontWeight: 700,
                     color: 'var(--gold)',
@@ -524,7 +524,7 @@ export default function StepCandidates() {
                   {c.name}
                 </span>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 10,
                   color: 'var(--brown-light)',
                 }}>
@@ -539,7 +539,7 @@ export default function StepCandidates() {
       {/* Candidate count */}
       {wizardCandidates.length > 0 && (
         <div style={{
-          fontFamily: "'DM Mono', monospace",
+          fontFamily: "var(--font-mono)",
           fontSize: 10,
           color: 'var(--accent-green)',
           marginBottom: 12,

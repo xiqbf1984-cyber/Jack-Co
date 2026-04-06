@@ -109,7 +109,7 @@ export default function StepPathway() {
                   {pw.name}
                 </span>
                 <span style={{
-                  fontFamily: "'DM Mono', monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: 9,
                   color: 'var(--brown-light)',
                 }}>
@@ -158,7 +158,7 @@ export default function StepPathway() {
                             position: 'absolute',
                             top: 12,
                             right: 14,
-                            fontFamily: "'DM Mono', monospace",
+                            fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             color: 'var(--gold)',
                           }}>
@@ -189,7 +189,7 @@ export default function StepPathway() {
                         {/* Source occupations */}
                         {r.sourceOccupations && r.sourceOccupations.length > 0 && (
                           <div style={{
-                            fontFamily: "'DM Mono', monospace",
+                            fontFamily: "var(--font-mono)",
                             fontSize: 9,
                             color: 'var(--brown-light)',
                           }}>

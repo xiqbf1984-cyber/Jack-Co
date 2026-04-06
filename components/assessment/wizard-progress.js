@@ -45,7 +45,7 @@ export default function WizardProgress() {
             }} />
             {/* Label */}
             <div style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "var(--font-mono)",
               fontSize: 9,
               marginTop: 5,
               textAlign: 'center',

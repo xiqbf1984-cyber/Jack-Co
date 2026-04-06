@@ -42,6 +42,8 @@ export default function AssessmentDetailPage() {
   var [acceptNew, setAcceptNew] = useState(true);
   var [strictDevice, setStrictDevice] = useState(false);
   var [candSearch, setCandSearch] = useState('');
+  var [resources, setResources] = useState([]);
+  var openModal = useAppStore(function (s) { return s.openAddCandidateModal; });
 
   if (!assessment) {
     return (
@@ -169,14 +171,27 @@ export default function AssessmentDetailPage() {
           <div>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 15, fontWeight: 600, color: 'var(--brown)' }}>Resources</h3>
-              <button style={{
+              <label style={{
                 display: 'flex', alignItems: 'center', gap: 5, padding: '6px 12px', borderRadius: 6,
                 border: '1px solid var(--border-default)', background: '#fff', fontFamily: 'var(--font-body)',
                 fontSize: 11, color: 'var(--brown-soft)', cursor: 'pointer',
-              }}>+ Add</button>
+              }}>+ Add<input type="file" multiple onChange={function (e) { setResources(function (prev) { return prev.concat(Array.from(e.target.files || [])); }); e.target.value = ''; }} style={{ display: 'none' }} /></label>
             </div>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginTop: 8 }}>No Resources Yet</p>
-            <p style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)' }}>Max 5 files, 500 MB each</p>
+            {resources.length > 0 ? (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 4, marginTop: 8 }}>
+                {resources.map(function (f, i) { return (
+                  <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 6, border: '1px solid var(--border-default)', background: '#fff' }}>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown)', flex: 1 }}>{f.name}</span>
+                    <button onClick={function () { setResources(function (prev) { return prev.filter(function (_, idx) { return idx !== i; }); }); }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--brown-soft)', padding: 2 }}>x</button>
+                  </div>
+                ); })}
+              </div>
+            ) : (
+              <div>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginTop: 8 }}>No Resources Yet</p>
+                <p style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)' }}>Max 5 files, 500 MB each</p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -189,10 +204,11 @@ export default function AssessmentDetailPage() {
               Candidates ({assignedCands.length})
             </h3>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button className="btn-secondary" style={{ padding: '6px 14px', fontSize: 11, gap: 5 }}>
+              <label className="btn-secondary" style={{ padding: '6px 14px', fontSize: 11, gap: 5, cursor: 'pointer' }}>
                 <Upload size={12} /> Bulk upload
-              </button>
-              <button className="btn-primary" style={{ padding: '6px 14px', fontSize: 11 }}>Invite</button>
+                <input type="file" accept=".csv,.xlsx" onChange={function () {}} style={{ display: 'none' }} />
+              </label>
+              <button className="btn-primary" style={{ padding: '6px 14px', fontSize: 11 }} onClick={openModal}>Invite</button>
             </div>
           </div>
 
@@ -251,7 +267,7 @@ export default function AssessmentDetailPage() {
           ) : (
             <div style={{ textAlign: 'center', padding: '40px 0' }}>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)' }}>No candidates assigned yet.</p>
-              <button className="btn-primary" style={{ marginTop: 12, padding: '7px 16px', fontSize: 11 }}>Invite Candidates</button>
+              <button className="btn-primary" style={{ marginTop: 12, padding: '7px 16px', fontSize: 11 }} onClick={openModal}>Invite Candidates</button>
             </div>
           )}
         </div>
@@ -260,7 +276,7 @@ export default function AssessmentDetailPage() {
       {/* ===== SETTINGS TAB ===== */}
       {activeTab === 'Settings' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16, animation: 'fsu 0.2s ease' }}>
-          {/* Trial Settings */}
+          {/* Assessment Settings */}
           <div style={{ borderRadius: 12, border: '1px solid var(--border-default)', background: '#fff', overflow: 'hidden' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-light)' }}>
               <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)' }}>Assessment Settings</h3>

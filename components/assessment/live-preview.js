@@ -8,7 +8,7 @@ function Section({ label, children, show }) {
   return (
     <div style={{ marginTop: 16, animation: 'fsu .2s ease' }}>
       <div style={{
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "var(--font-mono)",
         fontSize: 9,
         color: 'var(--brown-light)',
         textTransform: 'uppercase',
@@ -71,7 +71,7 @@ export default function LivePreview() {
         Preview
       </div>
       <div style={{
-        fontFamily: "'DM Mono', monospace",
+        fontFamily: "var(--font-mono)",
         fontSize: 9,
         color: 'var(--brown-light)',
         marginBottom: 12,

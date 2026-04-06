@@ -82,7 +82,7 @@ function ProgressIndicator({ currentStage }) {
           <div key={stage.key} style={{ flex: 1 }}>
             <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
             <div style={{
-              fontFamily: "'DM Mono', monospace",
+              fontFamily: "var(--font-mono)",
               fontSize: 9,
               marginTop: 5,
               textAlign: 'center',
