@@ -147,7 +147,7 @@ export default function AssessmentsPage() {
                     <div style={{ display: 'flex' }}>
                       {(assessment.candIds || []).slice(0, 3).map(function (candId, ci) {
                         var cand = candidates.find(function (c) { return c.id === candId; });
-                        var initials = cand?.avatar || '?';
+                        var initials = cand?.avatar || (cand?.name ? cand.name.split(' ').map(function (w) { return w[0]; }).join('').toUpperCase().slice(0, 2) : '?');
                         return (
                           <div key={candId} style={{ width: 24, height: 24, borderRadius: '50%', backgroundColor: avatarColors[ci % avatarColors.length], display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: ci > 0 ? -6 : 0, border: '2px solid #fff', zIndex: 3 - ci }}>
                             <span style={{ fontFamily: 'var(--font-body)', fontSize: 8, fontWeight: 600, color: '#fff' }}>{initials}</span>

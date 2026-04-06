@@ -510,7 +510,7 @@ export default function StepCandidates() {
                     fontWeight: 700,
                     color: 'var(--gold)',
                   }}>
-                    {c.avatar || c.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()}
+                    {c.avatar || (c.name ? c.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() : '?')}
                   </span>
                 </div>
 
