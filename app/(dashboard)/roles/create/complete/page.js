@@ -5,8 +5,8 @@ import { Suspense } from 'react';
 import RoleComplete from '@/components/role-creation/role-complete';
 
 function CompleteContent() {
-  const searchParams = useSearchParams();
-  const title = searchParams.get('title') || 'New Role';
+  var searchParams = useSearchParams();
+  var title = searchParams.get('title') || 'New Role';
 
   return <RoleComplete roleTitle={title} />;
 }
