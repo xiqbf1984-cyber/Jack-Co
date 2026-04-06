@@ -4,7 +4,11 @@ export default function ChipSuggestions({ chips = [], onSelect, onHover, compact
   if (!chips.length) return null;
 
   return (
-    <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none" style={{ scrollbarWidth: 'none' }}>
+    <div style={{
+      display: 'flex',
+      flexWrap: 'wrap',
+      gap: 6,
+    }}>
       {chips.map(function (chip) {
         return (
           <button
@@ -13,12 +17,25 @@ export default function ChipSuggestions({ chips = [], onSelect, onHover, compact
             onClick={function () { onSelect?.(chip); }}
             onMouseEnter={function () { onHover?.(chip); }}
             onMouseLeave={function () { onHover?.(''); }}
-            className="shrink-0 border rounded-full hover-border-hover hover-bg-cream transition-all whitespace-nowrap"
             style={{
-              padding: compact ? '6px 12px' : '7px 16px',
+              padding: compact ? '5px 12px' : '6px 14px',
               fontSize: compact ? 11 : 12,
-              borderColor: 'var(--border-default)',
+              fontFamily: 'var(--font-body)',
+              borderRadius: 20,
+              border: '1px solid var(--border-default)',
+              backgroundColor: '#fff',
               color: 'var(--brown)',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease',
+              whiteSpace: 'nowrap',
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-hover)';
+              e.currentTarget.style.backgroundColor = 'var(--cream)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.borderColor = 'var(--border-default)';
+              e.currentTarget.style.backgroundColor = '#fff';
             }}
           >
             {chip}

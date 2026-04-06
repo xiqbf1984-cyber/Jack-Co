@@ -2,7 +2,6 @@
 
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { ArrowUp, Link2, Upload } from 'lucide-react';
-import SemanticPills from './semantic-pills';
 import CategoryDropdown from './category-dropdown';
 
 const TYPEWRITER_TEXT = 'What AI talent are you looking for?';
@@ -15,7 +14,6 @@ export default function SearchPage({ onSubmit }) {
   const [twDone, setTwDone] = useState(false);
   const textareaRef = useRef(null);
 
-  // Typewriter effect
   useEffect(() => {
     let i = 0;
     const timer = setInterval(() => {
@@ -52,63 +50,69 @@ export default function SearchPage({ onSubmit }) {
   var hasInput = input.trim().length > 0;
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-12">
-      {/* Title with typewriter effect */}
-      <h1
-        className="mb-8 text-center"
-        style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'clamp(22px, 4vw, 32px)',
-          fontWeight: 700,
-          lineHeight: 1.2,
-          color: 'var(--brown)',
-        }}
-      >
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      minHeight: '100%',
+      padding: '40px 24px',
+    }}>
+      {/* Title */}
+      <h1 style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 26,
+        fontWeight: 700,
+        color: 'var(--brown)',
+        textAlign: 'center',
+        marginBottom: 28,
+        lineHeight: 1.2,
+      }}>
         {twText}
         {!twDone && (
-          <span
-            className="inline-block ml-0.5 animate-blink"
-            style={{
-              width: 2,
-              height: '0.9em',
-              backgroundColor: 'var(--brown)',
-              verticalAlign: 'text-bottom',
-            }}
-          />
+          <span style={{
+            display: 'inline-block',
+            width: 2,
+            height: '0.85em',
+            backgroundColor: 'var(--brown)',
+            marginLeft: 2,
+            verticalAlign: 'text-bottom',
+            animation: 'blink 1s step-end infinite',
+          }} />
         )}
       </h1>
 
-      {/* Content fades in after typewriter */}
-      <div
-        style={{
-          opacity: twDone ? 1 : 0,
-          transition: 'opacity 0.5s ease',
-          width: '100%',
-          maxWidth: 660,
-        }}
-      >
-        {/* Semantic pills */}
-        <div className="mb-5">
-          <SemanticPills inputText={input} />
-        </div>
-
+      {/* Content */}
+      <div style={{
+        opacity: twDone ? 1 : 0,
+        transition: 'opacity 0.4s ease',
+        width: '100%',
+        maxWidth: 540,
+      }}>
         {/* Search card */}
-        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-          <div
-            className="relative rounded-2xl overflow-hidden transition-all"
-            style={{
-              border: '1.5px solid var(--border-default)',
-              backgroundColor: 'var(--cream-card)',
-              boxShadow: hasInput ? 'var(--shadow-card)' : undefined,
-              animation: !hasInput ? 'inputGlow 3s infinite' : undefined,
-            }}
-          >
-            {/* Ghost text overlay */}
+        <form onSubmit={handleSubmit}>
+          <div style={{
+            position: 'relative',
+            borderRadius: 16,
+            border: `1.5px solid ${hasInput ? 'var(--border-hover)' : 'var(--border-default)'}`,
+            backgroundColor: '#fff',
+            overflow: 'hidden',
+            transition: 'border-color 0.2s ease',
+            boxShadow: hasInput ? '0 2px 12px rgba(0,0,0,0.04)' : undefined,
+            animation: !hasInput ? 'inputGlow 3s infinite' : undefined,
+          }}>
+            {/* Ghost overlay */}
             {ghostText && !input && (
-              <div
-                className="absolute px-5 pt-4 pointer-events-none text-body-lg"
-                style={{ color: 'var(--brown-light)', opacity: 0.4 }}
-              >
+              <div style={{
+                position: 'absolute',
+                left: 20,
+                top: 18,
+                fontFamily: 'var(--font-body)',
+                fontSize: 14,
+                color: 'var(--brown-light)',
+                opacity: 0.35,
+                pointerEvents: 'none',
+              }}>
                 {ghostText}
               </div>
             )}
@@ -125,52 +129,79 @@ export default function SearchPage({ onSubmit }) {
                 }
               }}
               placeholder="Describe the role, paste a JD link, or upload a file..."
-              className="w-full px-5 pt-4 pb-2 text-body-lg resize-none focus:outline-none bg-transparent"
-              style={{ color: 'var(--brown)' }}
+              style={{
+                width: '100%',
+                padding: '18px 20px 8px',
+                border: 'none',
+                background: 'transparent',
+                fontFamily: 'var(--font-body)',
+                fontSize: 14,
+                color: 'var(--brown)',
+                lineHeight: 1.6,
+                resize: 'none',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
             />
 
-            {/* Bottom toolbar */}
-            <div className="flex items-center justify-between px-4 pb-3">
-              <div className="flex items-center gap-1">
+            {/* Toolbar */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '6px 14px 10px',
+            }}>
+              <div style={{ display: 'flex', gap: 4 }}>
                 <button
                   type="button"
-                  className="p-2 rounded-lg transition-colors hover-bg-cream"
-                  style={{ color: 'var(--brown-muted)' }}
                   title="Paste a link"
+                  style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    border: 'none', background: 'transparent', cursor: 'pointer',
+                    color: 'var(--brown-light)',
+                  }}
                 >
-                  <Link2 size={16} />
+                  <Link2 size={15} />
                 </button>
                 <button
                   type="button"
-                  className="p-2 rounded-lg transition-colors hover-bg-cream"
-                  style={{ color: 'var(--brown-muted)' }}
                   title="Upload a file"
+                  style={{
+                    width: 32, height: 32, borderRadius: 8,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    border: 'none', background: 'transparent', cursor: 'pointer',
+                    color: 'var(--brown-light)',
+                  }}
                 >
-                  <Upload size={16} />
+                  <Upload size={15} />
                 </button>
               </div>
 
               <button
                 type="submit"
                 disabled={!hasInput}
-                className="flex items-center justify-center rounded-full transition-all"
                 style={{
-                  width: 34,
-                  height: 34,
+                  width: 34, height: 34, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: 'none',
                   background: hasInput
                     ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
-                    : 'var(--cream-sidebar)',
-                  color: hasInput ? 'var(--btn-text)' : 'var(--brown-muted)',
+                    : 'var(--cream)',
+                  color: hasInput ? '#fff' : 'var(--brown-light)',
                   cursor: hasInput ? 'pointer' : 'default',
+                  transition: 'all 0.2s ease',
                 }}
               >
-                <ArrowUp size={16} />
+                <ArrowUp size={15} />
               </button>
             </div>
           </div>
 
-          {/* Category filter buttons */}
-          <CategoryDropdown onPreview={handlePreview} onSelect={handleCategorySelect} />
+          {/* Category quick-fills */}
+          <div style={{ marginTop: 16 }}>
+            <CategoryDropdown onPreview={handlePreview} onSelect={handleCategorySelect} />
+          </div>
         </form>
       </div>
     </div>

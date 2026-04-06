@@ -26,7 +26,6 @@ export default function ChatPanel({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, isTyping]);
 
-  // Clear ghost when user types
   useEffect(function () {
     if (input) {
       setLocalGhost('');
@@ -57,9 +56,16 @@ export default function ChatPanel({
   var hasContent = input.trim().length > 0;
 
   return (
-    <div className="flex flex-col h-full">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
+      <div style={{
+        flex: 1,
+        overflowY: 'auto',
+        padding: compact ? '20px 20px' : '28px 24px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 16,
+      }}>
         {messages.map(function (msg, i) {
           return (
             <ChatBubble
@@ -74,9 +80,12 @@ export default function ChatPanel({
 
         {isTyping && <TypingIndicator />}
 
-        {/* Chip suggestions after the last AI message */}
+        {/* Chip suggestions — wrapped, not scrolling */}
         {!isTyping && currentQuestion?.chips && messages.length > 0 && messages[messages.length - 1]?.role === 'ai' && (
-          <div className={compact ? 'ml-9 mt-0.5' : 'ml-9 mt-1'}>
+          <div style={{
+            marginLeft: compact ? 36 : 40,
+            marginTop: 4,
+          }}>
             <ChipSuggestions
               chips={currentQuestion.chips}
               onSelect={handleChip}
@@ -89,17 +98,42 @@ export default function ChatPanel({
         <div ref={bottomRef} />
       </div>
 
-      {/* Input bar */}
-      <div className="px-5 pb-5 pt-3 border-t" style={{ borderColor: 'var(--border-light)' }}>
-        <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
-          <div className="relative flex-1">
-            {/* Ghost text */}
+      {/* Input bar — larger and more prominent */}
+      <div style={{
+        padding: '12px 20px 16px',
+        borderTop: '1px solid var(--border-light)',
+        backgroundColor: 'var(--cream)',
+      }}>
+        <form
+          onSubmit={handleSubmit}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 10,
+            padding: '8px 8px 8px 16px',
+            borderRadius: 14,
+            border: '1.5px solid var(--border-default)',
+            backgroundColor: '#fff',
+            transition: 'border-color 0.15s ease',
+          }}
+        >
+          <div style={{ position: 'relative', flex: 1 }}>
             {ghostText && !input && (
-              <div
-                className="absolute inset-0 px-4 flex items-center pointer-events-none text-body-sm"
-                style={{ color: 'var(--brown-light)', opacity: 0.4 }}
-              >
-                <span className="truncate">{ghostText}</span>
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: 0,
+                transform: 'translateY(-50%)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--brown-light)',
+                opacity: 0.35,
+                pointerEvents: 'none',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                width: '100%',
+              }}>
+                {ghostText}
               </div>
             )}
             <input
@@ -109,28 +143,39 @@ export default function ChatPanel({
               onChange={function (e) { setInput(e.target.value); }}
               placeholder={ghostText ? '' : 'Type your answer...'}
               disabled={isTyping}
-              className="w-full px-4 py-2.5 text-body-sm focus:outline-none focus-border-hover transition-colors disabled:opacity-50"
               style={{
-                borderRadius: 24,
-                border: '1.5px solid var(--border-default)',
-                backgroundColor: 'var(--cream-card)',
+                width: '100%',
+                border: 'none',
+                outline: 'none',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
                 color: 'var(--brown)',
+                backgroundColor: 'transparent',
+                padding: '6px 0',
+                opacity: isTyping ? 0.5 : 1,
+                boxSizing: 'border-box',
               }}
             />
           </div>
           <button
             type="submit"
             disabled={!hasContent || isTyping}
-            className="flex items-center justify-center rounded-full transition-all shrink-0"
             style={{
-              width: 34,
-              height: 34,
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              border: 'none',
+              flexShrink: 0,
               background: hasContent
                 ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
-                : 'var(--cream-sidebar)',
-              color: hasContent ? 'var(--btn-text)' : 'var(--brown-muted)',
+                : 'var(--cream)',
+              color: hasContent ? '#fff' : 'var(--brown-light)',
               cursor: hasContent ? 'pointer' : 'default',
               opacity: isTyping ? 0.4 : 1,
+              transition: 'all 0.2s ease',
             }}
           >
             <Send size={14} />
