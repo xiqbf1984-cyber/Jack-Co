@@ -2,9 +2,6 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { SEARCH_CATEGORIES } from '@/lib/constants';
-import { Briefcase, BarChart3, Target, MapPin } from 'lucide-react';
-
-var ICON_MAP = { Briefcase, BarChart3, Target, MapPin };
 
 export default function CategoryDropdown({ onPreview, onSelect }) {
   var [openIndex, setOpenIndex] = useState(null);
@@ -22,45 +19,97 @@ export default function CategoryDropdown({ onPreview, onSelect }) {
   }, [onPreview]);
 
   return (
-    <div ref={wrapperRef} className="flex flex-wrap gap-2 relative">
+    <div ref={wrapperRef} style={{ display: 'flex', flexWrap: 'wrap', gap: 10, position: 'relative' }}>
       {SEARCH_CATEGORIES.map(function (cat, idx) {
-        var Icon = ICON_MAP[cat.icon] || Briefcase;
         var isOpen = openIndex === idx;
 
         return (
-          <div key={cat.label} className="relative">
+          <div key={cat.label} style={{ position: 'relative' }}>
+            {/* Category tag button – no icon/emoji */}
             <button
               type="button"
               onClick={function () {
                 setOpenIndex(isOpen ? null : idx);
                 if (isOpen) onPreview?.('');
               }}
-              className="btn-secondary text-body-xs flex items-center gap-1.5 px-3 py-1.5"
-              style={isOpen ? { borderColor: 'var(--border-hover)', backgroundColor: 'var(--cream)' } : undefined}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                padding: '8px 20px',
+                borderRadius: 20,
+                border: '1px solid ' + (isOpen ? 'var(--border-hover)' : 'var(--border-default)'),
+                backgroundColor: isOpen ? 'var(--cream)' : '#fff',
+                color: 'var(--brown)',
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                fontWeight: 500,
+                cursor: 'pointer',
+                transition: 'all 0.15s ease',
+                whiteSpace: 'nowrap',
+                boxShadow: isOpen ? '0 2px 8px rgba(0,0,0,0.06)' : 'none',
+              }}
+              onMouseEnter={function (e) {
+                if (!isOpen) {
+                  e.currentTarget.style.borderColor = 'var(--border-hover)';
+                  e.currentTarget.style.backgroundColor = 'var(--cream)';
+                }
+              }}
+              onMouseLeave={function (e) {
+                if (!isOpen) {
+                  e.currentTarget.style.borderColor = 'var(--border-default)';
+                  e.currentTarget.style.backgroundColor = '#fff';
+                }
+              }}
             >
-              <span>{cat.emoji}</span>
               {cat.label}
             </button>
 
+            {/* Dropdown list */}
             {isOpen && (
               <div
-                className="absolute top-full left-0 mt-1.5 z-50 py-1 rounded-lg animate-fsd"
                 style={{
-                  boxShadow: 'var(--shadow-dropdown)',
-                  minWidth: 220,
+                  position: 'absolute',
+                  top: '100%',
+                  left: 0,
+                  marginTop: 8,
+                  zIndex: 50,
+                  minWidth: 240,
+                  borderRadius: 12,
                   border: '1px solid var(--border-default)',
-                  backgroundColor: 'var(--cream-card)',
+                  backgroundColor: '#fff',
+                  boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                  padding: '6px 0',
+                  animation: 'fsd 0.15s ease-out',
                 }}
               >
-                {cat.opts.map(function (opt) {
+                {cat.opts.map(function (opt, optIdx) {
                   return (
                     <button
                       key={opt.label}
                       type="button"
-                      className="w-full text-left px-3 py-2 text-body-sm hover-bg-cream transition-colors"
-                      style={{ color: 'var(--brown)' }}
-                      onMouseEnter={function () { onPreview?.(opt.prompt); }}
-                      onMouseLeave={function () { onPreview?.(''); }}
+                      style={{
+                        display: 'block',
+                        width: '100%',
+                        textAlign: 'left',
+                        padding: '10px 16px',
+                        border: 'none',
+                        background: 'transparent',
+                        fontFamily: 'var(--font-body)',
+                        fontSize: 13,
+                        color: 'var(--brown)',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.1s ease',
+                        lineHeight: 1.4,
+                      }}
+                      onMouseEnter={function (e) {
+                        e.currentTarget.style.backgroundColor = 'var(--cream)';
+                        onPreview?.(opt.prompt);
+                      }}
+                      onMouseLeave={function (e) {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        onPreview?.('');
+                      }}
                       onClick={function () {
                         onSelect?.(opt.prompt);
                         setOpenIndex(null);

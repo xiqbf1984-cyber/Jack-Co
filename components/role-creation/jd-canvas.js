@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import { Save, Download, Link2, Check, X, Bold, Italic, List, Heading, Bookmark } from 'lucide-react';
 
 function CopyLinkModal({ link, onClose }) {
@@ -59,6 +60,7 @@ export default function JDCanvas({
   matchedRoleName,
   matchScore,
   sharableLink,
+  portalTarget,
 }) {
   var [showLinkModal, setShowLinkModal] = useState(false);
 
@@ -290,8 +292,13 @@ export default function JDCanvas({
         </div>
       </div>
 
-      {/* Link sharing modal */}
-      {showLinkModal && sharableLink && (
+      {/* Link sharing modal – portal to body to escape split layout clipping */}
+      {showLinkModal && sharableLink && portalTarget &&
+        createPortal(
+          <CopyLinkModal link={sharableLink} onClose={function () { setShowLinkModal(false); }} />,
+          portalTarget
+        )}
+      {showLinkModal && sharableLink && !portalTarget && (
         <CopyLinkModal link={sharableLink} onClose={function () { setShowLinkModal(false); }} />
       )}
     </div>

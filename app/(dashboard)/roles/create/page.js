@@ -38,7 +38,6 @@ function generateJD(answers, matched, company) {
   var level = answers.level || 'Relevant experience level';
   var extras = answers.extra || 'Competitive compensation';
 
-  // Build a well-structured JD with clear sections and formatting
   var lines = [
     '# ' + title,
   ];
@@ -137,9 +136,15 @@ export default function RoleCreatePage() {
   var [matchScore, setMatchScore] = useState(0);
   var [showSuccessModal, setShowSuccessModal] = useState(false);
   var [savedRoleTitle, setSavedRoleTitle] = useState('');
+  var [bodyEl, setBodyEl] = useState(null);
   var [sharableLink] = useState(function () {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
+
+  // Get body element for portal rendering (modals must escape split layout)
+  useEffect(function () {
+    setBodyEl(document.body);
+  }, []);
 
   // Watch for the portal target element
   useEffect(function () {
@@ -167,7 +172,6 @@ export default function RoleCreatePage() {
     };
   }, [stage]);
 
-  // Perform role matching
   var doMatch = useCallback(function (text) {
     var result = matchRole(text);
     setMatchedRole(result.role);
@@ -184,7 +188,6 @@ export default function RoleCreatePage() {
     }, delay);
   }, []);
 
-  // Handle initial search submit
   function handleSearchSubmit(text) {
     setDescription(text);
     setStage(1);
@@ -195,7 +198,6 @@ export default function RoleCreatePage() {
     );
   }
 
-  // Handle chat message send
   function handleChatSend(text) {
     var currentQ = ROLE_CREATION_QUESTIONS[questionIndex];
     var newAnswers = Object.assign({}, answers, { [currentQ.id]: text });
@@ -233,7 +235,6 @@ export default function RoleCreatePage() {
     }
   }
 
-  // Handle JD save – show modal instead of navigating
   function handleSaveRole() {
     if (!jdContent.trim()) return;
 
@@ -251,7 +252,6 @@ export default function RoleCreatePage() {
     setShowSuccessModal(true);
   }
 
-  // Handle save-for-later (draft)
   function handleSaveForLater() {
     if (!jdContent.trim()) return;
 
@@ -269,10 +269,8 @@ export default function RoleCreatePage() {
     setShowSuccessModal(true);
   }
 
-  // Success modal handlers
   function handleCreateAnother() {
     setShowSuccessModal(false);
-    // Reset everything
     setStage(0);
     setMessages([]);
     setQuestionIndex(0);
@@ -310,7 +308,12 @@ export default function RoleCreatePage() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', margin: '-32px -32px -64px -32px', height: '100vh' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
+      overflow: 'hidden',
+    }}>
       {/* Back button + Progress */}
       <div style={{
         display: 'flex',
@@ -318,6 +321,7 @@ export default function RoleCreatePage() {
         gap: 12,
         padding: '10px 24px 0',
         borderBottom: 'none',
+        flexShrink: 0,
       }}>
         <button
           onClick={handleBack}
@@ -341,12 +345,12 @@ export default function RoleCreatePage() {
       </div>
       <ProgressIndicator currentStage={stage} />
 
-      <div style={{ flex: 1, overflow: 'hidden' }}>
+      <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
         {stage === 0 && <SearchPage onSubmit={handleSearchSubmit} />}
 
         {stage >= 1 && (
-          <div className="h-full flex justify-center">
-            <div className="h-full w-full" style={{ maxWidth: isCompact ? undefined : 660 }}>
+          <div style={{ height: '100%', display: 'flex', justifyContent: 'center' }}>
+            <div style={{ height: '100%', width: '100%', maxWidth: isCompact ? undefined : 660, minWidth: 0 }}>
               <ChatPanel
                 messages={messages}
                 onSend={handleChatSend}
@@ -372,20 +376,23 @@ export default function RoleCreatePage() {
               matchedRoleName={matchedRole ? matchedRole.title : null}
               matchScore={matchScore}
               sharableLink={sharableLink}
+              portalTarget={bodyEl}
             />
           </div>,
           jdPortalTarget
         )}
 
-      {/* Success modal with backdrop blur */}
-      {showSuccessModal && (
-        <SaveSuccessModal
-          roleTitle={savedRoleTitle}
-          onCreateAnother={handleCreateAnother}
-          onGoToAssessment={handleGoToAssessment}
-          onStay={handleStay}
-        />
-      )}
+      {/* Success modal – portal to body so it escapes the split layout */}
+      {showSuccessModal && bodyEl &&
+        createPortal(
+          <SaveSuccessModal
+            roleTitle={savedRoleTitle}
+            onCreateAnother={handleCreateAnother}
+            onGoToAssessment={handleGoToAssessment}
+            onStay={handleStay}
+          />,
+          bodyEl
+        )}
     </div>
   );
 }

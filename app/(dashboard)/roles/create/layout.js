@@ -4,8 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 
 export default function RoleCreateLayout({ children }) {
   var [rightPanelVisible, setRightPanelVisible] = useState(false);
-  var [splitRatio, setSplitRatio] = useState(0.42); // 42:58 split – chat narrower, JD wider (matching Fig 5)
-  var containerWidth = useRef(0);
+  var [splitRatio, setSplitRatio] = useState(0.42);
   var isDragging = useRef(false);
   var containerRef = useRef(null);
 
@@ -53,8 +52,14 @@ export default function RoleCreateLayout({ children }) {
   return (
     <div
       ref={containerRef}
-      className="flex h-full"
-      style={{ backgroundColor: 'var(--cream)', overflow: 'hidden', position: 'relative' }}
+      style={{
+        /* Counter the dashboard layout's padding so we fill edge-to-edge */
+        margin: '-32px -32px -64px -32px',
+        height: '100vh',
+        display: 'flex',
+        backgroundColor: 'var(--cream)',
+        overflow: 'hidden',
+      }}
     >
       {/* Left panel – chat */}
       <div
@@ -67,7 +72,6 @@ export default function RoleCreateLayout({ children }) {
           flexDirection: 'column',
           overflow: 'hidden',
           position: 'relative',
-          zIndex: 1,
         }}
       >
         {typeof children === 'object' && children}
@@ -77,17 +81,20 @@ export default function RoleCreateLayout({ children }) {
       {rightPanelVisible && (
         <div
           onMouseDown={handleMouseDown}
-          className="shrink-0 flex items-center justify-center transition-colors"
           style={{
             width: 6,
             cursor: 'col-resize',
             backgroundColor: 'var(--border-light)',
+            flexShrink: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'background-color 0.15s ease',
             zIndex: 2,
           }}
           onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
           onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
         >
-          {/* Visual handle */}
           <div
             style={{
               width: 3,
@@ -103,13 +110,12 @@ export default function RoleCreateLayout({ children }) {
       {rightPanelVisible && (
         <div
           id="jd-canvas-panel"
-          className="flex flex-col animate-canvas-in"
+          className="flex flex-col"
           style={{
             flex: 1,
             minWidth: 380,
             overflow: 'hidden',
-            position: 'relative',
-            zIndex: 1,
+            animation: 'canvasIn 0.35s ease-out',
           }}
         />
       )}

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowUp, Paperclip, Link2, X, FileText, Check } from 'lucide-react';
+import { ArrowUp, Paperclip, Link2, X, FileText } from 'lucide-react';
 import CategoryDropdown from './category-dropdown';
 
 const TYPEWRITER_TEXT = 'What role do you want to recruit?';
@@ -11,7 +11,6 @@ export default function SearchPage({ onSubmit }) {
   const [input, setInput] = useState('');
   const [twText, setTwText] = useState('');
   const [twDone, setTwDone] = useState(false);
-  const [keepPrivate, setKeepPrivate] = useState(false);
   const [showLinkModal, setShowLinkModal] = useState(false);
   const [linkValue, setLinkValue] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
@@ -186,43 +185,6 @@ export default function SearchPage({ onSubmit }) {
                   zIndex: 1,
                 }}
               />
-            </div>
-
-            {/* Keep role private checkbox */}
-            <div style={{
-              padding: '0 20px 4px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-            }}>
-              <button
-                type="button"
-                onClick={() => setKeepPrivate(!keepPrivate)}
-                style={{
-                  width: 14,
-                  height: 14,
-                  borderRadius: 3,
-                  border: '1.5px solid ' + (keepPrivate ? 'var(--gold)' : 'var(--border-default)'),
-                  background: keepPrivate ? 'var(--gold)' : 'transparent',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: 0,
-                  transition: 'all 0.15s ease',
-                }}
-              >
-                {keepPrivate && <Check size={9} color="#fff" strokeWidth={3} />}
-              </button>
-              <span style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                color: 'var(--brown-soft)',
-                userSelect: 'none',
-                cursor: 'pointer',
-              }} onClick={() => setKeepPrivate(!keepPrivate)}>
-                Keep role private
-              </span>
             </div>
 
             {/* Uploaded files */}
