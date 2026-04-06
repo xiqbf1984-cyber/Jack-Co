@@ -1,76 +1,54 @@
 'use client';
 
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Users, Paperclip, Check } from 'lucide-react';
+import { Check } from 'lucide-react';
 
-function SectionDivider({ label }) {
+function Section({ label, children, show }) {
+  if (!show) return null;
   return (
-    <div style={{
-      fontFamily: "'DM Mono', monospace",
-      fontSize: 9,
-      color: 'var(--brown-muted)',
-      textTransform: 'uppercase',
-      letterSpacing: '0.8px',
-      marginTop: 20,
-      marginBottom: 10,
-      display: 'flex',
-      alignItems: 'center',
-      gap: 8,
-    }}>
-      <span style={{ flex: 1, borderTop: '1px solid var(--border-light)' }} />
-      {label}
-      <span style={{ flex: 1, borderTop: '1px solid var(--border-light)' }} />
+    <div style={{ marginTop: 16, animation: 'fsu .2s ease' }}>
+      <div style={{
+        fontFamily: "'DM Mono', monospace",
+        fontSize: 9,
+        color: 'var(--brown-light)',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px',
+        marginBottom: 8,
+      }}>
+        {label}
+      </div>
+      {children}
     </div>
   );
 }
 
-function SummaryRow({ label, value }) {
+function Row({ label, value }) {
+  if (!value) return null;
   return (
     <div style={{
       display: 'flex',
       justifyContent: 'space-between',
-      alignItems: 'center',
-      padding: '8px 0',
-      borderBottom: '1px solid var(--border-light)',
+      gap: 8,
+      padding: '5px 0',
+      fontSize: 11,
+      fontFamily: 'var(--font-body)',
     }}>
+      <span style={{ color: 'var(--brown-light)', flexShrink: 0 }}>{label}</span>
       <span style={{
-        fontFamily: "'DM Mono', monospace",
-        fontSize: 10,
-        color: 'var(--brown-muted)',
-      }}>{label}</span>
-      <span style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 11,
-        color: value ? 'var(--brown)' : 'var(--brown-light)',
-        maxWidth: 160,
+        color: 'var(--brown)',
         textAlign: 'right',
         overflow: 'hidden',
         textOverflow: 'ellipsis',
         whiteSpace: 'nowrap',
+        maxWidth: 140,
       }}>
-        {value || '(pending)'}
+        {value}
       </span>
     </div>
   );
 }
 
-function PlaceholderText({ text }) {
-  return (
-    <p style={{
-      fontFamily: 'var(--font-body)',
-      fontSize: 10,
-      color: 'var(--brown-light)',
-      fontStyle: 'italic',
-      lineHeight: 1.5,
-    }}>
-      {text}
-    </p>
-  );
-}
-
 export default function LivePreview() {
-  const currentStep = useAssessmentStore((s) => s.currentStep);
-  const role = useAssessmentStore((s) => s.role);
   const cluster = useAssessmentStore((s) => s.cluster);
   const pathway = useAssessmentStore((s) => s.pathway);
   const selectedRole = useAssessmentStore((s) => s.selectedRole);
@@ -78,178 +56,80 @@ export default function LivePreview() {
   const context = useAssessmentStore((s) => s.context);
   const environment = useAssessmentStore((s) => s.environment);
   const candidates = useAssessmentStore((s) => s.candidates);
-  const rubrics = useAssessmentStore((s) => s.rubrics);
+
+  const hasAnything = cluster.name || pathway.name || selectedRole.name || task.name;
 
   return (
-    <div style={{ padding: '24px 20px' }}>
-      {/* Header */}
-      <h3 style={{
-        fontFamily: "'Playfair Display', serif",
-        fontSize: 15,
+    <div style={{ padding: '18px 16px' }}>
+      <div style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 12,
+        fontWeight: 600,
         color: 'var(--brown)',
         marginBottom: 2,
       }}>
-        Assessment Preview
-      </h3>
+        Preview
+      </div>
       <div style={{
         fontFamily: "'DM Mono', monospace",
         fontSize: 9,
         color: 'var(--brown-light)',
-        marginBottom: 16,
+        marginBottom: 12,
       }}>
-        Live Preview
+        Updates as you go
       </div>
 
-      {/* Candidate count (after step 6) */}
-      {candidates.length > 0 && (
-        <div style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          padding: '8px 12px',
-          borderRadius: 8,
-          backgroundColor: 'var(--cream)',
-          marginBottom: 16,
-          animation: 'fsu .25s ease',
+      {!hasAnything && (
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--brown-light)',
+          fontStyle: 'italic',
+          lineHeight: 1.5,
         }}>
-          <Users size={13} style={{ color: 'var(--brown-muted)' }} />
-          <span style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            color: 'var(--brown)',
-          }}>
-            {candidates.length} candidate{candidates.length !== 1 ? 's' : ''}
-          </span>
+          Complete each step to see your assessment take shape.
+        </p>
+      )}
+
+      {/* Summary rows */}
+      <Section label="Summary" show={hasAnything}>
+        <Row label="Industry" value={cluster.name} />
+        <Row label="Pathway" value={pathway.name} />
+        <Row label="Role" value={selectedRole.name} />
+        <Row label="Task" value={task.code ? `${task.code}` : ''} />
+      </Section>
+
+      {/* Context */}
+      <Section label="Context" show={!!context.description}>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 10,
+          color: 'var(--brown-muted)',
+          lineHeight: 1.5,
+          margin: 0,
+        }}>
+          {context.description?.slice(0, 100)}...
+        </p>
+      </Section>
+
+      {/* Environment */}
+      <Section label="Environment" show={!!environment.contextText}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+          <Check size={10} style={{ color: 'var(--accent-green)' }} />
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--accent-green)' }}>Ready</span>
         </div>
-      )}
+      </Section>
 
-      {/* SUMMARY */}
-      <SectionDivider label="SUMMARY" />
-      <div>
-        <SummaryRow label="Industry" value={cluster.name} />
-        <SummaryRow label="Pathway" value={pathway.name} />
-        <SummaryRow label="Role" value={selectedRole.name || role.title} />
-        <SummaryRow label="Task" value={task.name ? `${task.code} ${task.name}` : ''} />
-      </div>
-
-      {/* BUSINESS CONTEXT */}
-      <SectionDivider label="BUSINESS CONTEXT" />
-      {context.description ? (
-        <div style={{ animation: 'fsu .25s ease' }}>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            color: 'var(--brown)',
-            lineHeight: 1.5,
-            marginBottom: 8,
-          }}>
-            {context.description.length > 160
-              ? context.description.slice(0, 160) + '...'
-              : context.description}
-          </p>
-          {context.files && context.files.length > 0 && (
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 4,
-              fontFamily: 'var(--font-body)',
-              fontSize: 10,
-              color: 'var(--brown-muted)',
-            }}>
-              <Paperclip size={10} />
-              {context.files.length} file{context.files.length !== 1 ? 's' : ''} attached
-            </div>
-          )}
-        </div>
-      ) : (
-        <PlaceholderText text="Complete Step 5 to fill this section" />
-      )}
-
-      {/* ASSESSMENT ENV */}
-      <SectionDivider label="ASSESSMENT ENV" />
-      {environment.contextText ? (
-        <div style={{ animation: 'fsu .25s ease' }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 4,
-            marginBottom: 6,
-          }}>
-            <Check size={11} style={{ color: 'var(--accent-green)' }} />
-            <span style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 11,
-              color: 'var(--accent-green)',
-            }}>Generated</span>
-          </div>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 10,
-            color: 'var(--brown-muted)',
-            lineHeight: 1.4,
-          }}>
-            Context: {environment.contextText.slice(0, 80)}...
-          </p>
-          {environment.deliverables.length > 0 && (
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 10,
-              color: 'var(--brown-muted)',
-              marginTop: 2,
-            }}>
-              Deliverables: {environment.deliverables.length} items
-            </p>
-          )}
-          {environment.resources.length > 0 && (
-            <p style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 10,
-              color: 'var(--brown-muted)',
-              marginTop: 2,
-            }}>
-              Resources: {environment.resources.length} items
-            </p>
-          )}
-        </div>
-      ) : (
-        <PlaceholderText text="Complete Step 6 to fill this section" />
-      )}
-
-      {/* CANDIDATES */}
-      {candidates.length > 0 && (
-        <>
-          <SectionDivider label="CANDIDATES" />
-          <div style={{ animation: 'fsu .25s ease' }}>
-            {candidates.map((c, i) => (
-              <div key={c.id} style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 10,
-                color: 'var(--brown)',
-                lineHeight: 1.6,
-              }}>
-                {i + 1}. {c.email}{c.name ? ` (${c.name})` : ''}{c.timezone ? ` — ${c.timezone.split('/').pop()}` : ''}{c.duration ? ` — ${c.duration}` : ''}
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* RUBRICS */}
-      <SectionDivider label="RUBRICS" />
-      {rubrics.dimensions.length > 0 ? (
-        <div style={{ animation: 'fsu .25s ease' }}>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            color: 'var(--brown)',
-          }}>
-            {rubrics.dimensions.length} dims · {rubrics.totalRubrics} rubrics
-            {rubrics.redFlags?.length > 0 ? ` · ${rubrics.redFlags.length} red flags` : ''}
-          </p>
-        </div>
-      ) : (
-        <PlaceholderText text="Complete Step 8 to fill this section" />
-      )}
+      {/* Candidates */}
+      <Section label="Candidates" show={candidates.length > 0}>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 10,
+          color: 'var(--brown)',
+        }}>
+          {candidates.length} assigned
+        </span>
+      </Section>
     </div>
   );
 }

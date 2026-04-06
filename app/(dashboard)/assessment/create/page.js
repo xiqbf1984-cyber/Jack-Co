@@ -35,27 +35,32 @@ export default function CreateAssessmentPage() {
     <div style={{
       display: 'flex',
       margin: '-32px -32px -64px -32px',
-      height: 'calc(100vh)',
+      height: '100vh',
     }}>
       {/* Left: Operations Area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
-        {/* Sticky progress bar */}
+        {/* Progress bar */}
         <div style={{
           flexShrink: 0,
           backgroundColor: 'var(--cream)',
-          padding: '14px 32px 10px',
+          padding: '12px 24px 8px',
           borderBottom: '1px solid var(--border-default)',
         }}>
           <WizardProgress />
         </div>
 
-        {/* Scrollable step content */}
+        {/* Scrollable step content — centered */}
         <div style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '20px 32px 80px',
+          display: 'flex',
+          justifyContent: 'center',
         }}>
-          <div style={{ maxWidth: 560 }}>
+          <div style={{
+            width: '100%',
+            maxWidth: 520,
+            padding: '20px 24px 80px',
+          }}>
             {/* Back button */}
             {showBack && (
               <button
@@ -84,9 +89,9 @@ export default function CreateAssessmentPage() {
         </div>
       </div>
 
-      {/* Right: Live Preview — single instance */}
+      {/* Right: Minimal Live Preview */}
       <div style={{
-        width: 300,
+        width: 260,
         flexShrink: 0,
         borderLeft: '1px solid var(--border-default)',
         backgroundColor: '#fff',
