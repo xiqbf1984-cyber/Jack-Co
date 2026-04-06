@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const displayName = company.name && company.name !== 'Your Company' ? company.name : 'there';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Welcome */}
       <div>
         <h1 style={{
@@ -107,8 +107,9 @@ export default function DashboardPage() {
       {/* Quick Actions + Company Profile */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
+        gridTemplateColumns: '1.2fr 0.8fr',
         gap: 16,
+        alignItems: 'start',
       }}>
         <QuickActions />
         <CompanyProfileCard />

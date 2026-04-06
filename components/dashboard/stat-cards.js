@@ -22,8 +22,8 @@ export default function StatCards() {
     <div style={{
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: 14,
-      marginBottom: 24,
+      gap: 12,
+      marginBottom: 20,
     }}>
       {stats.map((stat, i) => {
         const Icon = iconMap[stat.icon];
@@ -31,8 +31,8 @@ export default function StatCards() {
           <div
             key={stat.key}
             style={{
-              padding: '18px 20px',
-              borderRadius: 14,
+              padding: '16px 18px',
+              borderRadius: 12,
               border: '1px solid var(--border-default)',
               background: '#fff',
               textAlign: 'center',

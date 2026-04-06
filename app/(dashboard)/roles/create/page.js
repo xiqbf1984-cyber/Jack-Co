@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
+import { ArrowLeft } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { ROLE_CREATION_QUESTIONS, AI_ACKS, matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
@@ -237,8 +238,49 @@ export default function RoleCreatePage() {
   var allQuestionsAnswered = questionIndex >= ROLE_CREATION_QUESTIONS.length;
   var isCompact = stage >= 2;
 
+  function handleBack() {
+    if (stage === 0) {
+      router.push('/roles');
+    } else if (stage === 1 && messages.length <= 2) {
+      setStage(0);
+      setMessages([]);
+      setQuestionIndex(0);
+      setAnswers({});
+    } else {
+      router.push('/roles');
+    }
+  }
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', margin: '-32px -32px -64px -32px', height: '100vh' }}>
+      {/* Back button + Progress */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 12,
+        padding: '10px 24px 0',
+        borderBottom: 'none',
+      }}>
+        <button
+          onClick={handleBack}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 5,
+            fontFamily: 'var(--font-body)',
+            fontSize: 11,
+            color: 'var(--gold)',
+            background: 'none',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '4px 0',
+            flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={13} />
+          Back
+        </button>
+      </div>
       <ProgressIndicator currentStage={stage} />
 
       <div style={{ flex: 1, overflow: 'hidden' }}>

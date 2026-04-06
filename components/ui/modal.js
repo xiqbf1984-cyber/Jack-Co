@@ -36,7 +36,8 @@ function Modal({ open, onClose, title, children, className }) {
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/30 animate-fi"
+        className="absolute inset-0 animate-fi"
+        style={{ backgroundColor: 'rgba(26,22,18,0.35)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)' }}
         onClick={onClose}
       />
       {/* Panel */}
