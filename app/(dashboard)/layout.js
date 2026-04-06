@@ -14,9 +14,12 @@ export default function DashboardLayout({ children }) {
       <Sidebar />
       <main style={{
         marginLeft,
-        minHeight: '100vh',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
         backgroundColor: 'var(--cream)',
         transition: 'margin-left 0.2s ease',
+        overflow: 'auto',
       }}>
         {children}
       </main>

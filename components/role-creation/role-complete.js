@@ -29,7 +29,7 @@ export default function RoleComplete({ roleTitle = 'New Role' }) {
   ];
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-16 animate-fsu">
+    <div className="flex flex-col items-center justify-center h-full px-6 py-16 animate-fsu">
       {/* Success icon */}
       <div
         className="w-16 h-16 rounded-full flex items-center justify-center mb-6"

@@ -53,7 +53,7 @@ export default function RoleCreateLayout({ children }) {
   return (
     <div
       ref={containerRef}
-      className="flex h-full overflow-hidden"
+      className="flex h-full overflow-hidden flex-1"
       style={{ backgroundColor: 'var(--cream)' }}
     >
       {/* Left panel */}

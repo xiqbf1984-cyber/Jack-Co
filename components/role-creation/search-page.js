@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Link2, Upload } from 'lucide-react';
 import SemanticPills from './semantic-pills';
 import CategoryDropdown from './category-dropdown';
 
@@ -31,16 +31,41 @@ export default function SearchPage({ onSubmit }) {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-full px-6 py-12">
+    <div className="flex flex-col items-center justify-center h-full px-6">
       {/* Title */}
-      <h1 className="text-display-page mb-8 text-center">Describe your next hire</h1>
+      <h1
+        className="text-center mb-6"
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'clamp(22px, 3vw, 32px)',
+          fontWeight: 700,
+          lineHeight: 1.2,
+          color: 'var(--brown)',
+        }}
+      >
+        What AI talent are you looking for?
+      </h1>
 
-      {/* Search textarea */}
-      <form onSubmit={handleSubmit} className="w-full max-w-2xl flex flex-col gap-5">
-        <div className="relative">
+      {/* Semantic pills */}
+      <div className="mb-6">
+        <SemanticPills inputText={input} />
+      </div>
+
+      {/* Search textarea card */}
+      <form onSubmit={handleSubmit} className="w-full max-w-2xl flex flex-col items-center gap-6">
+        <div
+          className="relative w-full rounded-xl border transition-all"
+          style={{
+            backgroundColor: 'var(--cream-card)',
+            borderColor: 'var(--border-default)',
+            ...(!input.trim()
+              ? { animation: 'inputGlow 3s infinite' }
+              : { boxShadow: 'var(--shadow-card)' }),
+          }}
+        >
           <textarea
             ref={textareaRef}
-            rows={3}
+            rows={2}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {
@@ -49,38 +74,68 @@ export default function SearchPage({ onSubmit }) {
                 handleSubmit();
               }
             }}
-            placeholder="Senior ML Engineer with 5+ years PyTorch experience..."
-            className="w-full px-5 py-4 text-body-lg border rounded-xl resize-none focus:outline-none focus-border-hover transition-all"
+            placeholder="Describe the role, paste a JD link..."
+            className="w-full px-5 pt-4 pb-2 text-body-sm border-none bg-transparent resize-vertical focus:outline-none"
             style={{
-              ...(!input.trim()
-                ? { animation: 'inputGlow 3s infinite' }
-                : { boxShadow: 'var(--shadow-card)' }),
               color: 'var(--brown)',
-              backgroundColor: 'var(--cream-card)',
-              borderColor: 'var(--border-default)',
+              minHeight: 60,
             }}
           />
 
           {/* Ghost text overlay */}
           {ghostText && !input && (
-            <div className="absolute inset-0 px-5 py-4 pointer-events-none text-body-lg opacity-50" style={{ color: 'var(--brown-light)' }}>
+            <div
+              className="absolute top-0 left-0 right-0 px-5 pt-4 pb-2 pointer-events-none text-body-sm opacity-50"
+              style={{ color: 'var(--brown-light)' }}
+            >
               {ghostText}
             </div>
           )}
 
-          {/* Send button */}
-          {input.trim() && (
+          {/* Toolbar row */}
+          <div className="flex items-center justify-between px-3 pb-3">
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                className="w-8 h-8 rounded-lg flex items-center justify-center border transition-colors hover-bg-cream"
+                style={{
+                  borderColor: 'var(--border-default)',
+                  color: 'var(--brown-soft)',
+                  backgroundColor: 'var(--cream-card)',
+                }}
+                title="Paste link"
+              >
+                <Link2 size={14} />
+              </button>
+              <button
+                type="button"
+                className="w-8 h-8 rounded-lg flex items-center justify-center border transition-colors hover-bg-cream"
+                style={{
+                  borderColor: 'var(--border-default)',
+                  color: 'var(--brown-soft)',
+                  backgroundColor: 'var(--cream-card)',
+                }}
+                title="Upload JD"
+              >
+                <Upload size={14} />
+              </button>
+            </div>
+
+            {/* Send button */}
             <button
               type="submit"
-              className="absolute bottom-3 right-3 btn-primary p-2 rounded-lg animate-fade-scale"
+              disabled={!input.trim()}
+              className="w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: input.trim() ? 'var(--gold)' : 'var(--border-default)',
+                color: 'var(--btn-text)',
+                border: 'none',
+              }}
             >
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
             </button>
-          )}
+          </div>
         </div>
-
-        {/* Semantic pills */}
-        <SemanticPills inputText={input} />
 
         {/* Category dropdowns */}
         <CategoryDropdown onPreview={handlePreview} onSelect={handleCategorySelect} />

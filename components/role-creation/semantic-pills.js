@@ -17,17 +17,22 @@ export default function SemanticPills({ inputText = '' }) {
   }, [inputText]);
 
   return (
-    <div className="flex flex-wrap gap-2">
+    <div className="flex flex-wrap justify-center gap-2">
       {SEMANTIC_PILLS.map((pill) => {
         const isActive = activeKeys.has(pill.key);
         return (
           <span
             key={pill.key}
-            className="px-3 py-1 text-body-xs font-medium transition-all duration-200 rounded-full select-none"
+            className="px-4 py-1.5 text-body-xs font-medium transition-all duration-200 rounded-full select-none"
             style={{
-              border: isActive ? '1px solid var(--gold)' : '1px solid var(--border-default)',
-              backgroundColor: isActive ? 'rgba(139,105,20,0.08)' : 'transparent',
+              border: isActive
+                ? '1px solid var(--gold)'
+                : '1px solid var(--border-default)',
+              backgroundColor: isActive
+                ? 'rgba(139,105,20,0.08)'
+                : 'var(--cream-card)',
               color: isActive ? 'var(--gold)' : 'var(--brown-soft)',
+              boxShadow: isActive ? 'none' : '0 1px 2px rgba(0,0,0,0.04)',
               animation: isActive ? 'pillPop 0.3s ease-out' : undefined,
             }}
           >
