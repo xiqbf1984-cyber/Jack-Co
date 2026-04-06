@@ -40,14 +40,13 @@ export default function AddCandidateModal() {
       style={{ paddingLeft: sidebarWidth, transition: 'padding-left 0.2s ease' }}
       onClick={close}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-black/20 animate-fi" />
 
-      {/* Modal */}
       <div
-        className="relative rounded-2xl border p-6 animate-fade-scale"
+        className="relative rounded-xl border animate-fade-scale"
         style={{
-          width: 420,
+          width: 380,
+          padding: '20px 24px',
           backgroundColor: 'var(--cream-card)',
           borderColor: 'var(--border-default)',
           boxShadow: 'var(--shadow-modal)',
@@ -56,45 +55,45 @@ export default function AddCandidateModal() {
       >
         <button
           onClick={close}
-          className="absolute top-4 right-4 w-7 h-7 rounded-lg flex items-center justify-center border-none cursor-pointer bg-transparent hover-bg-dim transition-colors"
+          className="absolute top-4 right-4 w-6 h-6 rounded-md flex items-center justify-center border-none cursor-pointer bg-transparent hover-bg-dim transition-colors"
           style={{ color: 'var(--brown-soft)' }}
         >
-          <X size={16} />
+          <X size={14} />
         </button>
 
-        <h2 className="font-display text-[18px] mb-1" style={{ color: 'var(--brown)' }}>
+        <h2 className="text-display-section mb-0.5" style={{ color: 'var(--brown)' }}>
           Add Candidate
         </h2>
-        <p className="text-body-xs mb-5">Add a new candidate to your pool.</p>
+        <p className="text-body-xs mb-4">Add a new candidate to your pool.</p>
 
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label className="text-mono-label block mb-1.5">Full Name</label>
+          <div className="mb-3">
+            <label className="text-body-xs font-medium block mb-1" style={{ color: 'var(--brown)' }}>Full Name</label>
             <input
               type="text"
               placeholder="John Doe"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
+              className="w-full px-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
               style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
               required
             />
           </div>
-          <div className="mb-6">
-            <label className="text-mono-label block mb-1.5">Email</label>
+          <div className="mb-5">
+            <label className="text-body-xs font-medium block mb-1" style={{ color: 'var(--brown)' }}>Email</label>
             <input
               type="email"
               placeholder="john@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
+              className="w-full px-3 py-1.5 rounded-lg border text-body-sm outline-none transition-all font-body focus-border-hover"
               style={{ backgroundColor: 'var(--cream)', borderColor: 'var(--border-default)', color: 'var(--brown)' }}
               required
             />
           </div>
-          <div className="flex gap-3 justify-end">
-            <button type="button" onClick={close} className="btn-secondary">Cancel</button>
-            <button type="submit" className="btn-primary">Add Candidate</button>
+          <div className="flex gap-2.5 justify-end">
+            <button type="button" onClick={close} className="btn-secondary" style={{ padding: '6px 14px' }}>Cancel</button>
+            <button type="submit" className="btn-primary" style={{ padding: '6px 14px' }}>Add Candidate</button>
           </div>
         </form>
       </div>

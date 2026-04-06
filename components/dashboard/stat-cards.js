@@ -32,23 +32,23 @@ export default function StatCards() {
             key={stat.key}
             className="rounded-xl border transition-all duration-200 hover-shadow-card"
             style={{
-              padding: '24px',
+              padding: '18px 20px',
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',
               boxShadow: 'var(--shadow-card)',
               animation: `fsu 0.25s ease-out ${i * 0.06}s both`,
             }}
           >
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-2">
               <span className="text-mono-label">{stat.label}</span>
               <div
-                className="w-10 h-10 rounded-lg flex items-center justify-center"
+                className="w-8 h-8 rounded-lg flex items-center justify-center"
                 style={{ backgroundColor: stat.color + '14' }}
               >
-                <Icon size={18} style={{ color: stat.color }} />
+                <Icon size={15} style={{ color: stat.color }} />
               </div>
             </div>
-            <div className="text-mono-display" style={{ color: 'var(--brown)', fontSize: 28 }}>
+            <div className="text-mono-display" style={{ color: 'var(--brown)' }}>
               {counts[stat.key]}
             </div>
           </div>

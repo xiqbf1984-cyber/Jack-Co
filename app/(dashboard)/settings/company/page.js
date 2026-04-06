@@ -16,10 +16,10 @@ export default function CompanySettingsPage() {
 
   return (
     <div className="page-container" style={{ maxWidth: 720 }}>
-      <h1 className="text-display-page mb-2">Company Profile</h1>
-      <p className="text-body-lg mb-6">Update your company information.</p>
+      <h1 className="text-display-page mb-1">Company Profile</h1>
+      <p className="text-body-lg mb-3">Update your company information.</p>
 
-      <div className="rounded-xl border" style={{ padding: '24px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
+      <div className="rounded-xl border" style={{ padding: '20px', backgroundColor: 'var(--cream-card)', borderColor: 'var(--border-default)', boxShadow: 'var(--shadow-card)' }}>
         {/* Logo */}
         <div className="flex items-center gap-4 mb-8">
           <div
@@ -46,7 +46,7 @@ export default function CompanySettingsPage() {
                 placeholder={field.placeholder}
                 value={company[field.key]}
                 onChange={(e) => setCompany({ [field.key]: e.target.value })}
-                className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
+                className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body focus-border-hover"
                 style={{
                   backgroundColor: 'var(--cream-card)',
                   borderColor: 'var(--border-default)',
@@ -64,7 +64,7 @@ export default function CompanySettingsPage() {
             placeholder="Brief description of your company..."
             value={company.description}
             onChange={(e) => setCompany({ description: e.target.value })}
-            className="w-full px-4 py-3 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body resize-none focus-border-hover"
+            className="w-full px-3 py-2 rounded-lg border text-body-sm outline-none transition-all duration-200 font-body resize-none focus-border-hover"
             style={{
               backgroundColor: 'var(--cream-card)',
               borderColor: 'var(--border-default)',

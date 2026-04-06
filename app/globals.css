@@ -50,8 +50,8 @@
   --shadow-glow-peak: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04);
 
   /* Layout Spacing */
-  --page-padding-x: 48px;
-  --page-padding-y: 40px;
+  --page-padding-x: 40px;
+  --page-padding-y: 32px;
   --page-max-width: 1400px;
   --section-gap: 32px;
   --card-gap: 16px;
@@ -197,7 +197,7 @@ body {
 
 .text-display-page {
   font-family: var(--font-body);
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.25;
   color: var(--brown);
@@ -205,7 +205,7 @@ body {
 
 .text-display-section {
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.35;
   color: var(--brown);
@@ -221,9 +221,9 @@ body {
 
 .text-body-lg {
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 400;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--brown-muted);
 }
 
@@ -251,7 +251,7 @@ body {
 
 .text-mono-display {
   font-family: var(--font-body);
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
 }
 
