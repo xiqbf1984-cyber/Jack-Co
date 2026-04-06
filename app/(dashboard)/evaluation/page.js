@@ -43,11 +43,11 @@ export default function EvaluationPage() {
 
   return (
     <div className="page-container">
-      <h1 className="text-display-page mb-1">Evaluation</h1>
-      <p className="text-body-lg mb-3">Review scores, grades, and candidate performance.</p>
+      <h1 className="text-display-page mb-2">Evaluation</h1>
+      <p className="text-body-lg mb-6">Review scores, grades, and candidate performance.</p>
 
       {/* Stat cards */}
-      <div className="grid gap-3 mb-6" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="grid gap-5 mb-8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {stats.map((stat, i) => {
           const Icon = stat.icon;
           return (
@@ -76,8 +76,8 @@ export default function EvaluationPage() {
 
       {/* Results by role */}
       {Object.entries(byRole).map(([roleTitle, roleChallenges]) => (
-        <div key={roleTitle} className="mb-6">
-          <h3 className="text-display-section mb-3">{roleTitle}</h3>
+        <div key={roleTitle} className="mb-8">
+          <h3 className="text-display-section mb-4">{roleTitle}</h3>
           <div className="space-y-3">
             {roleChallenges.slice(0, 2).map((challenge) => (
               <div

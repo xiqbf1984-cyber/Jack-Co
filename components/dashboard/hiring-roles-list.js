@@ -16,7 +16,7 @@ export default function HiringRolesList() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="text-display-section">Hiring Roles</h3>
         <Link
           href="/roles"
@@ -35,7 +35,7 @@ export default function HiringRolesList() {
             key={role.id}
             className="flex items-center justify-between border-b last:border-b-0 transition-colors hover-bg-cream-card-hover"
             style={{
-              padding: '12px 16px',
+              padding: '14px 20px',
               borderColor: 'var(--border-light)',
               backgroundColor: undefined,
               animation: `fsu 0.2s ease-out ${i * 0.05}s both`,

@@ -23,16 +23,16 @@ export default function ChallengesPage() {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Assessment</h1>
         <Link href="/assessment/create" className="btn-primary no-underline" style={{ padding: '7px 16px' }}>
           <Plus size={14} /> New Assessment
         </Link>
       </div>
-      <p className="text-body-lg mb-3">Create and manage AI-powered assessments for your roles.</p>
+      <p className="text-body-lg mb-6">Create and manage AI-powered assessments for your roles.</p>
 
       {/* Search */}
-      <div className="relative mb-3" style={{ width: 240 }}>
+      <div className="relative mb-6" style={{ width: 240 }}>
         <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
         <input
           type="text"
@@ -46,7 +46,7 @@ export default function ChallengesPage() {
 
       {/* List */}
       {filtered.length > 0 ? (
-        <div className="space-y-2.5">
+        <div className="space-y-3">
           {filtered.map((challenge, i) => (
             <Link
               key={challenge.id}

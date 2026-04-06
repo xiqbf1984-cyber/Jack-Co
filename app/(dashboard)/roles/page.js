@@ -23,17 +23,17 @@ export default function RolesPage() {
   return (
     <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Roles</h1>
         <Link href="/roles/create" className="btn-primary flex items-center gap-1.5 no-underline" style={{ padding: '7px 16px' }}>
           <Plus size={14} />
           Add Role
         </Link>
       </div>
-      <p className="text-body-lg mb-3">Manage your open positions and hiring pipeline.</p>
+      <p className="text-body-lg mb-6">Manage your open positions and hiring pipeline.</p>
 
       {/* Search */}
-      <div className="relative mb-3" style={{ width: 240 }}>
+      <div className="relative mb-6" style={{ width: 240 }}>
         <Search
           size={14}
           className="absolute left-3 top-1/2 -translate-y-1/2"
@@ -68,7 +68,7 @@ export default function RolesPage() {
           )}
         </div>
       ) : (
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3">
           {filtered.map((role) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             return (

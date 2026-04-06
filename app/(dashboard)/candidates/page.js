@@ -92,7 +92,7 @@ export default function CandidatesPage() {
   return (
     <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between mb-1">
+      <div className="flex items-center justify-between mb-2">
         <h1 className="text-display-page">Candidates</h1>
         <div className="flex items-center gap-2">
           <button onClick={openModal} className="btn-primary" style={{ padding: '7px 16px' }}>
@@ -103,10 +103,10 @@ export default function CandidatesPage() {
           </button>
         </div>
       </div>
-      <p className="text-body-lg mb-3">Manage your candidate pool and track their progress</p>
+      <p className="text-body-lg mb-6">Manage your candidate pool and track their progress</p>
 
       {/* Toolbar */}
-      <div className="flex items-center gap-2.5 mb-3">
+      <div className="flex items-center gap-2.5 mb-6">
         <div className="relative" style={{ width: 240 }}>
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--brown-soft)' }} />
           <input
