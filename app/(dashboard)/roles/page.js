@@ -8,7 +8,7 @@ import { STATUS_MAP } from '@/lib/constants';
 
 export default function RolesPage() {
   const roles = useAppStore((s) => s.roles);
-  const challenges = useAppStore((s) => s.challenges);
+  const assessments = useAppStore((s) => s.assessments);
   const [search, setSearch] = useState('');
   const [expandedId, setExpandedId] = useState(null);
 
@@ -78,7 +78,7 @@ export default function RolesPage() {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
             const isExpanded = expandedId === role.id;
-            const roleChallenges = challenges.filter((c) => c.roleId === role.id);
+            const roleAssessments = assessments.filter((a) => a.roleId === role.id);
 
             return (
               <div key={role.id}>
@@ -131,8 +131,8 @@ export default function RolesPage() {
                   }}>{statusInfo.label}</span>
                 </div>
 
-                {/* Expanded challenge sub-list */}
-                {isExpanded && roleChallenges.length > 0 && (
+                {/* Expanded assessment sub-list */}
+                {isExpanded && roleAssessments.length > 0 && (
                   <div style={{
                     paddingLeft: 20,
                     padding: '10px 20px 10px 44px',
@@ -141,20 +141,20 @@ export default function RolesPage() {
                     border: '1px solid var(--border-default)',
                     borderTop: 'none',
                   }}>
-                    {roleChallenges.map((ch, ci) => {
-                      const chStatus = STATUS_MAP[ch.status] || STATUS_MAP.draft;
-                      const chColor = `var(--${chStatus.color})`;
+                    {roleAssessments.map((a, ai) => {
+                      const aStatus = STATUS_MAP[a.status] || STATUS_MAP.draft;
+                      const aColor = `var(--${aStatus.color})`;
                       return (
                         <div
-                          key={ch.id}
+                          key={a.id}
                           style={{
                             display: 'flex',
                             alignItems: 'center',
                             gap: 10,
                             padding: '10px 12px',
                             borderRadius: 8,
-                            marginBottom: ci < roleChallenges.length - 1 ? 6 : 0,
-                            animation: `fsd .15s ease ${ci * 0.04}s both`,
+                            marginBottom: ai < roleAssessments.length - 1 ? 6 : 0,
+                            animation: `fsd .15s ease ${ai * 0.04}s both`,
                           }}
                         >
                           <Trophy size={12} style={{ color: 'var(--gold)', flexShrink: 0 }} />
@@ -164,12 +164,12 @@ export default function RolesPage() {
                               fontSize: 11,
                               color: 'var(--brown)',
                               fontWeight: 600,
-                            }}>{ch.name}</div>
+                            }}>{a.name}</div>
                             <div style={{
                               fontFamily: 'var(--font-body)',
                               fontSize: 9,
                               color: 'var(--brown-soft)',
-                            }}>{ch.candIds?.length || 0} candidates</div>
+                            }}>{a.candIds?.length || 0} candidates</div>
                           </div>
                           <span style={{
                             fontFamily: 'var(--font-body)',
@@ -177,15 +177,15 @@ export default function RolesPage() {
                             fontWeight: 500,
                             padding: '4px 10px',
                             borderRadius: 10,
-                            backgroundColor: `color-mix(in srgb, ${chColor} 12%, transparent)`,
-                            color: chColor,
-                          }}>{chStatus.label}</span>
+                            backgroundColor: `color-mix(in srgb, ${aColor} 12%, transparent)`,
+                            color: aColor,
+                          }}>{aStatus.label}</span>
                         </div>
                       );
                     })}
                   </div>
                 )}
-                {isExpanded && roleChallenges.length === 0 && (
+                {isExpanded && roleAssessments.length === 0 && (
                   <div style={{
                     padding: '12px 16px 12px 40px',
                     background: '#faf6ef',
@@ -196,7 +196,7 @@ export default function RolesPage() {
                     fontSize: 11,
                     color: 'var(--brown-soft)',
                   }}>
-                    No challenges linked to this role yet.
+                    No assessments linked to this role yet.
                   </div>
                 )}
               </div>

@@ -2,8 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { cn } from '@/lib/utils';
-import { Loader2, Pencil, Check, X, Send, ArrowRight } from 'lucide-react';
+import { Loader2, Pencil, Send, ArrowRight } from 'lucide-react';
 
 function generateMockDocument(task, context, role, selectedRole) {
   const taskName = task.name || 'the assigned task';
@@ -11,17 +10,26 @@ function generateMockDocument(task, context, role, selectedRole) {
   const contextDesc = context.description || 'a business challenge';
 
   return {
-    contextText: `You are a ${roleName} at a mid-sized technology company. The organization is navigating a critical inflection point: ${contextDesc.slice(0, 200)}${contextDesc.length > 200 ? '...' : ''}. Leadership has identified the need for a structured approach to ${taskName.toLowerCase()} and has brought you in to lead this initiative.`,
-    yourRoleText: `As the ${roleName}, you will be responsible for analyzing the current state, designing a comprehensive solution, and producing actionable deliverables. You have access to AI tools and are expected to use them effectively while maintaining critical oversight of all outputs. Your work will be reviewed by the VP of Engineering and the CTO.`,
+    contextText: `Lenovo launched Smart Store Services and the xIQ Digital Workplace Platform at NRF in January. Your team embedded with a 750-location US convenience and fuel retailer six weeks ago for the xIQ MVP deployment. Proactive remediation is resolving 38% of device health issues autonomously, but the remaining incidents—especially POS terminal failures during peak hours—require immediate human attention. ${contextDesc.slice(0, 200)}`,
+    yourRoleText: `You're a Principal Digital Transformation Consultant in Lenovo SSG, reporting to the VP of Digital Workplace Solutions. You have been tasked with designing the ${taskName.toLowerCase()} for the xIQ platform deployment. Your work will directly influence how the team scales from 750 to 2,500+ locations.`,
     deliverables: [
-      { id: 'd1', text: `A comprehensive ${task.produces || 'deliverable document'} addressing the core business challenge` },
-      { id: 'd2', text: 'An executive summary (max 2 pages) with key findings and recommendations' },
-      { id: 'd3', text: 'A prioritized action plan with timelines and resource requirements' },
+      { id: 'd1', text: 'Every store incident type from the 6-week ticket data, classified by what xIQ handles autonomously vs. what requires human review' },
+      { id: 'd2', text: 'The handoff sequence between xIQ, L1, L2, and store management' },
+      { id: 'd3', text: 'Confidence routing thresholds per device category' },
+      { id: 'd4', text: 'L1 team scalability analysis' },
+      { id: 'd5', text: 'Conservative and aggressive expansion variants' },
+      { id: 'd6', text: 'POS outage prevention measures' },
     ],
     resources: [
-      { id: 'r1', text: 'Company organizational chart and team structure document' },
-      { id: 'r2', text: 'Current quarter OKRs and strategic priorities' },
-      { id: 'r3', text: 'Industry benchmark report (provided)' },
+      { id: 'r1', name: 'NASA TLX Documentation', type: 'url', usage: 'Reference' },
+      { id: 'r2', name: 'BPMN Human-Agentic Workflows', type: 'url', usage: 'Reference' },
+      { id: 'r3', name: 'EU AI Act Article 14', type: 'url', usage: 'Reference' },
+      ...(context.files || []).map((f, i) => ({
+        id: `rf${i}`,
+        name: typeof f === 'string' ? f : f.name,
+        type: 'file',
+        usage: 'Required',
+      })),
     ],
   };
 }
@@ -31,9 +39,7 @@ function EditableSection({ title, text, onSave }) {
   const [value, setValue] = useState(text);
   const [highlighted, setHighlighted] = useState(false);
 
-  useEffect(() => {
-    setValue(text);
-  }, [text]);
+  useEffect(() => { setValue(text); }, [text]);
 
   const handleSave = () => {
     onSave(value);
@@ -42,143 +48,77 @@ function EditableSection({ title, text, onSave }) {
     setTimeout(() => setHighlighted(false), 1500);
   };
 
-  const handleCancel = () => {
-    setValue(text);
-    setEditing(false);
-  };
-
   return (
-    <div className="mb-5">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-mono-label">{title}</h3>
+    <div style={{ marginTop: 20 }}>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        borderBottom: '1px solid var(--border-light)',
+        paddingBottom: 6,
+        marginBottom: 10,
+      }}>
+        <span style={{
+          fontFamily: "'DM Mono', monospace",
+          fontSize: 10,
+          color: 'var(--brown-muted)',
+          textTransform: 'uppercase',
+        }}>
+          {title}
+        </span>
         {!editing && (
           <button
-            type="button"
             onClick={() => setEditing(true)}
-            className="p-1.5 rounded-md transition-colors hover-bg-cream-row-even"
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: 4,
+            }}
           >
-            <Pencil size={12} style={{ color: 'var(--brown-soft)' }} />
+            <Pencil size={13} style={{ color: 'var(--brown-light)' }} />
           </button>
         )}
       </div>
+
       {editing ? (
-        <div>
-          <textarea
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            rows={4}
-            className="w-full px-4 py-3 rounded-lg text-body-sm outline-none resize-none transition-all duration-200"
-            style={{
-              border: '1px solid var(--gold)',
-              backgroundColor: 'var(--cream-card)',
-              color: 'var(--brown)',
-            }}
-            autoFocus
-          />
-          <div className="flex gap-2 mt-2 justify-end">
-            <button type="button" onClick={handleCancel} className="btn-secondary px-3 py-1">
-              <X size={12} />
-              Cancel
-            </button>
-            <button type="button" onClick={handleSave} className="btn-primary px-3 py-1">
-              <Check size={12} />
-              Save
-            </button>
-          </div>
-        </div>
+        <textarea
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          onBlur={handleSave}
+          onKeyDown={(e) => { if (e.key === 'Escape') handleSave(); }}
+          autoFocus
+          style={{
+            width: '100%',
+            padding: '12px 14px',
+            borderRadius: 10,
+            border: '1px solid rgba(139,105,20,0.3)',
+            backgroundColor: 'rgba(139,105,20,0.03)',
+            fontFamily: 'var(--font-body)',
+            fontSize: 12,
+            color: 'var(--brown)',
+            lineHeight: 1.7,
+            minHeight: 120,
+            outline: 'none',
+            resize: 'vertical',
+            boxSizing: 'border-box',
+          }}
+        />
       ) : (
-        <p
-          className={cn(
-            'text-body-sm leading-relaxed rounded-md px-3 py-2',
-            highlighted && 'animate-highlight'
-          )}
-          style={{ color: 'var(--brown)' }}
-        >
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--brown)',
+          lineHeight: 1.7,
+          whiteSpace: 'pre-wrap',
+          margin: 0,
+          padding: '4px 0',
+          backgroundColor: highlighted ? 'rgba(139,105,20,0.08)' : 'transparent',
+          transition: 'background-color 1.5s ease-out',
+          borderRadius: 4,
+        }}>
           {text}
         </p>
-      )}
-    </div>
-  );
-}
-
-function EditableList({ title, items, onSave }) {
-  const [editing, setEditing] = useState(false);
-  const [values, setValues] = useState(items);
-  const [highlighted, setHighlighted] = useState(false);
-
-  useEffect(() => {
-    setValues(items);
-  }, [items]);
-
-  const handleItemChange = (idx, val) => {
-    setValues((prev) => prev.map((item, i) => (i === idx ? { ...item, text: val } : item)));
-  };
-
-  const handleSave = () => {
-    onSave(values);
-    setEditing(false);
-    setHighlighted(true);
-    setTimeout(() => setHighlighted(false), 1500);
-  };
-
-  return (
-    <div className="mb-5">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-mono-label">{title}</h3>
-        {!editing && (
-          <button
-            type="button"
-            onClick={() => setEditing(true)}
-            className="p-1.5 rounded-md transition-colors hover-bg-cream-row-even"
-          >
-            <Pencil size={12} style={{ color: 'var(--brown-soft)' }} />
-          </button>
-        )}
-      </div>
-      {editing ? (
-        <div className="space-y-2">
-          {values.map((item, idx) => (
-            <input
-              key={item.id}
-              type="text"
-              value={item.text}
-              onChange={(e) => handleItemChange(idx, e.target.value)}
-              className="w-full px-3 py-2 rounded-md text-body-sm outline-none"
-              style={{
-                border: '1px solid var(--gold)',
-                backgroundColor: 'var(--cream-card)',
-                color: 'var(--brown)',
-              }}
-            />
-          ))}
-          <div className="flex gap-2 justify-end">
-            <button type="button" onClick={() => { setValues(items); setEditing(false); }} className="btn-secondary px-3 py-1">
-              <X size={12} /> Cancel
-            </button>
-            <button type="button" onClick={handleSave} className="btn-primary px-3 py-1">
-              <Check size={12} /> Save
-            </button>
-          </div>
-        </div>
-      ) : (
-        <ul className={cn('space-y-1.5', highlighted && 'animate-highlight')}>
-          {items.map((item, idx) => (
-            <li key={item.id} className="flex items-start gap-2">
-              <span
-                className="w-5 h-5 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 mt-0.5"
-                style={{
-                  backgroundColor: 'var(--cream-row-even)',
-                  color: 'var(--brown)',
-                }}
-              >
-                {idx + 1}
-              </span>
-              <span className="text-body-sm" style={{ color: 'var(--brown)' }}>
-                {item.text}
-              </span>
-            </li>
-          ))}
-        </ul>
       )}
     </div>
   );
@@ -202,7 +142,7 @@ export default function StepEnvironment() {
       const generated = generateMockDocument(task, context, role, selectedRole);
       setDoc(generated);
       setLoading(false);
-    }, 1500);
+    }, 2000);
     return () => clearTimeout(timer);
   }, [task, context, role, selectedRole]);
 
@@ -212,11 +152,10 @@ export default function StepEnvironment() {
     setChatMessages((prev) => [...prev, { role: 'user', text: userMsg }]);
     setChatInput('');
 
-    // Mock AI response after a delay
     setTimeout(() => {
       setChatMessages((prev) => [
         ...prev,
-        { role: 'ai', text: `I've updated the assessment environment based on your request: "${userMsg}". The changes have been applied to the relevant sections above.` },
+        { role: 'ai', text: `I've updated the assessment environment based on your request: "${userMsg}". The changes have been applied.` },
       ]);
     }, 800);
   }, [chatInput]);
@@ -230,7 +169,7 @@ export default function StepEnvironment() {
       contextText: doc.contextText,
       yourRoleText: doc.yourRoleText,
       deliverables: doc.deliverables.map((d) => d.text),
-      resources: doc.resources.map((r) => r.text),
+      resources: doc.resources.map((r) => r.name),
       chatHistory: chatMessages,
     });
     completeStep(5);
@@ -238,116 +177,291 @@ export default function StepEnvironment() {
 
   if (loading) {
     return (
-      <div className="mx-auto flex flex-col items-center justify-center py-24" style={{ maxWidth: 640 }}>
-        <Loader2 size={32} className="animate-spin mb-4" style={{ color: 'var(--gold)' }} />
-        <p className="text-body-lg text-center">Generating assessment environment...</p>
-        <p className="text-body-xs mt-1" style={{ color: 'var(--brown-soft)' }}>
-          Building a realistic scenario based on your inputs
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '60px 20px',
+      }}>
+        <Loader2 size={28} className="animate-spin" style={{ color: 'var(--gold)', marginBottom: 16 }} />
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-muted)',
+        }}>
+          Generating assessment environment...
+        </p>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--brown-light)',
+          marginTop: 4,
+        }}>
+          This usually takes a few seconds.
         </p>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto" style={{ maxWidth: 640 }}>
-      <h1 className="text-display-page mb-2">Assessment Environment</h1>
-      <p className="text-body-lg mb-6">
-        Review and customize the generated assessment document. Click the edit icon to modify any section.
-      </p>
+    <div>
+      {/* AI bubble */}
+      <div style={{
+        padding: '14px 18px',
+        borderRadius: 14,
+        backgroundColor: 'rgba(139,105,20,0.04)',
+        border: '1px solid var(--border-light)',
+        marginBottom: 20,
+      }}>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown)',
+          lineHeight: 1.6,
+          margin: 0,
+        }}>
+          Here's your Assessment Environment. You can edit any section directly, or tell me what to change in the chat below.
+        </p>
+      </div>
 
-      {/* Document */}
-      <div
-        className="rounded-xl p-6 mb-6"
-        style={{
-          border: '1px solid var(--border-default)',
-          backgroundColor: 'var(--cream-card)',
-        }}
-      >
+      {/* Document card */}
+      <div style={{
+        backgroundColor: '#fff',
+        border: '1px solid var(--border-default)',
+        borderRadius: 16,
+        padding: 24,
+        marginBottom: 20,
+      }}>
+        {/* Title */}
+        <div style={{
+          fontFamily: "'DM Mono', monospace",
+          fontSize: 10,
+          color: 'var(--gold)',
+          marginBottom: 14,
+          textTransform: 'uppercase',
+          letterSpacing: '0.5px',
+        }}>
+          ASSESSMENT ENVIRONMENT
+        </div>
+
+        {/* Metadata */}
+        <div style={{ marginBottom: 20 }}>
+          {[
+            { label: 'Role', value: selectedRole.name || role.title },
+            { label: 'Task', value: `${task.code} ${task.name}` },
+            { label: 'Job', value: role.title },
+          ].map((row) => (
+            <div key={row.label} style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: 'var(--brown-light)',
+              marginBottom: 3,
+            }}>
+              {row.label}: {row.value}
+            </div>
+          ))}
+        </div>
+
+        {/* Editable sections */}
         <EditableSection
-          title="CONTEXT"
+          title="Context"
           text={doc.contextText}
           onSave={(val) => setDoc({ ...doc, contextText: val })}
         />
 
         <EditableSection
-          title="YOUR ROLE"
+          title="Your Role"
           text={doc.yourRoleText}
           onSave={(val) => setDoc({ ...doc, yourRoleText: val })}
         />
 
-        <EditableList
-          title="DELIVERABLES"
-          items={doc.deliverables}
-          onSave={(val) => setDoc({ ...doc, deliverables: val })}
-        />
+        {/* Deliverables */}
+        <div style={{ marginTop: 20 }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid var(--border-light)',
+            paddingBottom: 6,
+            marginBottom: 10,
+          }}>
+            <span style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              color: 'var(--brown-muted)',
+              textTransform: 'uppercase',
+            }}>
+              Deliverables
+            </span>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <Pencil size={13} style={{ color: 'var(--brown-light)' }} />
+            </button>
+          </div>
+          <div>
+            {doc.deliverables.map((d, i) => (
+              <div key={d.id} style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: 'var(--brown)',
+                lineHeight: 1.7,
+                marginBottom: 4,
+              }}>
+                {String.fromCharCode(97 + i)}) {d.text}
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <EditableList
-          title="RESOURCES"
-          items={doc.resources}
-          onSave={(val) => setDoc({ ...doc, resources: val })}
-        />
+        {/* Resources */}
+        <div style={{ marginTop: 20 }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            borderBottom: '1px solid var(--border-light)',
+            paddingBottom: 6,
+            marginBottom: 10,
+          }}>
+            <span style={{
+              fontFamily: "'DM Mono', monospace",
+              fontSize: 10,
+              color: 'var(--brown-muted)',
+              textTransform: 'uppercase',
+            }}>
+              Resources
+            </span>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
+              <Pencil size={13} style={{ color: 'var(--brown-light)' }} />
+            </button>
+          </div>
+          <div>
+            {doc.resources.map((r, i) => (
+              <div key={r.id} style={{
+                display: 'flex',
+                gap: 8,
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: 'var(--brown)',
+                padding: '4px 0',
+                borderBottom: i < doc.resources.length - 1 ? '1px solid var(--border-light)' : 'none',
+              }}>
+                <span style={{
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: 10,
+                  color: 'var(--brown-light)',
+                  width: 20,
+                  flexShrink: 0,
+                }}>
+                  {i + 1}
+                </span>
+                <span style={{ flex: 1 }}>{r.name}</span>
+                <span style={{
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: 9,
+                  color: 'var(--brown-light)',
+                }}>
+                  {r.type}
+                </span>
+                <span style={{
+                  fontFamily: "'DM Mono', monospace",
+                  fontSize: 9,
+                  color: 'var(--brown-light)',
+                }}>
+                  {r.usage}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Chat messages */}
       {chatMessages.length > 0 && (
-        <div className="space-y-2 mb-4">
+        <div style={{ marginBottom: 12 }}>
           {chatMessages.map((msg, idx) => (
             <div
               key={idx}
-              className={cn(
-                'rounded-xl px-4 py-3 max-w-[85%] animate-fsu',
-                msg.role === 'user' ? 'ml-auto' : ''
-              )}
               style={{
+                padding: '10px 14px',
+                borderRadius: 12,
+                maxWidth: '85%',
+                marginBottom: 6,
+                marginLeft: msg.role === 'user' ? 'auto' : 0,
                 backgroundColor: msg.role === 'user'
                   ? 'rgba(139,105,20,0.06)'
                   : 'var(--cream-row-even)',
                 border: msg.role === 'user' ? '1px solid var(--border-light)' : 'none',
+                animation: 'fsu .15s ease',
               }}
             >
-              <p className="text-body-sm" style={{ color: 'var(--brown)' }}>{msg.text}</p>
+              <p style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: 'var(--brown)',
+                margin: 0,
+                lineHeight: 1.5,
+              }}>{msg.text}</p>
             </div>
           ))}
         </div>
       )}
 
-      {/* Chat input bar */}
-      <div
-        className="flex gap-2 mb-6 rounded-lg p-2"
-        style={{
-          border: '1px solid var(--border-default)',
-          backgroundColor: 'var(--cream-card)',
-        }}
-      >
+      {/* Chat input */}
+      <div style={{
+        display: 'flex',
+        gap: 8,
+        padding: '8px 12px',
+        borderRadius: 14,
+        border: '1px solid var(--border-default)',
+        backgroundColor: '#fff',
+        marginBottom: 20,
+      }}>
         <input
           type="text"
           value={chatInput}
           onChange={(e) => setChatInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && handleChatSend()}
-          placeholder="Request changes to the assessment environment..."
-          className="flex-1 px-3 py-2 rounded-md text-body-sm outline-none"
+          placeholder='Type a modification, e.g. "Add a deliverable about cost-benefit analysis"'
           style={{
-            backgroundColor: 'transparent',
+            flex: 1,
+            border: 'none',
+            outline: 'none',
+            fontFamily: 'var(--font-body)',
+            fontSize: 12,
             color: 'var(--brown)',
+            backgroundColor: 'transparent',
           }}
         />
         <button
-          type="button"
           onClick={handleChatSend}
           disabled={!chatInput.trim()}
-          className="btn-primary px-3"
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: '50%',
+            border: 'none',
+            backgroundColor: chatInput.trim() ? 'var(--gold)' : 'var(--cream-row-even)',
+            cursor: chatInput.trim() ? 'pointer' : 'default',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0,
+          }}
         >
-          <Send size={14} />
+          <Send size={12} style={{ color: chatInput.trim() ? '#fff' : 'var(--brown-light)' }} />
         </button>
       </div>
 
       {/* Confirm button */}
-      <div className="flex justify-end">
-        <button type="button" onClick={handleConfirm} className="btn-primary">
-          Confirm Assessment Environment
-          <ArrowRight size={14} />
-        </button>
-      </div>
+      <button
+        onClick={handleConfirm}
+        className="btn-primary"
+        style={{ width: '100%', justifyContent: 'center' }}
+      >
+        Confirm Assessment Environment
+        <ArrowRight size={14} />
+      </button>
     </div>
   );
 }

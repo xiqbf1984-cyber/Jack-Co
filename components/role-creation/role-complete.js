@@ -30,7 +30,7 @@ export default function RoleComplete({ roleTitle = 'New Role', roleData }) {
 
       {/* Action cards */}
       <div className="flex flex-col gap-3 w-full" style={{ maxWidth: 460 }}>
-        {/* Create a Challenge */}
+        {/* Create an Assessment */}
         <Link
           href="/assessment/create"
           className="flex items-center gap-4 rounded-xl no-underline transition-all"
@@ -53,7 +53,7 @@ export default function RoleComplete({ roleTitle = 'New Role', roleData }) {
           </div>
           <div>
             <div className="font-semibold text-body-sm" style={{ color: 'var(--brown)' }}>
-              Create a Challenge
+              Create an Assessment
             </div>
             <div className="text-body-xs mt-0.5" style={{ color: 'var(--brown-muted)' }}>
               Set up an AI assessment for this role

@@ -6,19 +6,19 @@ import { Plus, Search, Trophy } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
-export default function ChallengesPage() {
-  const challenges = useAppStore((s) => s.challenges);
+export default function AssessmentsPage() {
+  const assessments = useAppStore((s) => s.assessments);
   const [search, setSearch] = useState('');
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return challenges;
+    if (!search.trim()) return assessments;
     const q = search.toLowerCase();
-    return challenges.filter(
-      (c) =>
-        c.name.toLowerCase().includes(q) ||
-        c.roleTitle?.toLowerCase().includes(q)
+    return assessments.filter(
+      (a) =>
+        a.name.toLowerCase().includes(q) ||
+        a.roleTitle?.toLowerCase().includes(q)
     );
-  }, [challenges, search]);
+  }, [assessments, search]);
 
   return (
     <div>
@@ -29,10 +29,10 @@ export default function ChallengesPage() {
           fontSize: 20,
           fontWeight: 700,
           color: 'var(--brown)',
-        }}>Challenges</h1>
+        }}>Assessments</h1>
         <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 16px', textDecoration: 'none' }}>
           <Plus size={14} />
-          Add Challenge
+          Add Assessment
         </Link>
       </div>
 
@@ -43,7 +43,7 @@ export default function ChallengesPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search challenges..."
+          placeholder="Search assessments..."
           style={{
             width: '100%',
             paddingLeft: 34,
@@ -62,22 +62,22 @@ export default function ChallengesPage() {
         />
       </div>
 
-      {/* Challenge list */}
+      {/* Assessment list */}
       {filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '60px 0' }}>
           <Trophy size={32} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
-            {search ? 'No challenges match your search' : 'No challenges yet'}
+            {search ? 'No assessments match your search' : 'No assessments yet'}
           </p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {filtered.map((challenge, i) => {
-            const statusInfo = STATUS_MAP[challenge.status] || STATUS_MAP.draft;
+          {filtered.map((assessment, i) => {
+            const statusInfo = STATUS_MAP[assessment.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
             return (
               <div
-                key={challenge.id}
+                key={assessment.id}
                 style={{
                   display: 'flex',
                   alignItems: 'center',
@@ -96,13 +96,13 @@ export default function ChallengesPage() {
                     fontSize: 13,
                     color: 'var(--brown)',
                     fontWeight: 600,
-                  }}>{challenge.name}</div>
+                  }}>{assessment.name}</div>
                   <div style={{
                     fontFamily: 'var(--font-body)',
                     fontSize: 10,
                     color: 'var(--brown-soft)',
                   }}>
-                    {challenge.roleTitle} · {challenge.candIds?.length || 0} candidates
+                    {assessment.roleTitle} · {assessment.candIds?.length || 0} candidates
                   </div>
                 </div>
                 <span style={{

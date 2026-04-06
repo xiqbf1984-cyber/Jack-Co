@@ -7,7 +7,7 @@ import { useAppStore } from '@/stores/app-store';
 
 const actions = [
   { label: 'Add a Role', desc: 'Create a new job description', icon: Briefcase, color: '#27825b', href: '/roles/create' },
-  { label: 'Add a Challenge', desc: 'Design an assessment', icon: Trophy, color: 'var(--gold)', href: '/assessment/create' },
+  { label: 'Add an Assessment', desc: 'Design an assessment', icon: Trophy, color: 'var(--gold)', href: '/assessment/create' },
   { label: 'Add Candidate', desc: 'Add to your pool', icon: Users, color: '#0077B5', href: null },
   { label: 'View Evaluations', desc: 'Check assessment results', icon: BarChart3, color: '#d4880f', href: '/evaluation' },
 ];

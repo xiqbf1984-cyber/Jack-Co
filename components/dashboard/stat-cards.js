@@ -3,18 +3,18 @@
 import { Briefcase, Users, Trophy, BarChart3 } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 
-const iconMap = { roles: Briefcase, candidates: Users, challenge: Trophy, eval: BarChart3 };
+const iconMap = { roles: Briefcase, candidates: Users, assessments: Trophy, eval: BarChart3 };
 
 export default function StatCards() {
   const roles = useAppStore((s) => s.roles);
   const candidates = useAppStore((s) => s.candidates);
-  const challenges = useAppStore((s) => s.challenges);
-  const totalSubmissions = challenges.reduce((sum, c) => sum + (c.results?.length || 0), 0);
+  const assessments = useAppStore((s) => s.assessments);
+  const totalSubmissions = assessments.reduce((sum, a) => sum + (a.results?.length || 0), 0);
 
   const stats = [
     { key: 'roles', label: 'Active Roles', value: roles.filter((r) => r.status === 'active').length, icon: 'roles', color: '#27825b' },
     { key: 'candidates', label: 'Candidates', value: candidates.length, icon: 'candidates', color: '#0077B5' },
-    { key: 'challenges', label: 'Challenges', value: challenges.length, icon: 'challenge', color: 'var(--gold)' },
+    { key: 'assessments', label: 'Assessments', value: assessments.length, icon: 'assessments', color: 'var(--gold)' },
     { key: 'submissions', label: 'Submissions', value: totalSubmissions, icon: 'eval', color: '#d4880f' },
   ];
 
@@ -39,7 +39,6 @@ export default function StatCards() {
               animation: `fsu .25s ease ${i * 0.06}s both`,
             }}
           >
-            {/* Icon container */}
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
@@ -51,7 +50,6 @@ export default function StatCards() {
             }}>
               <Icon size={15} style={{ color: stat.color }} />
             </div>
-            {/* Number */}
             <div style={{
               fontFamily: 'var(--font-body)',
               fontSize: 20,
@@ -61,7 +59,6 @@ export default function StatCards() {
             }}>
               {stat.value}
             </div>
-            {/* Label */}
             <div style={{
               fontFamily: 'var(--font-body)',
               fontSize: 10,
