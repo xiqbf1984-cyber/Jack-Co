@@ -245,7 +245,7 @@ body {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.5;
   color: var(--brown-soft);
 }
 
@@ -324,8 +324,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 8px;
+  padding: 10px 24px;
   border: none;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to));
@@ -356,8 +356,8 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  padding: 8px 16px;
+  gap: 8px;
+  padding: 10px 24px;
   border: 1px solid var(--border-default);
   border-radius: var(--radius-md);
   background: var(--cream-card);
@@ -405,7 +405,7 @@ body {
   font-size: 13px;
   font-weight: 500;
   color: var(--brown);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   display: block;
 }
 

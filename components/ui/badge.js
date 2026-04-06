@@ -17,7 +17,7 @@ function Badge({ children, color = 'brown', className }) {
   return (
     <span
       className={cn(
-        'text-mono-tag inline-flex items-center px-2 py-0.5',
+        'text-mono-tag inline-flex items-center px-3 py-1',
         className
       )}
       style={{

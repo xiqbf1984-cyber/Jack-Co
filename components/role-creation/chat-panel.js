@@ -59,7 +59,7 @@ export default function ChatPanel({
   return (
     <div className="flex flex-col h-full">
       {/* Messages area */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 flex flex-col gap-3">
+      <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4">
         {messages.map(function (msg, i) {
           return (
             <ChatBubble
@@ -90,7 +90,7 @@ export default function ChatPanel({
       </div>
 
       {/* Input bar */}
-      <div className="px-5 pb-4 pt-2 border-t" style={{ borderColor: 'var(--border-light)' }}>
+      <div className="px-5 pb-5 pt-3 border-t" style={{ borderColor: 'var(--border-light)' }}>
         <form onSubmit={handleSubmit} className="relative flex items-center gap-2">
           <div className="relative flex-1">
             {/* Ghost text */}

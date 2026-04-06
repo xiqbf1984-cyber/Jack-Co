@@ -23,7 +23,7 @@ export default function CandidatesPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif",
           fontSize: 20,
@@ -36,7 +36,7 @@ export default function CandidatesPage() {
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', width: 280, marginBottom: 16 }}>
+      <div style={{ position: 'relative', width: 280, marginBottom: 20 }}>
         <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9a9184' }} />
         <input
           type="text"
@@ -47,8 +47,8 @@ export default function CandidatesPage() {
             width: '100%',
             paddingLeft: 34,
             paddingRight: 12,
-            paddingTop: 7,
-            paddingBottom: 7,
+            paddingTop: 10,
+            paddingBottom: 10,
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#fff',
@@ -73,7 +73,7 @@ export default function CandidatesPage() {
           <div style={{
             display: 'grid',
             gridTemplateColumns: GRID_COLUMNS,
-            padding: '10px 20px',
+            padding: '12px 20px',
             borderBottom: '1px solid var(--border-default)',
           }}>
             {['CANDIDATE', 'STATUS', 'TIMEZONE', 'EMAIL'].map((h) => (
@@ -99,7 +99,7 @@ export default function CandidatesPage() {
                 style={{
                   display: 'grid',
                   gridTemplateColumns: GRID_COLUMNS,
-                  padding: '12px 20px',
+                  padding: '14px 20px',
                   borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
                   alignItems: 'center',
                   animation: `fsu .2s ease ${i * 0.04}s both`,
@@ -167,7 +167,7 @@ export default function CandidatesPage() {
 
           {/* Footer */}
           <div style={{
-            padding: '10px 20px',
+            padding: '12px 20px',
             borderTop: '1px solid var(--border-light)',
           }}>
             <span style={{

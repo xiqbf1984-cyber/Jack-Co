@@ -13,7 +13,7 @@ export default function HiringRolesList() {
   return (
     <div>
       {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <h3 style={{
           fontFamily: "'Playfair Display', Georgia, serif",
           fontSize: 16,
@@ -31,7 +31,7 @@ export default function HiringRolesList() {
 
       {/* List */}
       <div style={{ position: 'relative' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {display.map((role, i) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
@@ -42,7 +42,7 @@ export default function HiringRolesList() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   borderRadius: 10,
                   border: '1px solid var(--border-default)',
                   background: '#fff',
@@ -68,7 +68,7 @@ export default function HiringRolesList() {
                   fontFamily: "'DM Mono', monospace",
                   fontSize: 10,
                   fontWeight: 500,
-                  padding: '3px 8px',
+                  padding: '4px 12px',
                   borderRadius: 12,
                   backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                   color: statusColor,

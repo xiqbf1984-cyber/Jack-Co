@@ -18,30 +18,30 @@ export default function CompanyProfileCard() {
           fontSize: 16,
           fontWeight: 700,
           color: '#1a1612',
-          marginBottom: 10,
+          marginBottom: 12,
         }}>Company Profile</h3>
         <div style={{
-          padding: '24px 18px',
+          padding: '28px 22px',
           borderRadius: 14,
           border: '1px solid var(--border-default)',
           background: '#fff',
           textAlign: 'center',
           animation: 'fsu .25s ease 0.1s both',
         }}>
-          <Building2 size={28} style={{ color: '#c4b896', marginBottom: 8 }} />
+          <Building2 size={28} style={{ color: '#c4b896', marginBottom: 12 }} />
           <div style={{
             fontFamily: "'Libre Baskerville', Georgia, serif",
             fontSize: 13,
             color: '#1a1612',
             fontWeight: 600,
-            marginBottom: 4,
+            marginBottom: 6,
           }}>Set up your company profile</div>
           <div style={{
             fontFamily: "'Libre Baskerville', Georgia, serif",
             fontSize: 11,
             color: '#9a9184',
-            marginBottom: 14,
-            lineHeight: 1.4,
+            marginBottom: 16,
+            lineHeight: 1.6,
           }}>This info appears in JDs and candidate invitations.</div>
           <Link href="/settings/company" style={{
             display: 'inline-flex',
@@ -49,7 +49,7 @@ export default function CompanyProfileCard() {
             justifyContent: 'center',
             gap: 5,
             width: '100%',
-            padding: '7px 0',
+            padding: '9px 0',
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#faf6ef',
@@ -71,10 +71,10 @@ export default function CompanyProfileCard() {
         fontSize: 16,
         fontWeight: 700,
         color: '#1a1612',
-        marginBottom: 10,
+        marginBottom: 12,
       }}>Company Profile</h3>
       <div style={{
-        padding: '16px 18px',
+        padding: '18px 20px',
         borderRadius: 14,
         border: '1px solid var(--border-default)',
         background: '#fff',
@@ -117,7 +117,7 @@ export default function CompanyProfileCard() {
         {/* Info rows */}
         <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginBottom: company.description ? 0 : 12 }}>
           {company.location && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Building2 size={12} style={{ color: '#c4b896' }} />
               <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 11, color: '#9a9184' }}>
                 {company.location}
@@ -125,7 +125,7 @@ export default function CompanyProfileCard() {
             </div>
           )}
           {company.size && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Users size={12} style={{ color: '#c4b896' }} />
               <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 11, color: '#9a9184' }}>
                 {company.size}
@@ -133,7 +133,7 @@ export default function CompanyProfileCard() {
             </div>
           )}
           {company.website && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <Link2 size={12} style={{ color: '#c4b896' }} />
               <span style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 11, color: '#9a9184' }}>
                 {company.website}
@@ -148,8 +148,8 @@ export default function CompanyProfileCard() {
             fontFamily: "'Libre Baskerville', Georgia, serif",
             fontSize: 11,
             color: '#9a9184',
-            lineHeight: 1.4,
-            marginTop: 10,
+            lineHeight: 1.6,
+            marginTop: 12,
             marginBottom: 12,
             display: '-webkit-box',
             WebkitLineClamp: 3,

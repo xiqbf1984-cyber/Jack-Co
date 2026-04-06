@@ -22,9 +22,9 @@ export default function QuickActions() {
         fontSize: 16,
         fontWeight: 700,
         color: '#1a1612',
-        marginBottom: 10,
+        marginBottom: 12,
       }}>Quick Actions</h3>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
         {actions.map((action, i) => {
           const Icon = action.icon;
           const inner = (
@@ -33,8 +33,8 @@ export default function QuickActions() {
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: 10,
-                padding: '12px 14px',
+                gap: 12,
+                padding: '14px 16px',
                 borderRadius: 12,
                 border: `1px solid ${action.color}33`,
                 background: `${action.color}06`,
@@ -68,6 +68,8 @@ export default function QuickActions() {
                   fontFamily: "'Libre Baskerville', Georgia, serif",
                   fontSize: 10,
                   color: '#9a9184',
+                  marginTop: 2,
+                  lineHeight: 1.5,
                 }}>{action.desc}</div>
               </div>
             </div>

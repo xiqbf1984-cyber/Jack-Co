@@ -8,7 +8,7 @@ function Chip({ children, selected = false, onClick, className }) {
       type="button"
       onClick={onClick}
       className={cn(
-        'inline-flex items-center px-3 py-1',
+        'inline-flex items-center px-3 py-1.5',
         'border transition-all duration-200',
         'cursor-pointer select-none',
         !selected && 'hover-border-hover',

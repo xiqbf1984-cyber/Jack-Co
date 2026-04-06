@@ -25,7 +25,7 @@ export default function RolesPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif",
           fontSize: 20,
@@ -39,7 +39,7 @@ export default function RolesPage() {
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', width: 260, marginBottom: 16 }}>
+      <div style={{ position: 'relative', width: 260, marginBottom: 20 }}>
         <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9a9184' }} />
         <input
           type="text"
@@ -50,8 +50,8 @@ export default function RolesPage() {
             width: '100%',
             paddingLeft: 34,
             paddingRight: 12,
-            paddingTop: 7,
-            paddingBottom: 7,
+            paddingTop: 10,
+            paddingBottom: 10,
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#fff',
@@ -73,7 +73,7 @@ export default function RolesPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map((role) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
@@ -88,7 +88,7 @@ export default function RolesPage() {
                     display: 'flex',
                     alignItems: 'center',
                     gap: 10,
-                    padding: '14px 16px',
+                    padding: '16px 20px',
                     borderRadius: isExpanded ? '10px 10px 0 0' : 10,
                     border: '1px solid var(--border-default)',
                     borderBottom: isExpanded ? '1px solid var(--border-light)' : undefined,
@@ -124,7 +124,7 @@ export default function RolesPage() {
                     fontFamily: "'DM Mono', monospace",
                     fontSize: 10,
                     fontWeight: 500,
-                    padding: '3px 10px',
+                    padding: '4px 12px',
                     borderRadius: 12,
                     backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                     color: statusColor,
@@ -135,7 +135,7 @@ export default function RolesPage() {
                 {isExpanded && roleChallenges.length > 0 && (
                   <div style={{
                     paddingLeft: 20,
-                    padding: '8px 16px 8px 40px',
+                    padding: '10px 20px 10px 44px',
                     background: '#faf6ef',
                     borderRadius: '0 0 10px 10px',
                     border: '1px solid var(--border-default)',
@@ -150,10 +150,10 @@ export default function RolesPage() {
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            gap: 8,
-                            padding: '8px 10px',
+                            gap: 10,
+                            padding: '10px 12px',
                             borderRadius: 8,
-                            marginBottom: ci < roleChallenges.length - 1 ? 3 : 0,
+                            marginBottom: ci < roleChallenges.length - 1 ? 6 : 0,
                             animation: `fsd .15s ease ${ci * 0.04}s both`,
                           }}
                         >
@@ -175,7 +175,7 @@ export default function RolesPage() {
                             fontFamily: "'DM Mono', monospace",
                             fontSize: 9,
                             fontWeight: 500,
-                            padding: '2px 8px',
+                            padding: '4px 10px',
                             borderRadius: 10,
                             backgroundColor: `color-mix(in srgb, ${chColor} 12%, transparent)`,
                             color: chColor,

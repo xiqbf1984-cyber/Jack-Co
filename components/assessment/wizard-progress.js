@@ -32,7 +32,7 @@ export default function WizardProgress() {
               onClick={() => isClickable && goToStep(i)}
               disabled={!isClickable}
               className={cn(
-                'flex flex-col items-center gap-1 transition-all duration-200',
+                'flex flex-col items-center gap-1.5 transition-all duration-200',
                 isClickable ? 'cursor-pointer' : 'cursor-not-allowed'
               )}
               title={step.label}
@@ -68,7 +68,8 @@ export default function WizardProgress() {
 
               {/* Label */}
               <span
-                className="text-xs whitespace-nowrap"
+                className="whitespace-nowrap"
+                style={{ fontSize: 10 }}
                 style={{
                   color: isCompleted
                     ? 'var(--accent-green)'
@@ -85,7 +86,7 @@ export default function WizardProgress() {
             {/* Connector line */}
             {!isLast && (
               <div
-                className="flex-1 mx-1.5 rounded-full transition-colors duration-300"
+                className="flex-1 mx-2 rounded-full transition-colors duration-300"
                 style={{
                   height: 2,
                   backgroundColor: lineCompleted

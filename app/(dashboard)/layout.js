@@ -17,7 +17,7 @@ export default function DashboardLayout({ children }) {
         <div style={{
           maxWidth: 960,
           margin: '0 auto',
-          padding: '24px 5% 60px',
+          padding: '32px 5% 64px',
         }}>
           {children}
         </div>

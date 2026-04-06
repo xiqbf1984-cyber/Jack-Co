@@ -15,7 +15,7 @@ export default function ChipSuggestions({ chips = [], onSelect, onHover, compact
             onMouseLeave={function () { onHover?.(''); }}
             className="shrink-0 border rounded-full hover-border-hover hover-bg-cream transition-all whitespace-nowrap"
             style={{
-              padding: compact ? '5px 11px' : '6px 14px',
+              padding: compact ? '6px 12px' : '7px 16px',
               fontSize: compact ? 11 : 12,
               borderColor: 'var(--border-default)',
               color: 'var(--brown)',

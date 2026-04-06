@@ -12,7 +12,7 @@ export default function RecentCandidatesList() {
   return (
     <div>
       {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
         <h3 style={{
           fontFamily: "'Playfair Display', Georgia, serif",
           fontSize: 16,
@@ -30,7 +30,7 @@ export default function RecentCandidatesList() {
 
       {/* List */}
       <div style={{ position: 'relative' }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {display.map((cand, i) => {
             const statusInfo = STATUS_MAP[cand.status] || STATUS_MAP.idle;
             const statusColor = `var(--${statusInfo.color})`;
@@ -42,7 +42,7 @@ export default function RecentCandidatesList() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '12px 14px',
+                  padding: '14px 16px',
                   borderRadius: 10,
                   border: '1px solid var(--border-default)',
                   background: '#fff',
@@ -85,7 +85,7 @@ export default function RecentCandidatesList() {
                   fontFamily: "'DM Mono', monospace",
                   fontSize: 10,
                   fontWeight: 500,
-                  padding: '3px 8px',
+                  padding: '4px 12px',
                   borderRadius: 12,
                   backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                   color: statusColor,

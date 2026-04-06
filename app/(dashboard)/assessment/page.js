@@ -23,7 +23,7 @@ export default function ChallengesPage() {
   return (
     <div>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
         <h1 style={{
           fontFamily: "'Playfair Display', Georgia, serif",
           fontSize: 20,
@@ -37,7 +37,7 @@ export default function ChallengesPage() {
       </div>
 
       {/* Search */}
-      <div style={{ position: 'relative', width: 280, marginBottom: 16 }}>
+      <div style={{ position: 'relative', width: 280, marginBottom: 20 }}>
         <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#9a9184' }} />
         <input
           type="text"
@@ -48,8 +48,8 @@ export default function ChallengesPage() {
             width: '100%',
             paddingLeft: 34,
             paddingRight: 12,
-            paddingTop: 7,
-            paddingBottom: 7,
+            paddingTop: 10,
+            paddingBottom: 10,
             borderRadius: 8,
             border: '1px solid var(--border-default)',
             background: '#fff',
@@ -71,7 +71,7 @@ export default function ChallengesPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map((challenge, i) => {
             const statusInfo = STATUS_MAP[challenge.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
@@ -82,7 +82,7 @@ export default function ChallengesPage() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 10,
-                  padding: '14px 16px',
+                  padding: '16px 20px',
                   borderRadius: 10,
                   border: '1px solid var(--border-default)',
                   background: '#fff',
@@ -109,7 +109,7 @@ export default function ChallengesPage() {
                   fontFamily: "'DM Mono', monospace",
                   fontSize: 10,
                   fontWeight: 500,
-                  padding: '3px 10px',
+                  padding: '4px 12px',
                   borderRadius: 12,
                   backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
                   color: statusColor,

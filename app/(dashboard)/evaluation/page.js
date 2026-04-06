@@ -48,8 +48,8 @@ export default function EvaluationPage() {
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: 12,
-        marginBottom: 24,
+        gap: 14,
+        marginBottom: 28,
       }}>
         {evalStats.map((stat, i) => {
           const Icon = stat.icon;
@@ -57,7 +57,7 @@ export default function EvaluationPage() {
             <div
               key={stat.label}
               style={{
-                padding: 16,
+                padding: '18px 20px',
                 borderRadius: 14,
                 border: '1px solid var(--border-default)',
                 background: '#fff',
@@ -98,14 +98,14 @@ export default function EvaluationPage() {
       {challenges.map((challenge) => {
         if (!challenge.results || challenge.results.length === 0) return null;
         return (
-          <div key={challenge.id} style={{ marginBottom: 20 }}>
+          <div key={challenge.id} style={{ marginBottom: 24 }}>
             {/* Group header */}
             <div style={{
               fontFamily: "'Libre Baskerville', Georgia, serif",
               fontSize: 12,
               color: '#9a9184',
               fontWeight: 600,
-              marginBottom: 8,
+              marginBottom: 10,
               display: 'flex',
               alignItems: 'center',
               gap: 6,
@@ -123,7 +123,7 @@ export default function EvaluationPage() {
             </div>
 
             {/* Score rows */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {challenge.results.map((result) => {
                 const cand = candidates.find((c) => c.id === result.candId);
                 const grade = getGrade(result.score);
@@ -136,7 +136,7 @@ export default function EvaluationPage() {
                       display: 'flex',
                       alignItems: 'center',
                       gap: 12,
-                      padding: '10px 14px',
+                      padding: '12px 16px',
                       borderRadius: 10,
                       border: '1px solid var(--border-default)',
                       background: '#fff',

@@ -90,8 +90,8 @@ export default function StepRole() {
 
   return (
     <div className="mx-auto" style={{ maxWidth: 640 }}>
-      <h1 className="text-display-page mb-2">What role are you hiring for?</h1>
-      <p className="text-body-lg mb-6">
+      <h1 className="text-display-page mb-3">What role are you hiring for?</h1>
+      <p className="text-body-lg mb-8">
         Start with a job description or let us help you write one.
       </p>
 
@@ -162,7 +162,7 @@ export default function StepRole() {
               placeholder="https://careers.example.com/job/12345"
               value={linkValue}
               onChange={(e) => setLinkValue(e.target.value)}
-              className="w-full px-4 py-3 rounded-lg text-body-sm outline-none transition-all duration-200"
+              className="w-full px-4 py-3.5 rounded-lg text-body-sm outline-none transition-all duration-200"
               style={{
                 border: '1px solid var(--border-default)',
                 backgroundColor: 'var(--cream-card)',
@@ -210,7 +210,7 @@ export default function StepRole() {
               value={textValue}
               onChange={(e) => setTextValue(e.target.value)}
               rows={8}
-              className="w-full px-4 py-3 rounded-lg text-body-sm outline-none resize-none transition-all duration-200"
+              className="w-full px-4 py-3.5 rounded-lg text-body-sm outline-none resize-none transition-all duration-200"
               style={{
                 border: '1px solid var(--border-default)',
                 backgroundColor: 'var(--cream-card)',
@@ -268,7 +268,7 @@ export default function StepRole() {
                       setParsed({ ...parsed, title: e.target.value });
                       updateRole({ title: e.target.value });
                     }}
-                    className="w-full px-3 py-2 rounded-md text-body-sm outline-none"
+                    className="w-full px-4 py-3 rounded-md text-body-sm outline-none"
                     style={{
                       border: '1px solid var(--border-default)',
                       backgroundColor: 'var(--cream)',
@@ -285,7 +285,7 @@ export default function StepRole() {
                       setParsed({ ...parsed, company: e.target.value });
                       updateRole({ company: e.target.value });
                     }}
-                    className="w-full px-3 py-2 rounded-md text-body-sm outline-none"
+                    className="w-full px-4 py-3 rounded-md text-body-sm outline-none"
                     style={{
                       border: '1px solid var(--border-default)',
                       backgroundColor: 'var(--cream)',

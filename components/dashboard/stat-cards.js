@@ -22,8 +22,8 @@ export default function StatCards() {
     <div style={{
       display: 'grid',
       gridTemplateColumns: 'repeat(4, 1fr)',
-      gap: 12,
-      marginBottom: 20,
+      gap: 14,
+      marginBottom: 24,
     }}>
       {stats.map((stat, i) => {
         const Icon = iconMap[stat.icon];
@@ -31,7 +31,7 @@ export default function StatCards() {
           <div
             key={stat.key}
             style={{
-              padding: 16,
+              padding: '18px 20px',
               borderRadius: 14,
               border: '1px solid var(--border-default)',
               background: '#fff',
@@ -57,7 +57,7 @@ export default function StatCards() {
               fontSize: 20,
               fontWeight: 700,
               color: '#1a1612',
-              marginTop: 6,
+              marginTop: 8,
             }}>
               {stat.value}
             </div>
@@ -66,7 +66,7 @@ export default function StatCards() {
               fontFamily: "'Libre Baskerville', Georgia, serif",
               fontSize: 10,
               color: '#c4b896',
-              marginTop: 2,
+              marginTop: 4,
             }}>
               {stat.label}
             </div>
