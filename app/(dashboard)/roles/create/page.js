@@ -1,67 +1,75 @@
 'use client';
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { useAppStore } from '@/stores/app-store';
-import { ROLE_CREATION_QUESTIONS } from '@/lib/constants';
+import { ROLE_CREATION_QUESTIONS, AI_ACKS, matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
 import ChatPanel from '@/components/role-creation/chat-panel';
 import JDCanvas from '@/components/role-creation/jd-canvas';
 
-const STAGES = [
+var STAGES = [
   { key: 'describe', label: 'Describe' },
   { key: 'refine', label: 'Refine' },
   { key: 'jd-ready', label: 'JD Ready' },
 ];
 
-function generateJD(answers) {
-  const title = answers.title || 'Open Role';
-  const ownership = answers.own || 'key responsibilities';
-  const skills = answers.skills || 'relevant technical skills';
-  const level = answers.level || 'Mid-Senior';
-  const extras = answers.extra || '';
+function inferDepartment(answers) {
+  var text = ((answers.title || '') + ' ' + (answers.own || '')).toLowerCase();
+  if (text.includes('research') || text.includes('scientist')) return 'Research';
+  if (text.includes('platform') || text.includes('infrastructure') || text.includes('devops')) return 'Infrastructure';
+  if (text.includes('product') || text.includes('manager')) return 'Product';
+  if (text.includes('data')) return 'Data';
+  if (text.includes('nlp') || text.includes('language')) return 'NLP';
+  return 'Engineering';
+}
 
-  return `${title}
+function generateJD(answers, matched, company) {
+  var title = answers.title || (matched ? matched.title : 'Open Role');
+  var oneLiner = matched ? matched.oneLiner : '';
+  var companyName = company?.name || 'Our Company';
+  var companyDesc = company?.description || 'We are a forward-thinking technology company building cutting-edge AI solutions.';
 
-About the Role
-We are looking for a ${level}-level ${title} to join our team. This person will own ${ownership} and play a critical role in driving our technical vision forward.
+  var ownership = answers.own || 'core AI/ML initiatives';
+  var skills = answers.skills || 'Strong technical background';
+  var level = answers.level || 'Relevant experience level';
+  var extras = answers.extra || 'Competitive compensation';
 
-Responsibilities
-- Lead and own ${ownership} across the organization
-- Collaborate with cross-functional teams to define technical strategy
-- Mentor junior engineers and contribute to engineering culture
-- Drive improvements in system reliability, performance, and scalability
-- Participate in architectural decisions and code reviews
+  var lines = ['# ' + title];
+  if (oneLiner) lines.push('', oneLiner);
 
-Requirements
-- Strong experience with ${skills}
-- ${level} level experience in a relevant domain
-- Excellent problem-solving and communication skills
-- Track record of shipping production-quality software
-- Ability to work independently and lead technical initiatives
+  lines.push(
+    '',
+    '## About ' + companyName,
+    companyDesc,
+    '',
+    '## Responsibilities',
+    '- Lead ' + ownership,
+    '- Collaborate cross-functionally with engineering and product teams',
+    '- Drive technical direction in ' + (answers.skills || 'relevant domain'),
+    '',
+    '## Requirements',
+    '- ' + skills,
+    '- ' + level,
+    '- Experience with modern AI/ML tools and frameworks',
+    '',
+    '## Details',
+    '- ' + extras
+  );
 
-Nice to Have
-- Experience in fast-paced startup environments
-- Open-source contributions
-- Published research or technical writing
-
-${extras ? `Additional Details\n${extras}` : ''}
-
-We offer competitive compensation, flexible work arrangements, and the opportunity to work on cutting-edge technology with a world-class team.`.trim();
+  return lines.join('\n');
 }
 
 function ProgressIndicator({ currentStage }) {
   return (
     <div className="flex items-center justify-center gap-0 py-4 px-6">
-      {STAGES.map((stage, i) => {
-        const isCurrent = i === currentStage;
-        const isDone = i < currentStage;
-        const isFuture = i > currentStage;
+      {STAGES.map(function (stage, i) {
+        var isCurrent = i === currentStage;
+        var isDone = i < currentStage;
 
         return (
           <div key={stage.key} className="flex items-center">
-            {/* Dot + Label */}
             <div className="flex flex-col items-center gap-1">
               <div
                 className="w-3 h-3 rounded-full transition-all duration-300"
@@ -90,7 +98,6 @@ function ProgressIndicator({ currentStage }) {
               </span>
             </div>
 
-            {/* Connecting line */}
             {i < STAGES.length - 1 && (
               <div
                 className="w-16 mx-2 transition-colors duration-300"
@@ -111,120 +118,146 @@ function ProgressIndicator({ currentStage }) {
 }
 
 export default function RoleCreatePage() {
-  const router = useRouter();
-  const addRole = useAppStore((s) => s.addRole);
+  var router = useRouter();
+  var addRole = useAppStore(function (s) { return s.addRole; });
+  var company = useAppStore(function (s) { return s.company; });
 
-  const [stage, setStage] = useState(0); // 0=describe, 1=refine, 2=jd-ready
-  const [messages, setMessages] = useState([]);
-  const [questionIndex, setQuestionIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-  const [answers, setAnswers] = useState({});
-  const [jdContent, setJDContent] = useState('');
-  const [jdPortalTarget, setJDPortalTarget] = useState(null);
-  const [description, setDescription] = useState('');
+  var [stage, setStage] = useState(0);
+  var [messages, setMessages] = useState([]);
+  var [questionIndex, setQuestionIndex] = useState(0);
+  var [isTyping, setIsTyping] = useState(false);
+  var [answers, setAnswers] = useState({});
+  var [jdContent, setJDContent] = useState('');
+  var [jdPortalTarget, setJDPortalTarget] = useState(null);
+  var [description, setDescription] = useState('');
+  var [matchedRole, setMatchedRole] = useState(null);
+  var [matchScore, setMatchScore] = useState(0);
+  var [sharableLink] = useState(function () {
+    return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
+  });
 
   // Watch for the portal target element
-  useEffect(() => {
+  useEffect(function () {
     if (stage < 2) return;
-    const check = () => {
-      const el = document.getElementById('jd-canvas-panel');
+    var check = function () {
+      var el = document.getElementById('jd-canvas-panel');
       if (el) setJDPortalTarget(el);
     };
     check();
-    const timer = setInterval(check, 100);
-    return () => clearInterval(timer);
+    var timer = setInterval(check, 100);
+    return function () { clearInterval(timer); };
   }, [stage]);
 
   // Toggle right panel visibility via custom event
-  useEffect(() => {
+  useEffect(function () {
     if (stage >= 2) {
       window.dispatchEvent(
         new CustomEvent('jd-panel-toggle', { detail: { visible: true } })
       );
     }
-    return () => {
+    return function () {
       window.dispatchEvent(
         new CustomEvent('jd-panel-toggle', { detail: { visible: false } })
       );
     };
   }, [stage]);
 
-  const addAIMessage = useCallback(
-    (content) => {
-      setIsTyping(true);
-      setTimeout(() => {
-        setMessages((prev) => [...prev, { role: 'ai', content }]);
-        setIsTyping(false);
-      }, 800);
-    },
-    []
-  );
+  // Perform role matching
+  var doMatch = useCallback(function (text) {
+    var result = matchRole(text);
+    setMatchedRole(result.role);
+    setMatchScore(result.score);
+    return result;
+  }, []);
+
+  var addAIMessage = useCallback(function (content) {
+    setIsTyping(true);
+    var delay = 700 + Math.random() * 500;
+    setTimeout(function () {
+      setMessages(function (prev) { return prev.concat([{ role: 'ai', content: content }]); });
+      setIsTyping(false);
+    }, delay);
+  }, []);
 
   // Handle initial search submit
   function handleSearchSubmit(text) {
     setDescription(text);
     setStage(1);
+    // Match role from initial input
+    doMatch(text);
     // Add the user's description as first message, then AI asks Q1
     setMessages([{ role: 'user', content: text }]);
     addAIMessage(
-      `Great, I'll help you build this role. ${ROLE_CREATION_QUESTIONS[0].question}`
+      'Great, I\'ll help you build this role. ' + ROLE_CREATION_QUESTIONS[0].question
     );
   }
 
   // Handle chat message send
   function handleChatSend(text) {
-    // Record answer
-    const currentQ = ROLE_CREATION_QUESTIONS[questionIndex];
-    const newAnswers = { ...answers, [currentQ.id]: text };
+    var currentQ = ROLE_CREATION_QUESTIONS[questionIndex];
+    var newAnswers = Object.assign({}, answers, { [currentQ.id]: text });
     setAnswers(newAnswers);
 
     // Add user message
-    setMessages((prev) => [...prev, { role: 'user', content: text }]);
+    setMessages(function (prev) { return prev.concat([{ role: 'user', content: text }]); });
 
-    const nextIndex = questionIndex + 1;
+    // Re-match role with all answers combined
+    var allText = description + ' ' + Object.values(newAnswers).join(' ');
+    var matchResult = doMatch(allText);
 
-    // After question index 2 (3rd question answered), show JD panel
+    var nextIndex = questionIndex + 1;
+
+    // After 3rd question answered, show JD panel
     if (nextIndex >= 3 && stage < 2) {
       setStage(2);
-      const jd = generateJD(newAnswers);
+      var jd = generateJD(newAnswers, matchResult.role, company);
       setJDContent(jd);
     }
 
     setQuestionIndex(nextIndex);
 
     if (nextIndex < ROLE_CREATION_QUESTIONS.length) {
-      // If we already have a JD, update it with new answers
+      // Update JD if we're already in split view
       if (nextIndex >= 3) {
-        const updatedJD = generateJD(newAnswers);
+        var updatedJD = generateJD(newAnswers, matchResult.role, company);
         setJDContent(updatedJD);
       }
 
-      addAIMessage(ROLE_CREATION_QUESTIONS[nextIndex].question);
+      // Pick a random acknowledgment + next question
+      var ack = AI_ACKS[Math.floor(Math.random() * AI_ACKS.length)];
+      addAIMessage(ack + ' ' + ROLE_CREATION_QUESTIONS[nextIndex].question);
     } else {
       // All questions answered
-      const finalJD = generateJD(newAnswers);
+      var finalJD = generateJD(newAnswers, matchResult.role, company);
       setJDContent(finalJD);
       addAIMessage(
-        "Your job description is ready! Review and edit it on the right, then click 'Save Role' when you're satisfied."
+        'Your JD is ready! Feel free to edit it on the right. Click Save Role when you\'re done.'
       );
     }
   }
 
   // Handle JD save
   function handleSaveRole() {
-    const title = answers.title || description.slice(0, 40);
+    if (!jdContent.trim()) return;
+
+    var title = answers.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
     addRole({
-      title,
-      dept: answers.own || 'Engineering',
-      salary: answers.extra || 'Competitive',
-      status: 'draft',
+      title: title,
+      dept: inferDepartment(answers),
+      salary: answers.extra || 'TBD',
+      status: 'active',
+      roleRef: matchedRole,
       jd: jdContent,
+      sharableLink: sharableLink,
     });
-    router.push('/roles/create/complete?title=' + encodeURIComponent(title));
+    router.push(
+      '/roles/create/complete?title=' + encodeURIComponent(title)
+    );
   }
 
-  const currentQuestion = ROLE_CREATION_QUESTIONS[questionIndex] || null;
-  const allQuestionsAnswered = questionIndex >= ROLE_CREATION_QUESTIONS.length;
+  var currentQuestion = ROLE_CREATION_QUESTIONS[questionIndex] || null;
+  var allQuestionsAnswered = questionIndex >= ROLE_CREATION_QUESTIONS.length;
+  var isCompact = stage >= 2;
 
   return (
     <div className="flex flex-col h-full">
@@ -234,12 +267,17 @@ export default function RoleCreatePage() {
         {stage === 0 && <SearchPage onSubmit={handleSearchSubmit} />}
 
         {stage >= 1 && (
-          <ChatPanel
-            messages={messages}
-            onSend={handleChatSend}
-            currentQuestion={allQuestionsAnswered ? null : currentQuestion}
-            isTyping={isTyping}
-          />
+          <div className="h-full flex justify-center">
+            <div className="h-full w-full" style={{ maxWidth: isCompact ? undefined : 660 }}>
+              <ChatPanel
+                messages={messages}
+                onSend={handleChatSend}
+                currentQuestion={allQuestionsAnswered ? null : currentQuestion}
+                isTyping={isTyping}
+                compact={isCompact}
+              />
+            </div>
+          </div>
         )}
       </div>
 
@@ -252,6 +290,9 @@ export default function RoleCreatePage() {
               content={jdContent}
               onChange={setJDContent}
               onSave={allQuestionsAnswered ? handleSaveRole : undefined}
+              matchedRoleName={matchedRole ? matchedRole.title : null}
+              matchScore={matchScore}
+              sharableLink={sharableLink}
             />
           </div>,
           jdPortalTarget

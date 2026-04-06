@@ -3,25 +3,25 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 export default function RoleCreateLayout({ children }) {
-  const [rightPanelVisible, setRightPanelVisible] = useState(false);
-  const [dividerX, setDividerX] = useState(50); // percentage
-  const isDragging = useRef(false);
-  const containerRef = useRef(null);
+  var [rightPanelVisible, setRightPanelVisible] = useState(false);
+  var [splitWidth, setSplitWidth] = useState(380); // left panel width in px
+  var isDragging = useRef(false);
+  var containerRef = useRef(null);
 
-  const handleMouseDown = useCallback((e) => {
+  var handleMouseDown = useCallback(function (e) {
     e.preventDefault();
     isDragging.current = true;
     document.body.style.cursor = 'col-resize';
     document.body.style.userSelect = 'none';
   }, []);
 
-  useEffect(() => {
+  useEffect(function () {
     function handleMouseMove(e) {
       if (!isDragging.current || !containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const pct = ((e.clientX - rect.left) / rect.width) * 100;
-      const clamped = Math.max(30, Math.min(70, pct));
-      setDividerX(clamped);
+      var rect = containerRef.current.getBoundingClientRect();
+      var px = e.clientX - rect.left;
+      var clamped = Math.max(280, Math.min(600, px));
+      setSplitWidth(clamped);
     }
 
     function handleMouseUp() {
@@ -34,20 +34,18 @@ export default function RoleCreateLayout({ children }) {
 
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
-    return () => {
+    return function () {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
 
-  // Expose panel control via context-like approach through children props
-  // We use a simple DOM-based approach: the page sets a data attribute
-  useEffect(() => {
+  useEffect(function () {
     function handleToggle(e) {
       setRightPanelVisible(e.detail?.visible ?? false);
     }
     window.addEventListener('jd-panel-toggle', handleToggle);
-    return () => window.removeEventListener('jd-panel-toggle', handleToggle);
+    return function () { window.removeEventListener('jd-panel-toggle', handleToggle); };
   }, []);
 
   return (
@@ -61,33 +59,47 @@ export default function RoleCreateLayout({ children }) {
         className="flex flex-col overflow-hidden"
         style={{
           flex: rightPanelVisible ? 'none' : '1',
-          width: rightPanelVisible ? `${dividerX}%` : '100%',
-          minWidth: '400px',
+          width: rightPanelVisible ? splitWidth : '100%',
+          minWidth: rightPanelVisible ? 280 : undefined,
           transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
         }}
       >
         {typeof children === 'object' && children}
       </div>
 
-      {/* Divider */}
+      {/* Divider with handle */}
       {rightPanelVisible && (
         <div
           onMouseDown={handleMouseDown}
-          className="w-1 cursor-col-resize transition-colors shrink-0"
-          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'var(--border-default)'; }}
-          style={{ backgroundColor: 'var(--border-default)' }}
-        />
+          className="shrink-0 flex items-center justify-center transition-colors"
+          style={{
+            width: 6,
+            cursor: 'col-resize',
+            backgroundColor: 'var(--border-light)',
+          }}
+          onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
+          onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
+        >
+          {/* Visual handle */}
+          <div
+            style={{
+              width: 3,
+              height: 40,
+              borderRadius: 2,
+              backgroundColor: 'var(--border-default)',
+            }}
+          />
+        </div>
       )}
 
-      {/* Right panel - JD canvas placeholder, rendered by page via portal */}
+      {/* Right panel - JD canvas */}
       {rightPanelVisible && (
         <div
           id="jd-canvas-panel"
           className="flex flex-col overflow-hidden animate-canvas-in"
           style={{
-            width: `${100 - dividerX}%`,
-            minWidth: '400px',
+            flex: 1,
+            minWidth: 400,
           }}
         />
       )}

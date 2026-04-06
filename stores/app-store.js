@@ -32,7 +32,15 @@ export const useAppStore = create((set, get) => ({
   setHiringManager: (data) => set((s) => ({ hiringManager: { ...s.hiringManager, ...data } })),
   setCompany: (data) => set((s) => ({ company: { ...s.company, ...data } })),
 
-  addRole: (role) => set((s) => ({ roles: [{ id: Date.now(), ...role }, ...s.roles] })),
+  addRole: (role) => set((s) => ({
+    roles: [{
+      id: Date.now(),
+      status: 'active',
+      createdAt: new Date().toISOString(),
+      sharableLink: 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10),
+      ...role,
+    }, ...s.roles],
+  })),
   addCandidate: (candidate) => set((s) => ({
     candidates: [...s.candidates, { id: Date.now(), trials: 0, lastActive: '\u2014', ...candidate }],
   })),
