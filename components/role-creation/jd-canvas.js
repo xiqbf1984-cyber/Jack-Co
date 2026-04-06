@@ -75,8 +75,15 @@ export default function JDCanvas({
     var end = textarea.selectionEnd;
     var text = content;
     var selected = text.slice(start, end);
-    var newText = text.slice(0, start) + prefix + selected + (suffix || '') + text.slice(end);
+    var replacement = prefix + selected + (suffix || '');
+    var newText = text.slice(0, start) + replacement + text.slice(end);
     onChange?.(newText);
+    // Restore cursor position after React re-render
+    setTimeout(function () {
+      textarea.focus();
+      var newPos = start + replacement.length;
+      textarea.setSelectionRange(newPos, newPos);
+    }, 0);
   }
 
   return (

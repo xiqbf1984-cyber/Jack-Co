@@ -4,7 +4,8 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 
 export default function RoleCreateLayout({ children }) {
   var [rightPanelVisible, setRightPanelVisible] = useState(false);
-  var [splitWidth, setSplitWidth] = useState(420); // left panel width in px
+  var [splitRatio, setSplitRatio] = useState(0.5); // 50:50 split
+  var containerWidth = useRef(0);
   var isDragging = useRef(false);
   var containerRef = useRef(null);
 
@@ -20,8 +21,9 @@ export default function RoleCreateLayout({ children }) {
       if (!isDragging.current || !containerRef.current) return;
       var rect = containerRef.current.getBoundingClientRect();
       var px = e.clientX - rect.left;
-      var clamped = Math.max(280, Math.min(600, px));
-      setSplitWidth(clamped);
+      var ratio = px / rect.width;
+      var clamped = Math.max(0.25, Math.min(0.65, ratio));
+      setSplitRatio(clamped);
     }
 
     function handleMouseUp() {
@@ -59,8 +61,8 @@ export default function RoleCreateLayout({ children }) {
         className="flex flex-col overflow-hidden"
         style={{
           flex: rightPanelVisible ? 'none' : '1',
-          width: rightPanelVisible ? splitWidth : '100%',
-          minWidth: rightPanelVisible ? 280 : undefined,
+          width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
+          minWidth: rightPanelVisible ? 300 : undefined,
           transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
         }}
       >
@@ -99,7 +101,7 @@ export default function RoleCreateLayout({ children }) {
           className="flex flex-col overflow-hidden animate-canvas-in"
           style={{
             flex: 1,
-            minWidth: 400,
+            minWidth: 340,
           }}
         />
       )}
