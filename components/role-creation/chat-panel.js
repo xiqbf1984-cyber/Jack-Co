@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send } from 'lucide-react';
+import { Send, Paperclip, Link2 } from 'lucide-react';
 import ChatBubble from './chat-bubble';
 import TypingIndicator from './typing-indicator';
 import ChipSuggestions from './chip-suggestions';
@@ -17,6 +17,7 @@ export default function ChatPanel({
 }) {
   var [input, setInput] = useState('');
   var [localGhost, setLocalGhost] = useState('');
+  var [dismissedChips, setDismissedChips] = useState(new Set());
   var bottomRef = useRef(null);
   var inputRef = useRef(null);
 
@@ -42,6 +43,14 @@ export default function ChatPanel({
   }
 
   function handleChip(chip) {
+    // Mark this question's chips as dismissed
+    if (currentQuestion?.id) {
+      setDismissedChips(function (prev) {
+        var next = new Set(prev);
+        next.add(currentQuestion.id);
+        return next;
+      });
+    }
     onSend?.(chip);
     setInput('');
     setLocalGhost('');
@@ -54,6 +63,11 @@ export default function ChatPanel({
   }
 
   var hasContent = input.trim().length > 0;
+  var showChips = !isTyping
+    && currentQuestion?.chips
+    && messages.length > 0
+    && messages[messages.length - 1]?.role === 'ai'
+    && !dismissedChips.has(currentQuestion?.id);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -80,8 +94,8 @@ export default function ChatPanel({
 
         {isTyping && <TypingIndicator />}
 
-        {/* Chip suggestions — wrapped, not scrolling */}
-        {!isTyping && currentQuestion?.chips && messages.length > 0 && messages[messages.length - 1]?.role === 'ai' && (
+        {/* Chip suggestions */}
+        {showChips && (
           <div style={{
             marginLeft: compact ? 36 : 40,
             marginTop: 4,
@@ -98,9 +112,9 @@ export default function ChatPanel({
         <div ref={bottomRef} />
       </div>
 
-      {/* Input bar — larger and more prominent */}
+      {/* Input bar */}
       <div style={{
-        padding: '12px 20px 16px',
+        padding: compact ? '10px 16px 14px' : '14px 20px 18px',
         borderTop: '1px solid var(--border-light)',
         backgroundColor: 'var(--cream)',
       }}>
@@ -108,13 +122,14 @@ export default function ChatPanel({
           onSubmit={handleSubmit}
           style={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'flex-end',
             gap: 10,
-            padding: '8px 8px 8px 16px',
-            borderRadius: 14,
+            padding: compact ? '8px 8px 8px 14px' : '10px 10px 10px 16px',
+            borderRadius: compact ? 14 : 16,
             border: '1.5px solid var(--border-default)',
             backgroundColor: '#fff',
             transition: 'border-color 0.15s ease',
+            minHeight: compact ? 46 : 54,
           }}
         >
           <div style={{ position: 'relative', flex: 1 }}>
@@ -125,7 +140,7 @@ export default function ChatPanel({
                 left: 0,
                 transform: 'translateY(-50%)',
                 fontFamily: 'var(--font-body)',
-                fontSize: 13,
+                fontSize: compact ? 13 : 14,
                 color: 'var(--brown-light)',
                 opacity: 0.35,
                 pointerEvents: 'none',
@@ -148,10 +163,10 @@ export default function ChatPanel({
                 border: 'none',
                 outline: 'none',
                 fontFamily: 'var(--font-body)',
-                fontSize: 13,
+                fontSize: compact ? 13 : 14,
                 color: 'var(--brown)',
                 backgroundColor: 'transparent',
-                padding: '6px 0',
+                padding: compact ? '6px 0' : '8px 0',
                 opacity: isTyping ? 0.5 : 1,
                 boxSizing: 'border-box',
               }}
@@ -161,8 +176,8 @@ export default function ChatPanel({
             type="submit"
             disabled={!hasContent || isTyping}
             style={{
-              width: 36,
-              height: 36,
+              width: compact ? 36 : 38,
+              height: compact ? 36 : 38,
               borderRadius: '50%',
               display: 'flex',
               alignItems: 'center',
@@ -178,7 +193,7 @@ export default function ChatPanel({
               transition: 'all 0.2s ease',
             }}
           >
-            <Send size={14} />
+            <Send size={compact ? 14 : 15} />
           </button>
         </form>
       </div>
