@@ -47,7 +47,7 @@ export default function AssessmentDetailPage() {
     return (
       <div>
         <Link href="/assessment" style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--gold)', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4, marginBottom: 16 }}>
-          Trials <ChevronRight size={12} /> <span style={{ color: 'var(--brown)' }}>Not Found</span>
+          Assessments <ChevronRight size={12} /> <span style={{ color: 'var(--brown)' }}>Not Found</span>
         </Link>
         <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>Assessment not found.</p>
       </div>
@@ -66,7 +66,7 @@ export default function AssessmentDetailPage() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
       {/* Breadcrumb */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
-        <Link href="/assessment" style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', textDecoration: 'none' }}>Trials</Link>
+        <Link href="/assessment" style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', textDecoration: 'none' }}>Assessments</Link>
         <ChevronRight size={12} style={{ color: 'var(--brown-light)' }} />
         <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', fontWeight: 500 }}>{assessment.name}</span>
       </div>
@@ -140,10 +140,10 @@ export default function AssessmentDetailPage() {
               border: '1px solid var(--border-default)', background: '#fff',
             }}>
               <h4 style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 8 }}>
-                Welcome to Your {assessment.name}
+                Welcome to {assessment.name}
               </h4>
               <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.6, marginBottom: 16 }}>
-                This is a work trial to help you experience the assessment from the candidate's perspective.
+                This assessment evaluates candidates through a structured work sample.
               </p>
 
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, color: 'var(--brown)', marginBottom: 8 }}>What to do:</div>
@@ -263,7 +263,7 @@ export default function AssessmentDetailPage() {
           {/* Trial Settings */}
           <div style={{ borderRadius: 12, border: '1px solid var(--border-default)', background: '#fff', overflow: 'hidden' }}>
             <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-light)' }}>
-              <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)' }}>Trial Settings</h3>
+              <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)' }}>Assessment Settings</h3>
             </div>
 
             <div style={{ padding: '14px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid var(--border-light)' }}>
@@ -298,7 +298,7 @@ export default function AssessmentDetailPage() {
                   <Archive size={16} style={{ color: 'var(--brown-soft)' }} />
                 </div>
                 <div>
-                  <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)' }}>Archive trial</div>
+                  <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)' }}>Archive assessment</div>
                   <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)', marginTop: 1 }}>Hide from active list. Restorable anytime.</div>
                 </div>
               </div>
@@ -320,7 +320,7 @@ export default function AssessmentDetailPage() {
                     <Trash2 size={16} style={{ color: 'var(--red)' }} />
                   </div>
                   <div>
-                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)' }}>Delete trial</div>
+                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)' }}>Delete assessment</div>
                     <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)', marginTop: 1 }}>Permanently removes all data. Cannot be undone.</div>
                   </div>
                 </div>
