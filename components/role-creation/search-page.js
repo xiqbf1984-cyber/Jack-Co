@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { ArrowUp, Paperclip, Link2, Mic, X, FileText, Check, Code2, Briefcase, Settings } from 'lucide-react';
+import { ArrowUp, Paperclip, Link2, X, FileText, Check, Code2, Briefcase, Settings } from 'lucide-react';
 
 const TYPEWRITER_TEXT = 'Who are you looking for?';
 const TYPEWRITER_SPEED = 38;
@@ -21,7 +21,6 @@ export default function SearchPage({ onSubmit }) {
   const [showFileModal, setShowFileModal] = useState(false);
   const [linkValue, setLinkValue] = useState('');
   const [uploadedFiles, setUploadedFiles] = useState([]);
-  const [isRecording, setIsRecording] = useState(false);
   const textareaRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -79,16 +78,6 @@ export default function SearchPage({ onSubmit }) {
     var file = uploadedFiles[index];
     setUploadedFiles(prev => prev.filter((_, i) => i !== index));
     setInput(prev => prev.replace('[Attached: ' + file.name + ']', '').trim());
-  }
-
-  function toggleRecording() {
-    setIsRecording(!isRecording);
-    // Simulated voice input
-    if (!isRecording) {
-      setTimeout(() => {
-        setIsRecording(false);
-      }, 3000);
-    }
   }
 
   var hasInput = input.trim().length > 0;
@@ -289,29 +278,22 @@ export default function SearchPage({ onSubmit }) {
               </div>
 
               <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 11,
-                  color: 'var(--brown-soft)',
-                  userSelect: 'none',
-                }}>Press space to speak</span>
                 <button
-                  type="button"
-                  onClick={toggleRecording}
+                  type="submit"
+                  disabled={!hasInput}
                   style={{
-                    width: 36, height: 36, borderRadius: '50%',
+                    width: 34, height: 34, borderRadius: '50%',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     border: 'none',
-                    background: isRecording
-                      ? 'linear-gradient(135deg, #e74c3c, #c0392b)'
-                      : 'linear-gradient(135deg, #e67e22, #d35400)',
-                    color: '#fff',
-                    cursor: 'pointer',
+                    background: hasInput
+                      ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
+                      : 'var(--cream)',
+                    color: hasInput ? '#fff' : 'var(--brown-light)',
+                    cursor: hasInput ? 'pointer' : 'default',
                     transition: 'all 0.2s ease',
-                    boxShadow: isRecording ? '0 0 0 4px rgba(231,76,60,0.2)' : 'none',
                   }}
                 >
-                  <Mic size={15} />
+                  <ArrowUp size={15} />
                 </button>
               </div>
             </div>
@@ -365,33 +347,6 @@ export default function SearchPage({ onSubmit }) {
             })}
           </div>
         </form>
-
-        {/* Submit button floating */}
-        {hasInput && (
-          <div style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: 16,
-          }}>
-            <button
-              type="button"
-              onClick={handleSubmit}
-              style={{
-                width: 40, height: 40, borderRadius: '50%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                border: 'none',
-                background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-                color: '#fff',
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                boxShadow: '0 4px 12px rgba(92,82,72,0.18)',
-                animation: 'fsu 0.2s ease both',
-              }}
-            >
-              <ArrowUp size={16} />
-            </button>
-          </div>
-        )}
       </div>
 
       {/* Link paste modal */}

@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 
 export default function RoleCreateLayout({ children }) {
   var [rightPanelVisible, setRightPanelVisible] = useState(false);
-  var [splitWidth, setSplitWidth] = useState(380); // left panel width in px
+  var [splitWidth, setSplitWidth] = useState(420); // left panel width in px
   var isDragging = useRef(false);
   var containerRef = useRef(null);
 
