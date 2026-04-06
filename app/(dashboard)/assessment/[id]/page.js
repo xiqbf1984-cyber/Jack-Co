@@ -38,7 +38,7 @@ export default function ChallengeDetailPage() {
     );
   }
 
-  const statusColors = { published: '#27825b', submitted: '#0077B5', pending: '#d4880f', draft: '#c4b896' };
+  const statusColors = { published: '#27825b', submitted: '#0077B5', pending: '#d4880f', draft: '#b0aea5' };
 
   return (
     <div className="page-container">
@@ -48,7 +48,7 @@ export default function ChallengeDetailPage() {
 
       <div className="flex items-center gap-3 mb-4">
         <h1 className="text-display-page">{challenge.name}</h1>
-        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ backgroundColor: (statusColors[challenge.status] || '#c4b896') + '14' }}>
+        <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full" style={{ backgroundColor: (statusColors[challenge.status] || '#b0aea5') + '14' }}>
           <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: statusColors[challenge.status] }} />
           <span className="text-mono-tag" style={{ color: statusColors[challenge.status] }}>{challenge.status}</span>
         </div>

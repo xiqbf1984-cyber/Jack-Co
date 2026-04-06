@@ -7,7 +7,7 @@ import { useAppStore } from '@/stores/app-store';
 const statusColors = {
   active: '#27825b',
   completed: '#27825b',
-  idle: '#c4b896',
+  idle: '#b0aea5',
   pending: '#d4880f',
 };
 
@@ -62,7 +62,7 @@ export default function RecentCandidatesList() {
             <div className="flex items-center gap-2">
               <span
                 className="w-2 h-2 rounded-full"
-                style={{ backgroundColor: statusColors[cand.status] || '#c4b896' }}
+                style={{ backgroundColor: statusColors[cand.status] || '#b0aea5' }}
               />
               <span className="text-mono-tag" style={{ color: statusColors[cand.status] || 'var(--brown-soft)' }}>
                 {cand.status}

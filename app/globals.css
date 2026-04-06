@@ -3,53 +3,72 @@
 @source "../lib/**/*.js";
 @source "../stores/**/*.js";
 
-/* ==================== CUSTOM PROPERTIES ==================== */
+/* ==================== CUSTOM PROPERTIES (Claude Design System) ==================== */
 :root {
-  /* Fonts — single font family globally */
+  /* Fonts — Libre Baskerville for body/headlines, DM Mono for code */
   --font-body: 'Libre Baskerville', Georgia, serif;
+  --font-mono: 'DM Mono', monospace;
 
-  /* Base Palette */
-  --cream: #f5f3ee;
+  /* ---- Primary ---- */
+  --terracotta: #c96442;
+  --terracotta-light: #d97757;
+  --near-black: #141413;
+
+  /* ---- Surfaces & Backgrounds ---- */
+  --cream: #f5f4ed;
   --cream-sidebar: #eae6dd;
-  --cream-card: #ffffff;
-  --cream-card-hover: #faf9f6;
+  --cream-card: #faf9f5;
+  --cream-card-hover: #f5f4ed;
   --cream-row-even: #f5f2ec;
+  --warm-sand: #e8e6dc;
 
-  /* Text */
-  --brown: #5d5446;
-  --brown-muted: #9f8d75;
-  --brown-soft: #8D837A;
-  --brown-light: #c4b896;
+  /* ---- Text (warm-toned neutrals) ---- */
+  --brown: #4d4c48;
+  --brown-muted: #5e5d59;
+  --brown-soft: #87867f;
+  --brown-light: #b0aea5;
+  --dark-warm: #3d3d3a;
 
-  /* Buttons */
-  --btn-primary-from: #5C5248;
-  --btn-primary-to: #6B5F55;
-  --btn-hover-from: #7a6d61;
-  --btn-hover-to: #8B7A6F;
-  --btn-text: #FBF9F4;
+  /* ---- Buttons ---- */
+  --btn-primary-bg: #c96442;
+  --btn-primary-hover: #d97757;
+  --btn-text: #faf9f5;
+  --btn-secondary-bg: #e8e6dc;
+  --btn-secondary-text: #4d4c48;
+  --btn-secondary-hover: #d1cfc5;
+  /* Legacy aliases (used inline in components) */
+  --btn-primary-from: #c96442;
+  --btn-primary-to: #c96442;
+  --btn-hover-from: #d97757;
+  --btn-hover-to: #d97757;
 
-  /* Borders */
-  --border-default: #d5cdc0;
-  --border-light: #e2dbd0;
-  --border-hover: #b8a882;
+  /* ---- Borders (warm cream tints) ---- */
+  --border-default: #f0eee6;
+  --border-light: #e8e6dc;
+  --border-hover: #d1cfc5;
+  --border-active: #c2c0b6;
 
-  /* Functional */
+  /* ---- Functional / Semantic ---- */
   --gold: #8b6914;
   --gold-light: #c4a332;
   --accent-green: #27825b;
-  --red: #c0392b;
+  --red: #b53333;
   --blue: #0077B5;
   --orange: #d4880f;
+  --focus-blue: #3898ec;
 
-  /* Shadows */
-  --shadow-card: 0 1px 3px rgba(0,0,0,.04), 0 4px 12px rgba(0,0,0,.06);
-  --shadow-card-hover: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.1);
-  --shadow-dropdown: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.1);
-  --shadow-modal: 0 20px 60px rgba(0,0,0,.18);
-  --shadow-glow-idle: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03);
-  --shadow-glow-peak: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04);
+  /* ---- Shadows (ring-based + whisper) ---- */
+  --shadow-ring: 0px 0px 0px 1px #f0eee6;
+  --shadow-ring-hover: 0px 0px 0px 1px #d1cfc5;
+  --shadow-ring-active: 0px 0px 0px 1px #c2c0b6;
+  --shadow-card: 0 2px 12px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 4px 20px rgba(0,0,0,0.06);
+  --shadow-dropdown: 0 4px 20px rgba(0,0,0,0.08);
+  --shadow-modal: 0 16px 48px rgba(0,0,0,0.15);
+  --shadow-glow-idle: 0 0 12px rgba(201,100,66,.08), 0 2px 8px rgba(0,0,0,.03);
+  --shadow-glow-peak: 0 0 28px rgba(201,100,66,.16), 0 2px 8px rgba(0,0,0,.04);
 
-  /* Layout Spacing */
+  /* ---- Layout Spacing ---- */
   --page-padding-x: 40px;
   --page-padding-y: 32px;
   --page-max-width: 1400px;
@@ -60,7 +79,7 @@
   --row-padding-y: 14px;
   --header-mb: 24px;
 
-  /* Radius */
+  /* ---- Border Radius ---- */
   --radius-xs: 6px;
   --radius-sm: 8px;
   --radius-md: 10px;
@@ -88,7 +107,7 @@ body {
   color: var(--brown);
   font-family: var(--font-body);
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.60;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -96,7 +115,7 @@ body {
 /* ==================== SCROLLBAR ==================== */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #e6dfd4; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 3px; }
 
 /* ==================== NOISE TEXTURE ==================== */
 .noise-texture {
@@ -146,8 +165,8 @@ body {
 }
 
 @keyframes inputGlow {
-  0%, 100% { box-shadow: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03); }
-  50% { box-shadow: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04); }
+  0%, 100% { box-shadow: var(--shadow-glow-idle); }
+  50% { box-shadow: var(--shadow-glow-peak); }
 }
 
 @keyframes blink {
@@ -167,11 +186,11 @@ body {
 }
 
 @keyframes highlightFade {
-  0% { background-color: rgba(139, 105, 20, 0.15); }
+  0% { background-color: rgba(201, 100, 66, 0.12); }
   100% { background-color: transparent; }
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+/* ==================== ANIMATION UTILITIES ==================== */
 .animate-fi { animation: fi 0.3s ease-out; }
 .animate-fsu { animation: fsu 0.25s ease-out; }
 .animate-fsd { animation: fsd 0.15s ease-out; }
@@ -182,32 +201,32 @@ body {
 .animate-blink { animation: blink 0.8s infinite; }
 .animate-highlight { animation: highlightFade 1.5s ease-out forwards; }
 
-/* ==================== TYPOGRAPHY — single font (Libre Baskerville) ==================== */
+/* ==================== TYPOGRAPHY ==================== */
 .font-display { font-family: var(--font-body); }
 .font-body { font-family: var(--font-body); }
-.font-mono { font-family: var(--font-body); }
+.font-mono { font-family: var(--font-mono); }
 
 .text-display-hero {
   font-family: var(--font-body);
-  font-size: clamp(24px, 4vw, 36px);
+  font-size: clamp(28px, 4vw, 40px);
   font-weight: 700;
-  line-height: 1.2;
-  color: var(--brown);
+  line-height: 1.15;
+  color: var(--near-black);
 }
 
 .text-display-page {
   font-family: var(--font-body);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  line-height: 1.25;
-  color: var(--brown);
+  line-height: 1.20;
+  color: var(--near-black);
 }
 
 .text-display-section {
   font-family: var(--font-body);
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.35;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.30;
   color: var(--brown);
 }
 
@@ -216,14 +235,14 @@ body {
   font-size: 18px;
   font-weight: 700;
   line-height: 1.25;
-  color: var(--brown);
+  color: var(--near-black);
 }
 
 .text-body-lg {
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.60;
   color: var(--brown-muted);
 }
 
@@ -231,56 +250,60 @@ body {
   font-family: var(--font-body);
   font-size: 13px;
   font-weight: 400;
-  line-height: 1.55;
+  line-height: 1.60;
 }
 
 .text-body-sm {
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.55;
 }
 
 .text-body-xs {
   font-family: var(--font-body);
   font-size: 11px;
   font-weight: 400;
-  line-height: 1.4;
+  line-height: 1.45;
   color: var(--brown-soft);
 }
 
 .text-mono-display {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
+  line-height: 1.20;
 }
 
 .text-mono-data {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
+  line-height: 1.40;
 }
 
 .text-mono-label {
-  font-family: var(--font-body);
+  font-family: var(--font-mono);
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 400;
+  line-height: 1.40;
   text-transform: none;
   letter-spacing: 0;
   color: var(--brown-soft);
 }
 
 .text-mono-tag {
-  font-family: var(--font-body);
-  font-size: 12px;
-  font-weight: 500;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.30;
   text-transform: none;
   letter-spacing: 0;
 }
 
 /* ==================== HOVER UTILITIES ==================== */
 .hover-bg-dim:hover {
-  background-color: rgba(0, 0, 0, 0.04);
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .hover-shadow-card:hover {
@@ -319,16 +342,16 @@ body {
   border-color: var(--border-hover);
 }
 
-/* ==================== BUTTON BASE ==================== */
+/* ==================== BUTTON BASE (Claude Design System) ==================== */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 9px 18px;
   border: none;
   border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to));
+  background: var(--btn-primary-bg);
   color: var(--btn-text);
   font-family: var(--font-body);
   font-size: 12px;
@@ -336,16 +359,16 @@ body {
   letter-spacing: 0;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(92,82,72,0.18);
+  box-shadow: 0px 0px 0px 1px var(--terracotta);
 }
 
 .btn-primary:hover {
-  background: linear-gradient(135deg, var(--btn-hover-from), var(--btn-hover-to));
-  box-shadow: 0 0 0 4px rgba(92,82,72,0.15);
+  background: var(--btn-primary-hover);
+  box-shadow: 0px 0px 0px 1px var(--terracotta-light), 0 4px 12px rgba(201,100,66,0.18);
 }
 
 .btn-primary:disabled {
-  background: #a0968c;
+  background: var(--brown-soft);
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
@@ -358,21 +381,21 @@ body {
   justify-content: center;
   gap: 6px;
   padding: 8px 16px;
-  border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
-  background: var(--cream-card);
-  color: var(--brown);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
   font-family: var(--font-body);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0px 0px 0px 1px var(--border-hover);
 }
 
 .btn-secondary:hover {
-  border-color: var(--border-hover);
-  background: var(--cream);
-  box-shadow: var(--shadow-card);
+  background: var(--btn-secondary-hover);
+  box-shadow: 0px 0px 0px 1px var(--border-active);
 }
 
 .btn-icon {
@@ -380,7 +403,7 @@ body {
   align-items: center;
   justify-content: center;
   border: 1px solid var(--border-default);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   background-color: var(--cream-card);
   color: var(--brown);
   cursor: pointer;
@@ -410,12 +433,12 @@ body {
 }
 
 .table-header {
-  font-family: var(--font-body);
-  font-size: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
   font-weight: 500;
-  color: var(--brown-muted);
+  color: var(--brown-soft);
   text-transform: none;
-  letter-spacing: 0;
+  letter-spacing: 0.3px;
 }
 
 .table-header-sortable {

@@ -9,7 +9,7 @@ const statusColors = {
   published: '#27825b',
   submitted: '#0077B5',
   pending: '#d4880f',
-  draft: '#c4b896',
+  draft: '#b0aea5',
 };
 
 export default function ChallengesPage() {
