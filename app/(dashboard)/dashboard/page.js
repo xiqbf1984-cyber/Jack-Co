@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/stores/app-store';
 import StatCards from '@/components/dashboard/stat-cards';
@@ -35,17 +35,24 @@ export default function DashboardPage() {
   const displayName = company.name && company.name !== 'Your Company' ? company.name : 'there';
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {/* Welcome */}
-      <h1 style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 26,
-        fontWeight: 700,
-        color: 'var(--brown)',
-        marginBottom: draft ? 16 : 24,
-      }}>
-        Welcome back, {displayName}
-      </h1>
+      <div>
+        <h1 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 22,
+          fontWeight: 600,
+          color: 'var(--brown)',
+        }}>
+          Welcome back, {displayName}
+        </h1>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-soft)',
+          marginTop: 4,
+        }}>Here's an overview of your hiring pipeline</p>
+      </div>
 
       {/* Draft Recovery Banner */}
       {draft && (
@@ -54,7 +61,6 @@ export default function DashboardPage() {
           border: '1px solid rgba(139,105,20,0.22)',
           borderRadius: 12,
           padding: '16px 20px',
-          marginBottom: 24,
           display: 'flex',
           alignItems: 'center',
           gap: 14,
@@ -83,31 +89,13 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', gap: 10 }}>
             <button
               onClick={() => router.push('/assessment/create')}
-              style={{
-                padding: '7px 16px',
-                borderRadius: 8,
-                border: 'none',
-                background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-                color: 'var(--btn-text)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
+              className="btn-primary"
+              style={{ padding: '7px 16px', fontSize: 11 }}
             >Continue</button>
             <button
               onClick={clearDraft}
-              style={{
-                padding: '7px 16px',
-                borderRadius: 8,
-                border: '1px solid var(--border-default)',
-                background: '#fff',
-                color: 'var(--brown-soft)',
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                fontWeight: 600,
-                cursor: 'pointer',
-              }}
+              className="btn-secondary"
+              style={{ padding: '7px 16px', fontSize: 11 }}
             >Discard</button>
           </div>
         </div>
@@ -121,7 +109,6 @@ export default function DashboardPage() {
         display: 'grid',
         gridTemplateColumns: '1fr 1fr',
         gap: 16,
-        marginBottom: 24,
       }}>
         <QuickActions />
         <CompanyProfileCard />

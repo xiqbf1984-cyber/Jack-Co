@@ -34,19 +34,14 @@ export default function CreateAssessmentPage() {
   return (
     <div style={{
       display: 'flex',
-      height: 'calc(100vh - 0px)',
-      marginLeft: -40,
-      marginRight: -40,
-      marginTop: -32,
-      marginBottom: -64,
+      margin: '-32px -32px -64px -32px',
+      height: 'calc(100vh)',
     }}>
       {/* Left: Operations Area */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, overflow: 'hidden' }}>
         {/* Sticky progress bar */}
         <div style={{
-          position: 'sticky',
-          top: 0,
-          zIndex: 10,
+          flexShrink: 0,
           backgroundColor: 'var(--cream)',
           padding: '14px 32px 10px',
           borderBottom: '1px solid var(--border-default)',
@@ -59,38 +54,39 @@ export default function CreateAssessmentPage() {
           flex: 1,
           overflowY: 'auto',
           padding: '20px 32px 80px',
-          maxWidth: 640,
         }}>
-          {/* Back button */}
-          {showBack && (
-            <button
-              onClick={() => goToStep(currentStep - 1)}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 6,
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                color: 'var(--gold)',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
-                marginBottom: 16,
-              }}
-            >
-              <ArrowLeft size={12} />
-              Back
-            </button>
-          )}
+          <div style={{ maxWidth: 560 }}>
+            {/* Back button */}
+            {showBack && (
+              <button
+                onClick={() => goToStep(currentStep - 1)}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  color: 'var(--gold)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: 0,
+                  marginBottom: 16,
+                }}
+              >
+                <ArrowLeft size={12} />
+                Back
+              </button>
+            )}
 
-          <StepComponent key={currentStep} />
+            <StepComponent key={currentStep} />
+          </div>
         </div>
       </div>
 
-      {/* Right: Live Preview */}
+      {/* Right: Live Preview — single instance */}
       <div style={{
-        width: 320,
+        width: 300,
         flexShrink: 0,
         borderLeft: '1px solid var(--border-default)',
         backgroundColor: '#fff',

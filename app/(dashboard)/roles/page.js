@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Plus, Search, Briefcase, Trophy, ChevronRight } from 'lucide-react';
+import { Plus, Search, Briefcase, Trophy, ChevronRight, Filter } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -23,45 +23,63 @@ export default function RolesPage() {
   }, [roles, search]);
 
   return (
-    <div>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-        <h1 style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 20,
-          fontWeight: 700,
-          color: 'var(--brown)',
-        }}>Roles</h1>
-        <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '7px 16px', textDecoration: 'none' }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+        <div>
+          <h1 style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 22,
+            fontWeight: 600,
+            color: 'var(--brown)',
+          }}>Roles</h1>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+            marginTop: 4,
+          }}>Manage your hiring roles and job descriptions</p>
+        </div>
+        <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 13 }}>
           <Plus size={14} />
           Add Role
         </Link>
       </div>
 
-      {/* Search */}
-      <div style={{ position: 'relative', width: 260, marginBottom: 20 }}>
-        <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search roles..."
-          style={{
-            width: '100%',
-            paddingLeft: 34,
-            paddingRight: 12,
-            paddingTop: 10,
-            paddingBottom: 10,
-            borderRadius: 8,
-            border: '1px solid var(--border-default)',
-            background: '#fff',
-            fontFamily: 'var(--font-body)',
-            fontSize: 12,
-            color: 'var(--brown)',
-            outline: 'none',
-            boxSizing: 'border-box',
-          }}
-        />
+      {/* Search + Filter */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ position: 'relative', width: 280 }}>
+          <Search size={14} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search roles..."
+            style={{
+              width: '100%',
+              paddingLeft: 34,
+              paddingRight: 12,
+              paddingTop: 9,
+              paddingBottom: 9,
+              borderRadius: 8,
+              border: '1px solid var(--border-default)',
+              background: '#fff',
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              color: 'var(--brown)',
+              outline: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
+        </div>
+        <button style={{
+          display: 'inline-flex', alignItems: 'center', gap: 6, padding: '9px 14px',
+          borderRadius: 8, border: '1px solid var(--border-default)', background: '#fff',
+          fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', cursor: 'pointer',
+        }}>
+          <Filter size={13} />
+          Status
+        </button>
       </div>
 
       {/* Roles list */}
@@ -73,7 +91,7 @@ export default function RolesPage() {
           </p>
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {filtered.map((role) => {
             const statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             const statusColor = `var(--${statusInfo.color})`;
@@ -108,33 +126,17 @@ export default function RolesPage() {
                   />
                   <Briefcase size={16} style={{ color: 'var(--gold)', flexShrink: 0 }} />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 13,
-                      color: 'var(--brown)',
-                      fontWeight: 600,
-                    }}>{role.title}</div>
-                    <div style={{
-                      fontFamily: 'var(--font-body)',
-                      fontSize: 10,
-                      color: 'var(--brown-soft)',
-                    }}>{role.dept}</div>
+                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown)', fontWeight: 600 }}>{role.title}</div>
+                    <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>{role.dept}</div>
                   </div>
-                  <span style={{
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 10,
-                    fontWeight: 500,
-                    padding: '4px 12px',
-                    borderRadius: 12,
-                    backgroundColor: `color-mix(in srgb, ${statusColor} 12%, transparent)`,
-                    color: statusColor,
-                  }}>{statusInfo.label}</span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: statusColor }} />
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: statusColor }}>{statusInfo.label}</span>
+                  </div>
                 </div>
 
-                {/* Expanded assessment sub-list */}
                 {isExpanded && roleAssessments.length > 0 && (
                   <div style={{
-                    paddingLeft: 20,
                     padding: '10px 20px 10px 44px',
                     background: '#faf6ef',
                     borderRadius: '0 0 10px 10px',
@@ -145,40 +147,19 @@ export default function RolesPage() {
                       const aStatus = STATUS_MAP[a.status] || STATUS_MAP.draft;
                       const aColor = `var(--${aStatus.color})`;
                       return (
-                        <div
-                          key={a.id}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 10,
-                            padding: '10px 12px',
-                            borderRadius: 8,
-                            marginBottom: ai < roleAssessments.length - 1 ? 6 : 0,
-                            animation: `fsd .15s ease ${ai * 0.04}s both`,
-                          }}
-                        >
+                        <div key={a.id} style={{
+                          display: 'flex', alignItems: 'center', gap: 10, padding: '10px 12px',
+                          borderRadius: 8, marginBottom: ai < roleAssessments.length - 1 ? 6 : 0,
+                          animation: `fsd .15s ease ${ai * 0.04}s both`,
+                        }}>
                           <Trophy size={12} style={{ color: 'var(--gold)', flexShrink: 0 }} />
                           <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{
-                              fontFamily: 'var(--font-body)',
-                              fontSize: 11,
-                              color: 'var(--brown)',
-                              fontWeight: 600,
-                            }}>{a.name}</div>
-                            <div style={{
-                              fontFamily: 'var(--font-body)',
-                              fontSize: 9,
-                              color: 'var(--brown-soft)',
-                            }}>{a.candIds?.length || 0} candidates</div>
+                            <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown)', fontWeight: 600 }}>{a.name}</div>
+                            <div style={{ fontFamily: 'var(--font-body)', fontSize: 9, color: 'var(--brown-soft)' }}>{a.candIds?.length || 0} candidates</div>
                           </div>
                           <span style={{
-                            fontFamily: 'var(--font-body)',
-                            fontSize: 9,
-                            fontWeight: 500,
-                            padding: '4px 10px',
-                            borderRadius: 10,
-                            backgroundColor: `color-mix(in srgb, ${aColor} 12%, transparent)`,
-                            color: aColor,
+                            fontFamily: 'var(--font-body)', fontSize: 9, fontWeight: 500, padding: '4px 10px',
+                            borderRadius: 10, backgroundColor: `color-mix(in srgb, ${aColor} 12%, transparent)`, color: aColor,
                           }}>{aStatus.label}</span>
                         </div>
                       );
@@ -187,14 +168,9 @@ export default function RolesPage() {
                 )}
                 {isExpanded && roleAssessments.length === 0 && (
                   <div style={{
-                    padding: '12px 16px 12px 40px',
-                    background: '#faf6ef',
-                    borderRadius: '0 0 10px 10px',
-                    border: '1px solid var(--border-default)',
-                    borderTop: 'none',
-                    fontFamily: 'var(--font-body)',
-                    fontSize: 11,
-                    color: 'var(--brown-soft)',
+                    padding: '12px 16px 12px 40px', background: '#faf6ef', borderRadius: '0 0 10px 10px',
+                    border: '1px solid var(--border-default)', borderTop: 'none',
+                    fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)',
                   }}>
                     No assessments linked to this role yet.
                   </div>

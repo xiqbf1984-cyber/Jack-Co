@@ -36,13 +36,20 @@ export default function EvaluationPage() {
 
   return (
     <div>
-      <h1 style={{
-        fontFamily: 'var(--font-body)',
-        fontSize: 20,
-        fontWeight: 700,
-        color: 'var(--brown)',
-        marginBottom: 20,
-      }}>Evaluation Dashboard</h1>
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 22,
+          fontWeight: 600,
+          color: 'var(--brown)',
+        }}>Evaluation Dashboard</h1>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-soft)',
+          marginTop: 4,
+        }}>Review candidate scores and assessment results</p>
+      </div>
 
       {/* Stat cards */}
       <div style={{
