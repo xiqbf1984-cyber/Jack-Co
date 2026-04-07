@@ -59,6 +59,9 @@ export default function StepContext() {
     setTimeout(() => {
       setPredicting(false);
       setPredictions(MOCK_PREDICTIONS);
+      // Fill the first prediction into the textarea
+      setSelectedPrediction(MOCK_PREDICTIONS[0].id);
+      setDescription(MOCK_PREDICTIONS[0].description);
     }, 2500);
   }, []);
 
@@ -91,7 +94,7 @@ export default function StepContext() {
           color: 'var(--brown)',
           margin: '0 0 6px 0',
         }}>
-          Define the Challenge
+          Define the Problem
         </h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
           <p style={{
@@ -102,7 +105,7 @@ export default function StepContext() {
             margin: 0,
             flex: 1,
           }}>
-            Describe the business problem this candidate should solve. We'll help predict real-world challenges.
+            Describe the business problem candidates should solve.
           </p>
           {!predictions && (
             <button
@@ -133,7 +136,7 @@ export default function StepContext() {
               ) : (
                 <>
                   <Wand2 size={12} style={{ color: 'var(--gold)' }} />
-                  Auto-generate challenge
+                  Generate predictions
                 </>
               )}
             </button>
@@ -166,7 +169,85 @@ export default function StepContext() {
         onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; }}
       />
 
-      {/* File upload */}
+      {/* Prediction cards — below textarea */}
+      {predictions && (
+        <div style={{ marginBottom: 20 }}>
+          {predictions.map((pred, i) => {
+            const isChosen = selectedPrediction === pred.id;
+            return (
+              <button
+                key={pred.id}
+                onClick={() => handleSelectPrediction(pred)}
+                onMouseEnter={() => setDescription(pred.description)}
+                style={{
+                  display: 'block',
+                  width: '100%',
+                  textAlign: 'left',
+                  padding: '18px 20px',
+                  borderRadius: 14,
+                  border: isChosen
+                    ? '1.5px solid rgba(39,130,91,0.33)'
+                    : '1.5px solid var(--border-default)',
+                  backgroundColor: isChosen ? 'rgba(39,130,91,0.04)' : '#fff',
+                  cursor: 'pointer',
+                  marginBottom: 10,
+                  animation: `fsu .2s ease ${i * 0.06}s both`,
+                  transition: 'border-color 0.15s ease, background-color 0.15s ease',
+                }}
+              >
+                {/* Label for first */}
+                {pred.label && (
+                  <div style={{
+                    fontFamily: "var(--font-mono)",
+                    fontSize: 9,
+                    color: 'var(--gold)',
+                    marginBottom: 6,
+                  }}>
+                    {pred.label}
+                  </div>
+                )}
+
+                <div style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13,
+                  color: 'var(--brown)',
+                  fontWeight: 700,
+                  marginBottom: 6,
+                }}>
+                  {pred.title}
+                </div>
+
+                <div style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 12,
+                  color: 'var(--brown-muted)',
+                  lineHeight: 1.5,
+                  marginBottom: 10,
+                }}>
+                  {pred.description}
+                </div>
+
+                <div style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  color: 'var(--accent-green)',
+                  lineHeight: 1.4,
+                }}>
+                  <strong>Why this fits:</strong> {pred.whyFits}
+                </div>
+
+                {isChosen && (
+                  <div style={{ marginTop: 8, textAlign: 'right' }}>
+                    <Check size={14} style={{ color: 'var(--accent-green)' }} />
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* File upload — below predictions */}
       <label style={{
         display: 'flex',
         flexDirection: 'column',
@@ -268,84 +349,6 @@ export default function StepContext() {
               />
             </div>
           ))}
-        </div>
-      )}
-
-
-      {/* Prediction cards */}
-      {predictions && (
-        <div style={{ marginBottom: 20 }}>
-          {predictions.map((pred, i) => {
-            const isChosen = selectedPrediction === pred.id;
-            return (
-              <button
-                key={pred.id}
-                onClick={() => handleSelectPrediction(pred)}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '18px 20px',
-                  borderRadius: 14,
-                  border: isChosen
-                    ? '1.5px solid rgba(39,130,91,0.33)'
-                    : '1.5px solid var(--border-default)',
-                  backgroundColor: isChosen ? 'rgba(39,130,91,0.04)' : '#fff',
-                  cursor: 'pointer',
-                  marginBottom: 10,
-                  animation: `fsu .2s ease ${i * 0.06}s both`,
-                  transition: 'border-color 0.15s ease, background-color 0.15s ease',
-                }}
-              >
-                {/* Label for first */}
-                {pred.label && (
-                  <div style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 9,
-                    color: 'var(--gold)',
-                    marginBottom: 6,
-                  }}>
-                    {pred.label}
-                  </div>
-                )}
-
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 13,
-                  color: 'var(--brown)',
-                  fontWeight: 700,
-                  marginBottom: 6,
-                }}>
-                  {pred.title}
-                </div>
-
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 12,
-                  color: 'var(--brown-muted)',
-                  lineHeight: 1.5,
-                  marginBottom: 10,
-                }}>
-                  {pred.description}
-                </div>
-
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 11,
-                  color: 'var(--accent-green)',
-                  lineHeight: 1.4,
-                }}>
-                  <strong>Why this fits:</strong> {pred.whyFits}
-                </div>
-
-                {isChosen && (
-                  <div style={{ marginTop: 8, textAlign: 'right' }}>
-                    <Check size={14} style={{ color: 'var(--accent-green)' }} />
-                  </div>
-                )}
-              </button>
-            );
-          })}
         </div>
       )}
 

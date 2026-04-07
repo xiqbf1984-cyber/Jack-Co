@@ -207,6 +207,28 @@ export default function StepEnvironment() {
 
   return (
     <div>
+      {/* Title + subtitle */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 16,
+          fontWeight: 600,
+          color: 'var(--brown)',
+          margin: '0 0 6px 0',
+        }}>
+          Configure Environment
+        </h2>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--brown-soft)',
+          lineHeight: 1.5,
+          margin: 0,
+        }}>
+          Define the work environment and deliverables
+        </p>
+      </div>
+
       {/* AI bubble */}
       <div style={{
         padding: '14px 18px',
@@ -250,7 +272,7 @@ export default function StepEnvironment() {
         <div style={{ marginBottom: 20 }}>
           {[
             { label: 'Role', value: selectedRole.name || role.title },
-            { label: 'Task', value: `${task.code} ${task.name}` },
+            { label: 'Task', value: task.name },
             { label: 'Job', value: role.title },
           ].map((row) => (
             <div key={row.label} style={{

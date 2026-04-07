@@ -33,8 +33,7 @@ export default function StepTask() {
   var handleSelect = function (t) {
     updateTask({
       id: t.id,
-      code: t.code,
-      name: t.name,
+      name: stripCodePrefix(t.name),
       categoryCode: t.categoryCode,
       categoryName: t.categoryName,
       aiDoes: t.aiDoes,
@@ -73,7 +72,7 @@ export default function StepTask() {
         key={t.id}
         onClick={function () { handleSelect(t); }}
         style={{
-          padding: '14px 16px', borderRadius: 12,
+          padding: '18px 20px', borderRadius: 12,
           border: selected ? '1.5px solid var(--gold)' : '1px solid var(--border-default)',
           backgroundColor: '#fff', cursor: 'pointer', textAlign: 'left',
           transition: 'box-shadow 0.15s ease, border-color 0.15s ease',
@@ -82,11 +81,11 @@ export default function StepTask() {
         onMouseEnter={function (e) { e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.06)'; }}
         onMouseLeave={function (e) { e.currentTarget.style.boxShadow = 'none'; }}
       >
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown)', fontWeight: 500 }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown)', fontWeight: 600 }}>
           {stripCodePrefix(t.name)}
         </div>
         <div style={{
-          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginTop: 10,
+          display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10, marginTop: 12,
         }}>
           {[
             { label: 'AI DOES', text: t.aiDoes },
@@ -96,14 +95,14 @@ export default function StepTask() {
             return (
               <div key={col.label}>
                 <div style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 8, color: 'var(--brown-light)',
-                  textTransform: 'uppercase', marginBottom: 3,
+                  fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-light)',
+                  textTransform: 'uppercase', marginBottom: 4,
                 }}>
                   {col.label}
                 </div>
                 <div style={{
-                  fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)',
-                  lineHeight: 1.4,
+                  fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)',
+                  lineHeight: 1.5,
                 }}>
                   {col.text}
                 </div>

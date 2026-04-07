@@ -96,7 +96,7 @@ export default function LivePreview() {
         <Row label="Industry" value={cluster.name} />
         <Row label="Pathway" value={pathway.name} />
         <Row label="Role" value={selectedRole.name} />
-        <Row label="Task" value={task.code ? `${task.code}` : ''} />
+        <Row label="Task" value={task.name || ''} />
       </Section>
 
       {/* Context */}
