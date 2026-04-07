@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
+import { TAXONOMY } from '@/lib/constants';
 import { Search } from 'lucide-react';
 
 function stripCodePrefix(name) {
@@ -19,6 +20,20 @@ export default function StepTask() {
 
   var hasJD = !!role.jd;
   var taskCategories = selectedRole.taskCategories || [];
+
+  // If no task categories from pathway selection (existing role flow), gather all from taxonomy
+  if (taskCategories.length === 0) {
+    Object.values(TAXONOMY).forEach(function (cluster) {
+      (cluster.pathways || []).forEach(function (pw) {
+        (pw.roles || []).forEach(function (r) {
+          (r.taskCategories || []).forEach(function (cat) {
+            taskCategories = taskCategories.concat([cat]);
+          });
+        });
+      });
+    });
+  }
+
   var allTasks = taskCategories.flatMap(function (cat) {
     return (cat.tasks || []).map(function (t) {
       return { ...t, categoryCode: cat.code, categoryName: cat.name, categoryId: cat.id };
@@ -40,7 +55,7 @@ export default function StepTask() {
       humanDoes: t.humanDoes,
       produces: t.produces,
     });
-    completeStep(3);
+    completeStep(1);
   };
 
   var isSelected = function (t) {

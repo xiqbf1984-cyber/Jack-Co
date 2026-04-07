@@ -78,7 +78,7 @@ export default function StepContext() {
       prediction: selectedPrediction,
       predictionSource: selectedPrediction ? 'ai' : 'manual',
     });
-    completeStep(4);
+    completeStep(2);
   };
 
   const canContinue = description.trim().length > 10;

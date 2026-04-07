@@ -7,51 +7,40 @@ import { ArrowLeft } from 'lucide-react';
 import { useAssessmentStore } from '@/stores/assessment-store';
 import WizardProgress from '@/components/assessment/wizard-progress';
 import StepRole from '@/components/assessment/step-role';
-import StepCluster from '@/components/assessment/step-cluster';
-import StepPathway from '@/components/assessment/step-pathway';
 import StepTask from '@/components/assessment/step-task';
 import StepContext from '@/components/assessment/step-context';
 import StepEnvironment from '@/components/assessment/step-environment';
 import StepCandidates from '@/components/assessment/step-candidates';
 import StepReview from '@/components/assessment/step-review';
 
-// New step order: Role → Task → Problem → Environment → Candidates → Review
-// (Industry/Roles steps only show if user creates new role without existing JD)
+// 7-step flow: Role → Task → Problem → Environment → Rubrics → Candidates → Review
 var STEP_COMPONENTS = [
-  StepRole,       // 0 - Select existing role or create new
-  StepCluster,    // 1 - Industry (skipped if existing role selected)
-  StepPathway,    // 2 - Roles (skipped if existing role selected)
-  StepTask,       // 3 - Task marketplace
-  StepContext,    // 4 - Define the Problem
-  StepEnvironment,// 5 - Configure Environment
-  StepCandidates, // 6 - Add Candidates
-  StepReview,     // 7 - Review & Launch
+  StepRole,       // 0
+  StepTask,       // 1
+  StepContext,    // 2 (Problem)
+  StepEnvironment,// 3
+  null,           // 4 (Rubrics - placeholder, uses StepReview for now)
+  StepCandidates, // 5
+  StepReview,     // 6
 ];
 
 export default function CreateAssessmentPage() {
   var currentStep = useAssessmentStore(function (s) { return s.currentStep; });
   var goToStep = useAssessmentStore(function (s) { return s.goToStep; });
-  var role = useAssessmentStore(function (s) { return s.role; });
   var StepComponent = STEP_COMPONENTS[currentStep] || StepRole;
 
-  var showBack = currentStep >= 1;
+  // Rubrics placeholder — show a simple rubrics config for now
+  if (currentStep === 4 && !StepComponent) {
+    StepComponent = RubricsPlaceholder;
+  }
 
+  var showBack = currentStep >= 1;
   var [headerEl, setHeaderEl] = useState(null);
 
   useEffect(function () {
     var h = document.getElementById('assessment-header-area');
     if (h) setHeaderEl(h);
   }, []);
-
-  // Skip Industry/Roles steps if user selected an existing role
-  var handleBack = function () {
-    if (currentStep === 3 && role.parsedFrom === 'existing-role') {
-      // Jump back to Role selection, skipping Industry/Roles
-      goToStep(0);
-    } else {
-      goToStep(currentStep - 1);
-    }
-  };
 
   return (
     <>
@@ -63,8 +52,7 @@ export default function CreateAssessmentPage() {
               display: 'flex', alignItems: 'center', gap: 5, fontFamily: 'var(--font-body)',
               fontSize: 12, color: 'var(--brown-soft)', textDecoration: 'none', marginBottom: 10,
             }}>
-              <ArrowLeft size={13} />
-              Back to Assessments
+              <ArrowLeft size={13} /> Back to Assessments
             </Link>
             <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>
               Create Assessment
@@ -80,25 +68,62 @@ export default function CreateAssessmentPage() {
         headerEl
       )}
 
-      {/* Full-width centered content */}
+      {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto' }}>
         <div style={{ maxWidth: 800, margin: '0 auto', padding: '24px 32px 80px' }}>
           {showBack && (
             <button
-              onClick={handleBack}
+              onClick={function () { goToStep(currentStep - 1); }}
               style={{
                 display: 'flex', alignItems: 'center', gap: 6, fontFamily: 'var(--font-body)',
                 fontSize: 11, color: 'var(--brown-soft)', background: 'none', border: 'none',
                 cursor: 'pointer', padding: 0, marginBottom: 16,
               }}
             >
-              <ArrowLeft size={12} />
-              Back
+              <ArrowLeft size={12} /> Back
             </button>
           )}
           <StepComponent key={currentStep} />
         </div>
       </div>
     </>
+  );
+}
+
+// Simple rubrics placeholder step
+function RubricsPlaceholder() {
+  var completeStep = useAssessmentStore(function (s) { return s.completeStep; });
+  var goToStep = useAssessmentStore(function (s) { return s.goToStep; });
+
+  return (
+    <div>
+      <div style={{ marginBottom: 20 }}>
+        <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', margin: 0, marginBottom: 4 }}>
+          Evaluation Rubrics
+        </h3>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', margin: 0 }}>
+          Define how candidates will be scored on this assessment
+        </p>
+      </div>
+
+      <div style={{
+        borderRadius: 12, border: '1px solid var(--border-default)',
+        background: '#fff', padding: '32px 24px', textAlign: 'center',
+      }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 8 }}>
+          Auto-generated rubrics
+        </div>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 20, lineHeight: 1.5, maxWidth: 360, margin: '0 auto 20px' }}>
+          Rubrics will be automatically generated based on your role, task, and problem definition. You can review and customize them before launching.
+        </div>
+        <button
+          onClick={function () { completeStep(4); goToStep(5); }}
+          className="btn-primary"
+          style={{ padding: '9px 24px', fontSize: 13 }}
+        >
+          Continue to Candidates
+        </button>
+      </div>
+    </div>
   );
 }
