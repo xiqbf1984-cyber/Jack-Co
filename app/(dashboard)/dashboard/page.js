@@ -81,26 +81,30 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, width: '100%', maxWidth: 600 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, width: '100%', maxWidth: 620 }}>
             {/* Recommended: Explore Sample */}
             <div style={{
-              borderRadius: 14, border: '1px solid var(--border-default)',
-              background: '#fff', padding: '28px 24px',
+              borderRadius: 16, border: '1px solid var(--border-default)',
+              background: 'linear-gradient(145deg, #fff 0%, #faf6ef 100%)',
+              padding: '28px 24px',
               display: 'flex', flexDirection: 'column', gap: 14,
               position: 'relative', animation: 'fsu .25s ease both',
+              boxShadow: '0 2px 12px rgba(139,105,20,0.06)',
             }}>
               <span style={{
                 position: 'absolute', top: -10, left: 16,
-                padding: '2px 10px', borderRadius: 6,
-                background: 'var(--gold)', color: '#fff',
-                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
+                padding: '3px 12px', borderRadius: 6,
+                background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+                color: '#fff',
+                fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600,
+                letterSpacing: '0.03em',
               }}>Recommended</span>
               <div style={{
-                width: 36, height: 36, borderRadius: 9,
-                backgroundColor: 'rgba(139,105,20,0.08)',
+                width: 40, height: 40, borderRadius: 10,
+                background: 'linear-gradient(135deg, rgba(139,105,20,0.12), rgba(196,163,50,0.06))',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <Compass size={16} style={{ color: 'var(--gold)' }} />
+                <Compass size={18} style={{ color: 'var(--gold)' }} />
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
@@ -135,7 +139,7 @@ export default function DashboardPage() {
 
             {/* Create a Role */}
             <div style={{
-              borderRadius: 14, border: '1px solid var(--border-default)',
+              borderRadius: 16, border: '1px solid var(--border-default)',
               background: '#fff', padding: '28px 24px',
               display: 'flex', flexDirection: 'column', gap: 14,
               animation: 'fsu .25s ease 0.05s both',
