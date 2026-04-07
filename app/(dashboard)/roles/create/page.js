@@ -116,11 +116,8 @@ function getNextQuestion(coverage, extracted) {
     return 'Is this remote, hybrid, or on-site?';
   }
 
-  if (extracted.responsibilities.length < 2) {
-    return 'Any specific projects or outcomes this person should drive in the first 6 months?';
-  }
-
-  return null; // All covered — generate JD
+  // All essentials covered — generate JD
+  return null;
 }
 
 // ─── Generate JD ───
@@ -443,8 +440,8 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: 'hidden',
     }}>
-      {/* Header */}
-      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 5 }}>
+      {/* Header — sticky so chat scrolls beneath it */}
+      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0 }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button
             onClick={handleBack}

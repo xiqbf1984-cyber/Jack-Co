@@ -73,9 +73,9 @@ export default function CreateAssessmentPage() {
         previewEl
       )}
 
-      {/* Main scrollable step content */}
-      <div style={{ flex: 1, overflowY: 'auto', display: 'flex', justifyContent: 'center' }}>
-        <div style={{ width: '100%', maxWidth: 560, padding: '20px 24px 80px' }}>
+      {/* Main scrollable step content — full width, aligned with header padding */}
+      <div style={{ flex: 1, overflowY: 'auto' }}>
+        <div style={{ width: '100%', padding: '20px 24px 80px' }}>
           {showBack && (
             <button
               onClick={function () { goToStep(currentStep - 1); }}
