@@ -176,22 +176,28 @@ export default function CommandPalette({ open, onClose }) {
           transition: 'left 0.2s ease',
         }}
       />
-      {/* Palette — positioned in upper third of the content area */}
+      {/* Palette — centered in content area */}
       <div style={{
         position: 'fixed',
-        top: '22%',
-        left: `calc(${sidebarWidth}px + (100vw - ${sidebarWidth}px) / 2)`,
-        transform: 'translateX(-50%)',
+        top: '20%',
+        left: sidebarWidth,
+        right: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        zIndex: 101,
+        pointerEvents: 'none',
+      }}>
+      <div style={{
         width: 520,
-        maxHeight: '60vh',
+        maxHeight: '55vh',
         backgroundColor: '#fff',
         borderRadius: 14,
         boxShadow: 'var(--shadow-modal)',
-        zIndex: 101,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
         animation: 'fadeScale .15s ease both',
+        pointerEvents: 'auto',
       }}>
         {/* Search input */}
         <div style={{
@@ -306,6 +312,7 @@ export default function CommandPalette({ open, onClose }) {
           <span>↵ select</span>
           <span>esc close</span>
         </div>
+      </div>
       </div>
     </>
   );
