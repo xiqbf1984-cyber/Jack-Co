@@ -160,26 +160,26 @@ function renderCompactCard(t, isSelected, onSelect, onHover, onMouseMove, isReco
         backgroundColor: isSelected ? 'rgba(139,105,20,0.04)' : '#fff',
         cursor: 'pointer', textAlign: 'left',
         transition: 'box-shadow 0.15s ease',
-        position: 'relative',
       }}
       onMouseEnterCapture={function (e) { e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.05)'; }}
       onMouseLeaveCapture={function (e) { e.currentTarget.style.boxShadow = 'none'; }}
     >
-      {isRecommended && (
-        <span style={{
-          position: 'absolute', top: 6, right: 8,
-          fontFamily: 'var(--font-mono)', fontSize: 8, fontWeight: 600,
-          color: 'var(--gold)', backgroundColor: 'rgba(139,105,20,0.08)',
-          padding: '2px 6px', borderRadius: 4, textTransform: 'uppercase',
-          letterSpacing: '0.04em',
-        }}>Recommended</span>
-      )}
       <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
         {stripCodePrefix(t.name)}
       </div>
       <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)', lineHeight: 1.4 }}>
         {t.produces}
       </div>
+      {isRecommended && (
+        <div style={{ marginTop: 6 }}>
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 8, fontWeight: 600,
+            color: 'var(--gold)', backgroundColor: 'rgba(139,105,20,0.08)',
+            padding: '2px 6px', borderRadius: 4, textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+          }}>Recommended</span>
+        </div>
+      )}
     </button>
   );
 }
