@@ -4,29 +4,35 @@ import Link from 'next/link';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
-export default function RecentCandidatesList() {
+export default function RecentCandidatesList({ hideHeader = false }) {
   const candidates = useAppStore((s) => s.candidates);
   const display = candidates.slice(0, 4);
-  const showFade = candidates.length >= 4;
+  const showFade = candidates.length > 4;
+
+  if (candidates.length === 0) return null;
 
   return (
     <div>
-      {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-        <h3 style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 16,
-          fontWeight: 700,
-          color: 'var(--brown)',
-        }}>Recent Candidates</h3>
-        <Link href="/candidates" style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 11,
-          color: 'var(--gold)',
-          textDecoration: 'none',
-          cursor: 'pointer',
-        }}>View all →</Link>
-      </div>
+      {!hideHeader && (
+        <>
+          {/* Title row */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <h3 style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 16,
+              fontWeight: 700,
+              color: 'var(--brown)',
+            }}>Recent Candidates</h3>
+            <Link href="/candidates" style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 11,
+              color: 'var(--gold)',
+              textDecoration: 'none',
+              cursor: 'pointer',
+            }}>View all →</Link>
+          </div>
+        </>
+      )}
 
       {/* List */}
       <div style={{ position: 'relative' }}>
@@ -95,17 +101,16 @@ export default function RecentCandidatesList() {
           })}
         </div>
 
-        {/* Fade overlay */}
-        {showFade && (
-          <div style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 50,
-            background: 'linear-gradient(transparent, var(--cream))',
-            pointerEvents: 'none',
-          }} />
+        {/* See all link */}
+        {candidates.length > 4 && (
+          <Link href="/candidates" style={{
+            display: 'flex', alignItems: 'center', gap: 4,
+            padding: '12px 16px',
+            fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--gold)',
+            textDecoration: 'none',
+          }}>
+            See all {candidates.length} candidates ›
+          </Link>
         )}
       </div>
     </div>

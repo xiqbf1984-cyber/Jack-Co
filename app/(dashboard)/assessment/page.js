@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search, MoreVertical } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -14,38 +14,6 @@ var TABS = [
   { id: 'active', label: 'Active' },
   { id: 'archived', label: 'Archived' },
 ];
-
-function AssessmentActions({ id }) {
-  var [open, setOpen] = useState(false);
-  var ref = useRef(null);
-  useEffect(function () {
-    function handleClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
-    document.addEventListener('mousedown', handleClick);
-    return function () { document.removeEventListener('mousedown', handleClick); };
-  }, []);
-
-  return (
-    <div ref={ref} style={{ position: 'relative' }}>
-      <button onClick={function (e) { e.preventDefault(); e.stopPropagation(); setOpen(!open); }}
-        style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'var(--brown-light)', borderRadius: 4 }}>
-        <MoreVertical size={16} />
-      </button>
-      {open && (
-        <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 140, backgroundColor: '#fff', borderRadius: 8, border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-dropdown)', zIndex: 20, overflow: 'hidden', animation: 'fsd 0.12s ease both' }}>
-          <Link href={'/assessment/' + id} style={{ display: 'block', padding: '8px 12px', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', textDecoration: 'none' }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>View Details</Link>
-          <button style={{ width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', cursor: 'pointer', textAlign: 'left' }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>Duplicate</button>
-          <button style={{ width: '100%', padding: '8px 12px', border: 'none', background: 'transparent', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--red)', cursor: 'pointer', textAlign: 'left' }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(192,57,43,0.05)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>Archive</button>
-        </div>
-      )}
-    </div>
-  );
-}
 
 function timeAgo(dateStr) {
   if (!dateStr) return '';
@@ -95,7 +63,9 @@ export default function AssessmentsPage() {
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
           <input type="text" value={search} onChange={function (e) { setSearch(e.target.value); }}
             placeholder="Search assessments..."
-            style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, border: '1px solid var(--border-default)', background: '#fff', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', outline: 'none', boxSizing: 'border-box' }} />
+            style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, border: '1px solid var(--border-default)', background: '#fff', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.15s ease' }}
+            onFocus={function (e) { e.currentTarget.style.borderColor = 'var(--brown-light)'; }}
+            onBlur={function (e) { e.currentTarget.style.borderColor = 'var(--border-default)'; }} />
         </div>
         <div style={{ display: 'flex', borderRadius: 8, border: '1px solid var(--border-default)', overflow: 'hidden', background: '#fff' }}>
           {TABS.map(function (tab) {
@@ -138,7 +108,6 @@ export default function AssessmentsPage() {
                     <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: statusColor }} />
                     <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown)' }}>{statusInfo.label}</span>
                   </div>
-                  <AssessmentActions id={assessment.id} />
                 </div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>{assessment.name}</div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>

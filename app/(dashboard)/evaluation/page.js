@@ -222,11 +222,41 @@ export default function EvaluationPage() {
       })}
 
       {allResults.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <BarChart3 size={32} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
-            No evaluations yet. Results will appear as candidates complete assessments.
-          </p>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '64px 24px',
+          borderRadius: 14,
+          border: '1px solid var(--border-default)',
+          background: '#fff',
+          boxShadow: 'var(--shadow-card)',
+        }}>
+          <div style={{
+            width: 56,
+            height: 56,
+            borderRadius: 16,
+            background: 'linear-gradient(135deg, rgba(139,105,20,0.08), rgba(196,163,50,0.12))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 16,
+          }}>
+            <BarChart3 size={24} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 15,
+            fontWeight: 600,
+            color: 'var(--brown)',
+            marginBottom: 4,
+          }}>No evaluations yet</p>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+          }}>Results will appear here as candidates complete their assessments</p>
         </div>
       )}
     </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
-import { Search, Users, MoreHorizontal, CirclePlus, Settings2, X } from 'lucide-react';
+import { Search, Users, MoreHorizontal, CirclePlus, X } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -255,7 +255,7 @@ export default function CandidatesPage() {
   const openModal = useAppStore((s) => s.openAddCandidateModal);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState([]);
-  const [viewMode, setViewMode] = useState('table');
+
 
   const filtered = useMemo(() => {
     let list = candidates;
@@ -289,24 +289,9 @@ export default function CandidatesPage() {
             marginTop: 4,
           }}>Manage your candidate pool and track their progress</p>
         </div>
-        <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          <button onClick={openModal} className="btn-primary" style={{ padding: '8px 16px', fontSize: 12 }}>
-            Add Candidate
-          </button>
-          <button
-            onClick={() => setViewMode(viewMode === 'table' ? 'card' : 'table')}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 5,
-              padding: '8px 12px', borderRadius: 8,
-              border: '1px solid var(--border-default)', background: '#fff',
-              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-              cursor: 'pointer',
-            }}
-          >
-            <Settings2 size={13} />
-            View
-          </button>
-        </div>
+        <button onClick={openModal} className="btn-primary" style={{ padding: '8px 16px', fontSize: 12 }}>
+          Add Candidate
+        </button>
       </div>
 
       {/* Search + Filter bar */}
@@ -523,14 +508,51 @@ export default function CandidatesPage() {
           </div>
         </div>
       ) : (
-        <div style={{ textAlign: 'center', padding: '60px 0' }}>
-          <Users size={32} style={{ color: 'var(--brown-light)', marginBottom: 12 }} />
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
-            {search || statusFilter.length > 0 ? 'No candidates match your filters' : 'No candidates yet'}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '64px 24px',
+          borderRadius: 14,
+          border: '1px solid var(--border-default)',
+          background: '#fff',
+          boxShadow: 'var(--shadow-card)',
+        }}>
+          <div style={{
+            width: 56,
+            height: 56,
+            borderRadius: 16,
+            background: 'linear-gradient(135deg, rgba(139,105,20,0.08), rgba(196,163,50,0.12))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 16,
+          }}>
+            <Users size={24} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 15,
+            fontWeight: 600,
+            color: 'var(--brown)',
+            marginBottom: 4,
+          }}>
+            {search || statusFilter.length > 0 ? 'No matches found' : 'No candidates yet'}
+          </p>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+            marginBottom: 20,
+          }}>
+            {search || statusFilter.length > 0
+              ? 'Try adjusting your search or filters'
+              : 'Add your first candidate to get started'}
           </p>
           {!search && statusFilter.length === 0 && (
-            <button onClick={openModal} className="btn-primary" style={{ marginTop: 16, padding: '8px 18px', fontSize: 12 }}>
-              Add your first candidate
+            <button onClick={openModal} className="btn-primary" style={{ padding: '8px 18px', fontSize: 12 }}>
+              Add Candidate
             </button>
           )}
         </div>

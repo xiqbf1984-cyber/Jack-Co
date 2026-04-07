@@ -14,6 +14,7 @@ export async function POST(req) {
       const email = email_addresses?.[0]?.email_address || '';
       const name = [first_name, last_name].filter(Boolean).join(' ') || 'User';
 
+      // Upsert into existing users table (matches existing schema)
       const { error } = await supabase
         .from('users')
         .upsert(
@@ -30,21 +31,6 @@ export async function POST(req) {
       if (error) {
         console.error('Clerk webhook upsert error:', error);
         return new Response('Database error', { status: 500 });
-      }
-
-      // Create default company for new users
-      if (type === 'user.created') {
-        const { data: userData } = await supabase
-          .from('users')
-          .select('id')
-          .eq('clerk_id', clerkId)
-          .single();
-
-        if (userData) {
-          await supabase
-            .from('companies')
-            .insert({ user_id: userData.id });
-        }
       }
     }
 
