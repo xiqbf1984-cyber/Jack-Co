@@ -227,13 +227,13 @@ export default function StepEnvironment() {
               >
                 {d.text}
               </span>
-              <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, color: 'var(--brown-light)', marginTop: 2 }}>
+              <button onClick={function () { setDoc(function (prev) { return { ...prev, deliverables: prev.deliverables.filter(function (_, j) { return j !== i; }) }; }); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, color: 'var(--brown-light)', marginTop: 2 }}>
                 <Trash2 size={12} />
               </button>
             </div>
           );
         })}
-        <button style={{
+        <button onClick={function () { setDoc(function (prev) { return { ...prev, deliverables: prev.deliverables.concat([{ id: 'new-' + Date.now(), text: 'New deliverable' }]) }; }); }} style={{
           display: 'flex', alignItems: 'center', gap: 4, marginTop: 8,
           fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--gold)',
           background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0',
@@ -273,7 +273,7 @@ export default function StepEnvironment() {
                   {r.description}
                 </div>
               </div>
-              <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, color: 'var(--brown-light)' }}>
+              <button onClick={function () { setDoc(function (prev) { return { ...prev, resources: prev.resources.filter(function (x) { return x.id !== r.id; }) }; }); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, color: 'var(--brown-light)' }}>
                 <Trash2 size={12} />
               </button>
             </div>
@@ -317,7 +317,7 @@ export default function StepEnvironment() {
           </>
         )}
 
-        <button style={{
+        <button onClick={function () { setDoc(function (prev) { return { ...prev, resources: prev.resources.concat([{ id: 'new-' + Date.now(), name: 'New Resource', type: 'PDF', description: 'Description' }]) }; }); }} style={{
           display: 'flex', alignItems: 'center', gap: 4, marginTop: 12,
           fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--gold)',
           background: 'none', border: 'none', cursor: 'pointer', padding: '4px 0',

@@ -269,7 +269,10 @@ export default function DashboardPage() {
               <div style={{ display: 'flex', alignItems: 'center' }}>
                 {candCount > 0 ? (
                   <>
-                    {(a.candIds || []).slice(0, 3).map((id, ci) => (
+                    {(a.candIds || []).slice(0, 3).map((id, ci) => {
+                      const cand = candidates.find(c => c.id === id);
+                      const initials = cand?.name ? cand.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2) : '?';
+                      return (
                       <div key={id} style={{
                         width: 22, height: 22, borderRadius: '50%',
                         backgroundColor: ['#6366f1', '#8b5cf6', '#10b981', '#f59e0b'][ci % 4],
@@ -278,10 +281,11 @@ export default function DashboardPage() {
                         zIndex: 3 - ci, flexShrink: 0,
                       }}>
                         <span style={{ fontFamily: 'var(--font-body)', fontSize: 7, fontWeight: 600, color: '#fff' }}>
-                          {String(id).slice(0, 2).toUpperCase()}
+                          {initials}
                         </span>
                       </div>
-                    ))}
+                      );
+                    })}
                     {candCount > 3 && (
                       <div style={{
                         width: 22, height: 22, borderRadius: '50%',
