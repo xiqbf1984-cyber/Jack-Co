@@ -5,8 +5,10 @@ import { useState, useCallback, useRef, useEffect } from 'react';
 export default function RoleCreateLayout({ children }) {
   var [rightPanelVisible, setRightPanelVisible] = useState(false);
   var [splitRatio, setSplitRatio] = useState(0.42);
+  var [headerHeight, setHeaderHeight] = useState(0);
   var isDragging = useRef(false);
   var containerRef = useRef(null);
+  var leftPanelRef = useRef(null);
 
   var handleMouseDown = useCallback(function (e) {
     e.preventDefault();
@@ -49,6 +51,36 @@ export default function RoleCreateLayout({ children }) {
     return function () { window.removeEventListener('jd-panel-toggle', handleToggle); };
   }, []);
 
+  // Measure the header height inside the left panel so the right panel can align below it
+  useEffect(function () {
+    if (!rightPanelVisible || !leftPanelRef.current) return;
+    function measure() {
+      var panel = leftPanelRef.current;
+      if (!panel) return;
+      // The header is the first child (flexShrink: 0) inside the page's column flex
+      var pageRoot = panel.firstElementChild;
+      if (!pageRoot) return;
+      var header = pageRoot.firstElementChild;
+      if (header) {
+        setHeaderHeight(header.offsetHeight);
+      }
+    }
+    measure();
+    // Re-measure on resize
+    window.addEventListener('resize', measure);
+    // Use a short interval initially to catch late renders
+    var attempts = 0;
+    var timer = setInterval(function () {
+      measure();
+      attempts++;
+      if (attempts > 10) clearInterval(timer);
+    }, 200);
+    return function () {
+      window.removeEventListener('resize', measure);
+      clearInterval(timer);
+    };
+  }, [rightPanelVisible]);
+
   return (
     <div
       ref={containerRef}
@@ -63,6 +95,7 @@ export default function RoleCreateLayout({ children }) {
     >
       {/* Left panel – chat */}
       <div
+        ref={leftPanelRef}
         style={{
           flex: rightPanelVisible ? 'none' : '1',
           width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
@@ -116,6 +149,7 @@ export default function RoleCreateLayout({ children }) {
             minWidth: 380,
             overflow: 'hidden',
             animation: 'canvasIn 0.35s ease-out',
+            paddingTop: headerHeight > 0 ? headerHeight : undefined,
           }}
         />
       )}

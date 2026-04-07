@@ -1,6 +1,8 @@
 'use client';
 
 import { useRef, useEffect } from 'react';
+import { useAppStore } from '@/stores/app-store';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import { X, HelpCircle, BookOpen, MessageCircle, Lightbulb, Keyboard, ExternalLink } from 'lucide-react';
 
 const SHORTCUTS = [
@@ -21,6 +23,8 @@ const FAQ = [
 ];
 
 export default function HelpPanel({ open, onClose }) {
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = sidebarCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
   const ref = useRef(null);
 
   useEffect(() => {
@@ -44,10 +48,11 @@ export default function HelpPanel({ open, onClose }) {
       ref={ref}
       style={{
         position: 'fixed',
-        right: 16,
-        top: 16,
+        left: sidebarWidth + 8,
+        bottom: 60,
         width: 380,
-        maxHeight: '80vh',
+        maxHeight: '70vh',
+        transition: 'left 0.2s ease',
         backgroundColor: '#fff',
         borderRadius: 14,
         boxShadow: 'var(--shadow-modal)',

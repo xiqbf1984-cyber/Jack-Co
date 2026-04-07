@@ -411,23 +411,6 @@ export default function RoleCreatePage() {
     setShowSuccessModal(true);
   }
 
-  function handleSaveForLater() {
-    if (!jdContent.trim()) return;
-    var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
-    addRole({
-      title: title,
-      dept: inferDepartment(extractedData || {}, allText),
-      salary: extractedData?.salary || 'TBD',
-      status: 'draft',
-      roleRef: matchedRole,
-      jd: jdContent,
-      sharableLink: sharableLink,
-    });
-    addNotification({ type: 'role', title: 'Draft saved', message: title + ' saved as draft' });
-    setSavedRoleTitle(title);
-    setShowSuccessModal(true);
-  }
-
   function handleCreateAnother() {
     setShowSuccessModal(false);
     setStage(0);
@@ -524,7 +507,6 @@ export default function RoleCreatePage() {
               content={jdContent}
               onChange={setJDContent}
               onSave={handleSaveRole}
-              onSaveForLater={handleSaveForLater}
               matchedRoleName={matchedRole ? matchedRole.title : null}
               matchScore={matchScore}
               sharableLink={sharableLink}

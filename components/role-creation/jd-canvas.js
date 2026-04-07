@@ -4,7 +4,7 @@ import { useMemo, useState, useCallback, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Save, Download, Link2, Check, X, Bold, Italic, List, Heading, Bookmark, Pencil, Eye } from 'lucide-react';
+import { Save, Download, Link2, Check, X, Bold, Italic, List, Heading, Pencil, Eye } from 'lucide-react';
 
 function CopyLinkModal({ link, onClose }) {
   var [copied, setCopied] = useState(false);
@@ -168,7 +168,6 @@ export default function JDCanvas({
   content = '',
   onChange,
   onSave,
-  onSaveForLater,
   matchedRoleName,
   matchScore,
   sharableLink,
@@ -458,29 +457,6 @@ export default function JDCanvas({
             >
               <Link2 size={13} />
               Share
-            </button>
-          )}
-
-          {/* Save for later */}
-          {onSaveForLater && (
-            <button
-              type="button"
-              onClick={onSaveForLater}
-              disabled={isEmpty}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                padding: '7px 12px', borderRadius: 8,
-                border: '1px solid var(--border-default)',
-                background: 'transparent',
-                color: isEmpty ? 'var(--brown-light)' : 'var(--brown-soft)',
-                fontFamily: 'var(--font-body)', fontSize: 11,
-                cursor: isEmpty ? 'default' : 'pointer',
-                transition: 'all 0.15s ease',
-                opacity: isEmpty ? 0.5 : 1,
-              }}
-            >
-              <Bookmark size={13} />
-              Save for Later
             </button>
           )}
 

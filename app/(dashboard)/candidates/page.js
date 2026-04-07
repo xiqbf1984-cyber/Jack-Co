@@ -191,7 +191,7 @@ function CandidateActions({ candId, candName }) {
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
           padding: 4, color: 'var(--brown-light)',
@@ -346,6 +346,7 @@ function InviteModal({ candName, assessments, onClose, onInvite }) {
 export default function CandidatesPage() {
   const candidates = useAppStore((s) => s.candidates);
   const openModal = useAppStore((s) => s.openAddCandidateModal);
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState([]);
 
@@ -487,7 +488,7 @@ export default function CandidatesPage() {
         <div style={{
           borderRadius: 12,
           border: '1px solid var(--border-default)',
-          overflow: 'hidden',
+          overflow: 'visible',
           background: '#fff',
         }}>
           {/* Header row */}
@@ -500,14 +501,7 @@ export default function CandidatesPage() {
             borderBottom: '1px solid var(--border-default)',
             backgroundColor: 'var(--cream)',
           }}>
-            {[
-              { label: 'Candidate', sortable: true },
-              { label: 'Status', sortable: true },
-              { label: 'Timezone', sortable: false },
-              { label: 'Assessments', sortable: true },
-              { label: 'Last Active', sortable: true },
-              { label: '', sortable: false },
-            ].map((h, i) => (
+            {['Candidate', 'Status', 'Timezone', 'Assessments', 'Last Active', ''].map((label, i) => (
               <span key={i} style={{
                 fontFamily: 'var(--font-body)',
                 fontSize: 11,
@@ -516,12 +510,8 @@ export default function CandidatesPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 3,
-                cursor: h.sortable ? 'pointer' : 'default',
               }}>
-                {h.label}
-                {h.sortable && h.label && (
-                  <span style={{ fontSize: 9, opacity: 0.5 }}>&#8597;</span>
-                )}
+                {label}
               </span>
             ))}
           </div>
@@ -536,6 +526,7 @@ export default function CandidatesPage() {
             return (
               <div
                 key={cand.id}
+                onClick={() => router.push('/candidates/' + cand.id)}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '2fr 1fr 1fr 0.8fr 1fr 40px',
@@ -544,6 +535,7 @@ export default function CandidatesPage() {
                   alignItems: 'center',
                   borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
                   transition: 'background-color 0.1s ease',
+                  cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
