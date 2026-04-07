@@ -23,7 +23,7 @@ export default function HeroSection({ tab }) {
       textAlign: 'center', padding: '0 24px',
       paddingTop: 60,
     }}>
-      <h1 style={{ marginBottom: 16 }}>
+      <h1 style={{ marginBottom: 0 }}>
         {alreadyPlayed ? (
           <span className="text-display-hero">Who do you want to hire?</span>
         ) : (
@@ -35,23 +35,16 @@ export default function HeroSection({ tab }) {
         )}
       </h1>
 
-      {/* Subtitle + cards fade in without shifting position */}
       <div style={{
         opacity: done ? 1 : 0,
-        transition: 'opacity 0.4s ease',
+        transition: 'opacity 0.5s ease',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        width: '100%',
       }}>
-        <p
-          className="text-body-lg"
-          style={{ color: 'var(--brown-muted)', maxWidth: 440 }}
-        >
-          Evaluate real work, not resumes.
-        </p>
-
         {isCompanies && (
-          <div style={{ marginTop: 48 }}>
+          <div style={{ marginTop: 48, width: '100%', maxWidth: 680 }}>
             <HireTypeCards />
           </div>
         )}
