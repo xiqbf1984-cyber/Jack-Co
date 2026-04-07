@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useUser } from '@clerk/nextjs';
 import { useAppStore } from '@/stores/app-store';
 import { COLLAPSED_WIDTH, EXPANDED_WIDTH } from '@/components/layout/sidebar';
-import { Briefcase, Users, ClipboardCheck, Compass, X, CheckCircle } from 'lucide-react';
+import { X, CheckCircle } from 'lucide-react';
 
 export default function ExploreSampleModal({ open, onClose }) {
   const { user } = useUser();
@@ -101,15 +101,6 @@ export default function ExploreSampleModal({ open, onClose }) {
 
           {/* Content */}
           <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: 48, height: 48, borderRadius: 12,
-              background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 16px',
-            }}>
-              <Compass size={22} style={{ color: '#fff' }} />
-            </div>
-
             <h2 style={{
               fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600,
               color: 'var(--brown)', marginBottom: 6,
@@ -131,23 +122,19 @@ export default function ExploreSampleModal({ open, onClose }) {
             padding: '14px 16px', marginBottom: 24,
           }}>
             {[
-              { icon: Briefcase, text: '3 hiring roles with job descriptions' },
-              { icon: Users, text: 'Candidates including ' + userEmail },
-              { icon: ClipboardCheck, text: 'Ready to create your first assessment' },
-            ].map((item) => {
-              const Icon = item.icon;
-              return (
-                <div key={item.text} style={{
-                  display: 'flex', alignItems: 'center', gap: 10,
-                  padding: '7px 0',
-                }}>
-                  <Icon size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
-                    {item.text}
-                  </span>
-                </div>
-              );
-            })}
+              '3 hiring roles with job descriptions',
+              'Candidates including ' + userEmail,
+              'Ready to create your first assessment',
+            ].map((text) => (
+              <div key={text} style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '7px 0',
+              }}>
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
+                  {text}
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* Action */}
@@ -164,7 +151,7 @@ export default function ExploreSampleModal({ open, onClose }) {
             {loading ? (
               <><CheckCircle size={14} /> Setting up...</>
             ) : (
-              <><Compass size={14} /> Explore Sample Case</>
+              'Explore Sample Case'
             )}
           </button>
         </div>
