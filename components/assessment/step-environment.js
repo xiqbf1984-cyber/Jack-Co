@@ -225,7 +225,7 @@ export default function StepEnvironment() {
           lineHeight: 1.5,
           margin: 0,
         }}>
-          Define the work environment and deliverables
+          Review and customize the assessment scenario
         </p>
       </div>
 

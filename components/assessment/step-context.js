@@ -89,7 +89,7 @@ export default function StepContext() {
             Define the Problem
           </h2>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', margin: 0 }}>
-            Describe the business problem candidates should solve.
+            We'll predict the real business challenges your company may face.
           </p>
         </div>
         {!predictions && (
@@ -107,7 +107,7 @@ export default function StepContext() {
       </div>
 
       {/* Left-Right split: input on left, predictions on right */}
-      <div style={{ display: 'grid', gridTemplateColumns: predictions ? '2fr 3fr' : '1fr', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gap: 24 }}>
         {/* Left: textarea + upload */}
         <div>
           <textarea
@@ -163,9 +163,10 @@ export default function StepContext() {
           )}
         </div>
 
-        {/* Right: AI predictions (only shown after generation) */}
-        {predictions && (
-          <div>
+        {/* Right: AI predictions */}
+        <div style={{ minHeight: 200 }}>
+          {predictions ? (
+            <div>
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
               AI Predictions
             </div>
@@ -233,7 +234,22 @@ export default function StepContext() {
               })}
             </div>
           </div>
-        )}
+          ) : (
+          <div style={{
+            borderRadius: 12, border: '1px dashed var(--border-default)',
+            padding: '32px 20px', textAlign: 'center',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
+          }}>
+            <Wand2 size={20} style={{ color: 'var(--brown-light)' }} />
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500, color: 'var(--brown-soft)' }}>
+              AI Predictions
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-light)', maxWidth: 220, lineHeight: 1.5 }}>
+              Click "Generate predictions" to see what challenges your company may face.
+            </div>
+          </div>
+          )}
+        </div>
       </div>
     </div>
   );
