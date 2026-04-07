@@ -453,7 +453,7 @@ export default function RoleCreatePage() {
       {/* Header — sticky, spans full layout width in split mode */}
       <div id="role-create-header" style={{
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
-        width: isCompact ? '200%' : '100%',
+        width: isCompact ? 'var(--full-width-pct, 200%)' : '100%',
       }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button

@@ -97,6 +97,7 @@ export default function RoleCreateLayout({ children }) {
           display: 'flex', flexDirection: 'column',
           overflow: rightPanelVisible ? 'visible' : 'hidden',
           zIndex: 4,
+          '--full-width-pct': rightPanelVisible ? ((100 / splitRatio) + '%') : '100%',
         }}>
           {typeof children === 'object' && children}
         </div>
