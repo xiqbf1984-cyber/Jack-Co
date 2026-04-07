@@ -17,6 +17,7 @@ var STAGES = [
   { key: 'jd-ready', label: 'JD Ready' },
 ];
 
+
 // ─── Smart Input Analysis ───
 function analyzeInput(text) {
   var lower = text.toLowerCase();
@@ -235,18 +236,21 @@ function inferDepartment(extracted, allText) {
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div style={{ display: 'flex', gap: 6 }}>
+    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
         var isDone = i < currentStage;
-        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
-        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
+        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-light)';
+        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--brown)' : 'var(--brown-light)';
+        var labelWeight = isCurrent ? 600 : 400;
         return (
           <div key={stage.key} style={{ flex: 1 }}>
-            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
+            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.3s ease' }} />
             <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: 9, marginTop: 5,
-              textAlign: 'center', color: labelColor, userSelect: 'none',
+              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: labelWeight,
+              marginTop: 6, textAlign: 'center', color: labelColor,
+              userSelect: 'none', transition: 'color 0.2s ease',
+              letterSpacing: '0.01em',
             }}>{stage.label}</div>
           </div>
         );

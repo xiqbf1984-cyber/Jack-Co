@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/stores/app-store';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import {
   Search, LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
   Settings, HelpCircle, Plus, FileText, UserPlus, ArrowRight,
@@ -35,6 +36,8 @@ export default function CommandPalette({ open, onClose }) {
   const candidates = useAppStore((s) => s.candidates);
   const assessments = useAppStore((s) => s.assessments);
   const openAddCandidateModal = useAppStore((s) => s.openAddCandidateModal);
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = sidebarCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
 
   // Reset on open
   useEffect(() => {
@@ -157,34 +160,44 @@ export default function CommandPalette({ open, onClose }) {
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop — offset past sidebar so sidebar stays clear */}
       <div
         onClick={onClose}
         style={{
           position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.3)',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: sidebarWidth,
+          backgroundColor: 'rgba(0,0,0,0.25)',
           zIndex: 100,
-          backdropFilter: 'blur(2px)',
+          backdropFilter: 'blur(3px)',
           animation: 'fi .1s ease both',
+          transition: 'left 0.2s ease',
         }}
       />
-      {/* Palette */}
+      {/* Palette — centered in content area */}
       <div style={{
         position: 'fixed',
-        top: '18%',
-        left: '50%',
-        transform: 'translateX(-50%)',
+        top: '20%',
+        left: sidebarWidth,
+        right: 0,
+        display: 'flex',
+        justifyContent: 'center',
+        zIndex: 101,
+        pointerEvents: 'none',
+      }}>
+      <div style={{
         width: 520,
-        maxHeight: '60vh',
+        maxHeight: '55vh',
         backgroundColor: '#fff',
         borderRadius: 14,
         boxShadow: 'var(--shadow-modal)',
-        zIndex: 101,
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
         animation: 'fadeScale .15s ease both',
+        pointerEvents: 'auto',
       }}>
         {/* Search input */}
         <div style={{
@@ -299,6 +312,7 @@ export default function CommandPalette({ open, onClose }) {
           <span>↵ select</span>
           <span>esc close</span>
         </div>
+      </div>
       </div>
     </>
   );

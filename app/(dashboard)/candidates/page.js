@@ -274,27 +274,23 @@ export default function CandidatesPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 22,
-            fontWeight: 600,
-            color: 'var(--brown)',
-          }}>Candidates</h1>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 13,
-            color: 'var(--brown-soft)',
-            marginTop: 4,
-          }}>Manage your candidate pool and track their progress</p>
-        </div>
-        <button onClick={openModal} className="btn-primary" style={{ padding: '8px 16px', fontSize: 12 }}>
-          Add Candidate
-        </button>
+      <div>
+        <h1 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 22,
+          fontWeight: 600,
+          color: 'var(--brown)',
+        }}>Candidates</h1>
+        <p style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 13,
+          color: 'var(--brown-soft)',
+          marginTop: 4,
+        }}>Manage your candidate pool and track their progress</p>
       </div>
 
       {/* Search + Filter bar */}
+      {candidates.length > 0 && (
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ position: 'relative', width: 240 }}>
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
@@ -339,10 +335,62 @@ export default function CandidatesPage() {
             Clear filters
           </button>
         )}
+        <div style={{ marginLeft: 'auto' }}>
+          <button onClick={openModal} className="btn-primary" style={{ padding: '8px 16px', fontSize: 12 }}>
+            Add Candidate
+          </button>
+        </div>
       </div>
+      )}
+
+      {/* Empty state */}
+      {candidates.length === 0 && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 420,
+          borderRadius: 14,
+          border: '1px solid var(--border-default)',
+          background: '#fff',
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 12,
+            backgroundColor: 'rgba(139,105,20,0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 16,
+          }}>
+            <Users size={20} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 16,
+            fontWeight: 600,
+            color: 'var(--brown)',
+            marginBottom: 4,
+          }}>No candidates yet</p>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+            maxWidth: 320,
+            textAlign: 'center',
+            lineHeight: 1.5,
+            marginBottom: 20,
+          }}>Add candidates to your pool to start tracking their progress and evaluating their performance.</p>
+          <button onClick={openModal} className="btn-primary" style={{ padding: '9px 22px', fontSize: 13 }}>
+            Add Candidate
+          </button>
+        </div>
+      )}
 
       {/* Table */}
-      {filtered.length > 0 ? (
+      {candidates.length > 0 && filtered.length > 0 ? (
         <div style={{
           borderRadius: 12,
           border: '1px solid var(--border-default)',
@@ -507,56 +555,13 @@ export default function CandidatesPage() {
             }}>Viewing <strong style={{ color: 'var(--brown)' }}>{filtered.length}</strong> rows</span>
           </div>
         </div>
-      ) : (
-        <div style={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '64px 24px',
-          borderRadius: 14,
-          border: '1px solid var(--border-default)',
-          background: '#fff',
-          boxShadow: 'var(--shadow-card)',
-        }}>
-          <div style={{
-            width: 56,
-            height: 56,
-            borderRadius: 16,
-            background: 'linear-gradient(135deg, rgba(139,105,20,0.08), rgba(196,163,50,0.12))',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: 16,
-          }}>
-            <Users size={24} style={{ color: 'var(--gold)' }} />
-          </div>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 15,
-            fontWeight: 600,
-            color: 'var(--brown)',
-            marginBottom: 4,
-          }}>
-            {search || statusFilter.length > 0 ? 'No matches found' : 'No candidates yet'}
+      ) : candidates.length > 0 && filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '80px 0' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
+            No candidates match your filters
           </p>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 13,
-            color: 'var(--brown-soft)',
-            marginBottom: 20,
-          }}>
-            {search || statusFilter.length > 0
-              ? 'Try adjusting your search or filters'
-              : 'Add your first candidate to get started'}
-          </p>
-          {!search && statusFilter.length === 0 && (
-            <button onClick={openModal} className="btn-primary" style={{ padding: '8px 18px', fontSize: 12 }}>
-              Add Candidate
-            </button>
-          )}
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

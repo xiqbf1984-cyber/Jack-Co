@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, Briefcase } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -47,17 +47,13 @@ export default function AssessmentsPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Assessments</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your candidate assessments</p>
-        </div>
-        <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
-          Create Assessment
-        </Link>
+      <div>
+        <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Assessments</h1>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your candidate assessments</p>
       </div>
 
       {/* Search + Tab filters */}
+      {assessments.length > 0 && (
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ position: 'relative', width: 220 }}>
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
@@ -77,21 +73,68 @@ export default function AssessmentsPage() {
             );
           })}
         </div>
+        <div style={{ marginLeft: 'auto' }}>
+          <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
+            Create Assessment
+          </Link>
+        </div>
       </div>
+      )}
+
+      {/* Empty state */}
+      {assessments.length === 0 && (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 420,
+          borderRadius: 14,
+          border: '1px solid var(--border-default)',
+          background: '#fff',
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 12,
+            backgroundColor: 'rgba(139,105,20,0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 16,
+          }}>
+            <Briefcase size={20} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 16,
+            fontWeight: 600,
+            color: 'var(--brown)',
+            marginBottom: 4,
+          }}>No assessments yet</p>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+            maxWidth: 320,
+            textAlign: 'center',
+            lineHeight: 1.5,
+            marginBottom: 20,
+          }}>Create your first assessment to start evaluating candidates with AI-powered work samples.</p>
+          <Link href="/assessment/create" className="btn-primary" style={{ padding: '9px 22px', fontSize: 13, textDecoration: 'none' }}>
+            Create Assessment
+          </Link>
+        </div>
+      )}
 
       {/* Assessment cards */}
-      {filtered.length === 0 ? (
+      {assessments.length > 0 && filtered.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '80px 0' }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
-            {search || activeTab !== 'all' ? 'No assessments match your filters' : 'No assessments yet'}
+            No assessments match your filters
           </p>
-          {!search && activeTab === 'all' && (
-            <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', marginTop: 16, padding: '8px 18px', fontSize: 12, textDecoration: 'none' }}>
-              Create your first assessment
-            </Link>
-          )}
         </div>
-      ) : (
+      ) : assessments.length > 0 && filtered.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map(function (assessment, i) {
             var statusInfo = STATUS_MAP[assessment.status] || STATUS_MAP.draft;
@@ -133,7 +176,7 @@ export default function AssessmentsPage() {
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>Viewing <strong style={{ color: 'var(--brown)' }}>{filtered.length}</strong> rows</span>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

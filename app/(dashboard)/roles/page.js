@@ -282,17 +282,13 @@ export default function RolesPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Roles</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your hiring roles and job descriptions</p>
-        </div>
-        <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
-          <Plus size={13} /> Add Role
-        </Link>
+      <div>
+        <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Roles</h1>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your hiring roles and job descriptions</p>
       </div>
 
       {/* Search + Filter */}
+      {roles.length > 0 && (
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ position: 'relative', width: 240 }}>
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
@@ -308,10 +304,30 @@ export default function RolesPage() {
             <X size={10} /> Clear
           </button>
         )}
+        <div style={{ marginLeft: 'auto' }}>
+          <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
+            <Plus size={13} /> Add Role
+          </Link>
+        </div>
       </div>
+      )}
+
+      {/* Empty state */}
+      {roles.length === 0 && (
+        <div style={{ borderRadius: 14, border: '1px solid var(--border-default)', background: '#fff', minHeight: 420, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ width: 48, height: 48, borderRadius: 12, background: 'rgba(139,105,20,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+            <Briefcase size={20} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>No roles yet</p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', maxWidth: 300, lineHeight: 1.5, textAlign: 'center', marginBottom: 20 }}>Create your first role to start building your hiring pipeline.</p>
+          <Link href="/roles/create" className="btn-primary" style={{ padding: '9px 22px', fontSize: 13, textDecoration: 'none' }}>
+            Create Role
+          </Link>
+        </div>
+      )}
 
       {/* Table */}
-      {filtered.length > 0 ? (
+      {roles.length > 0 && filtered.length > 0 && (
         <div style={{ borderRadius: 12, border: '1px solid var(--border-default)', overflow: 'hidden', background: '#fff' }}>
           {filtered.map(function (role, i) {
             var statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
@@ -368,16 +384,12 @@ export default function RolesPage() {
             );
           })}
         </div>
-      ) : (
+      )}
+      {roles.length > 0 && filtered.length === 0 && (
         <div style={{ textAlign: 'center', padding: '80px 0' }}>
           <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
-            {search || statusFilter.length > 0 ? 'No roles match your filters' : 'No roles yet'}
+            No roles match your filters
           </p>
-          {!search && statusFilter.length === 0 && (
-            <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', marginTop: 16, padding: '8px 18px', fontSize: 12, textDecoration: 'none' }}>
-              Create your first role
-            </Link>
-          )}
         </div>
       )}
     </div>
