@@ -6,12 +6,10 @@ import Link from 'next/link';
 import { useAppStore } from '@/stores/app-store';
 import StatCards from '@/components/dashboard/stat-cards';
 import CompanyProfileCard from '@/components/dashboard/company-profile-card';
-import HiringRolesList from '@/components/dashboard/hiring-roles-list';
-import RecentCandidatesList from '@/components/dashboard/recent-candidates-list';
 import ExploreSampleModal from '@/components/dashboard/explore-sample-modal';
 import {
-  FileText, Plus, Briefcase, Users, Sparkles,
-  Play, FileBarChart,
+  FileText, Plus, Briefcase, Users, Eye,
+  ClipboardCheck, Compass,
 } from 'lucide-react';
 
 function formatTimeAgo(isoString) {
@@ -63,7 +61,6 @@ export default function DashboardPage() {
           display: 'flex', flexDirection: 'column', alignItems: 'center',
           justifyContent: 'center', minHeight: '75vh', gap: 32,
         }}>
-          {/* Hero */}
           <div style={{ textAlign: 'center' }}>
             <div style={{
               width: 56, height: 56, borderRadius: 14,
@@ -81,7 +78,6 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          {/* Two cards */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, width: '100%', maxWidth: 600 }}>
             {/* Recommended: Explore Sample */}
             <div style={{
@@ -101,21 +97,21 @@ export default function DashboardPage() {
                 backgroundColor: 'rgba(139,105,20,0.08)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
-                <Play size={16} style={{ color: 'var(--gold)' }} />
+                <Compass size={16} style={{ color: 'var(--gold)' }} />
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
                   Explore Sample Case
                 </div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.5 }}>
-                  See how NeoHuman works with pre-built sample data.
+                  Experience the full hiring workflow with sample data.
                 </div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
                 {[
-                  { icon: Briefcase, text: 'Sample roles & JDs' },
-                  { icon: Users, text: 'Example candidates' },
-                  { icon: FileBarChart, text: 'See the full workflow' },
+                  { icon: Briefcase, text: 'Pre-built roles & JDs' },
+                  { icon: Users, text: 'Sample candidates' },
+                  { icon: Eye, text: 'See the full pipeline' },
                 ].map((item) => {
                   const Icon = item.icon;
                   return (
@@ -134,7 +130,7 @@ export default function DashboardPage() {
                   padding: '9px 20px', fontSize: 12, width: '100%', marginTop: 'auto',
                 }}
               >
-                <Sparkles size={13} /> Explore Sample
+                <Compass size={13} /> Explore Sample
               </button>
             </div>
 
@@ -157,7 +153,7 @@ export default function DashboardPage() {
                   Create a Role
                 </div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.5 }}>
-                  Set up a new hiring role and generate a job description with AI.
+                  Define a position and generate a job description with AI.
                 </div>
               </div>
               <div style={{ flex: 1 }} />
@@ -172,7 +168,7 @@ export default function DashboardPage() {
                 onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.04)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.boxShadow = 'none'; }}
               >
-                <Plus size={13} /> Create Role
+                <Plus size={13} /> Create
               </Link>
             </div>
           </div>
@@ -195,7 +191,7 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* Draft Recovery Banner */}
+      {/* Draft Recovery */}
       {draft && (
         <div style={{
           background: 'rgba(139,105,20,0.08)', border: '1px solid rgba(139,105,20,0.22)',
@@ -205,8 +201,7 @@ export default function DashboardPage() {
           <FileText size={18} style={{ color: 'var(--gold)', flexShrink: 0 }} />
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', fontWeight: 600 }}>
-              You have an unfinished assessment
-              {draft.data?.currentStep != null && ` (Step ${draft.data.currentStep + 1} of 8)`}
+              You have an unfinished assessment{draft.data?.currentStep != null && ` (Step ${draft.data.currentStep + 1} of 8)`}
             </div>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)', marginTop: 2 }}>
               Last edited {formatTimeAgo(draft.savedAt)}
@@ -222,29 +217,33 @@ export default function DashboardPage() {
       {/* Stat Cards */}
       <StatCards />
 
-      {/* 3-panel grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, alignItems: 'start' }}>
-        <DashboardPanel title="Roles" count={roles.length} addLabel="Add role" addHref="/roles/create" viewAllHref="/roles">
-          {roles.slice(0, 4).map((role) => (
+      {/* Row 1: Roles (left) + Candidates (right) + Company Profile (far right) */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 0.8fr', gap: 16, alignItems: 'start' }}>
+        <DashboardPanel title="Roles" count={roles.length} addLabel="Create" addHref="/roles/create" viewAllHref="/roles">
+          {roles.length > 0 ? roles.slice(0, 3).map((role) => (
             <PanelRow key={role.id} label={role.title} sublabel={role.dept} status={role.status} />
-          ))}
+          )) : <PanelEmpty message="No roles yet" />}
         </DashboardPanel>
 
         <DashboardPanel title="Candidates" count={candidates.length} addLabel="Add" onAdd={openAddCandidateModal} viewAllHref="/candidates">
-          {candidates.slice(0, 4).map((c) => (
+          {candidates.length > 0 ? candidates.slice(0, 3).map((c) => (
             <PanelRow key={c.id} label={c.name} sublabel={c.email} status={c.status} />
-          ))}
+          )) : <PanelEmpty message="No candidates yet" />}
         </DashboardPanel>
 
-        <DashboardPanel title="Assessments" count={assessments.length} addLabel="Create" addHref="/assessment/create" viewAllHref="/assessment">
-          {assessments.slice(0, 4).map((a) => (
-            <PanelRow key={a.id} label={a.name} sublabel={a.roleTitle} status={a.status} />
-          ))}
-        </DashboardPanel>
+        <CompanyProfileCard />
       </div>
 
-      {/* Company Profile */}
-      <CompanyProfileCard />
+      {/* Row 2: Assessments — full width, richer card */}
+      <DashboardPanel title="Assessments" count={assessments.length} addLabel="Create" addHref="/assessment/create" viewAllHref="/assessment">
+        {assessments.length > 0 ? (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0 }}>
+            {assessments.slice(0, 6).map((a) => (
+              <PanelRow key={a.id} label={a.name} sublabel={a.roleTitle} status={a.status} />
+            ))}
+          </div>
+        ) : <PanelEmpty message="No assessments yet" />}
+      </DashboardPanel>
     </div>
   );
 }
@@ -313,6 +312,14 @@ function PanelRow({ label, sublabel, status }) {
           <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
         </div>
       )}
+    </div>
+  );
+}
+
+function PanelEmpty({ message }) {
+  return (
+    <div style={{ padding: '24px 16px', textAlign: 'center', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-light)' }}>
+      {message}
     </div>
   );
 }
