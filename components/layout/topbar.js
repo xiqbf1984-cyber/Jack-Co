@@ -32,18 +32,9 @@ export default function Topbar({ tab, onTabChange }) {
       }}
     >
       {/* Left - Logo */}
-      <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-        <div
-          style={{
-            width: 26, height: 26, borderRadius: 8,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-          }}
-        >
-          <span style={{ color: 'var(--btn-text)', fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-display)' }}>N</span>
-        </div>
-        <span style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 600, color: 'var(--brown)' }}>
-          NeoHuman
+      <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+        <span style={{ fontSize: 17, fontWeight: 700, fontFamily: 'var(--font-body)' }}>
+          <span style={{ color: 'var(--brown)' }}>Neo</span><span style={{ color: 'var(--gold)' }}>Human</span>
         </span>
       </Link>
 

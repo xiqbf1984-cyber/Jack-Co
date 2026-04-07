@@ -198,13 +198,13 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 0.8fr', gap: 16, alignItems: 'start' }}>
         <DashboardPanel title="Roles" count={roles.length} addLabel="Create" addHref="/roles/create" viewAllHref="/roles">
           {roles.length > 0 ? roles.slice(0, 3).map((role) => (
-            <PanelRow key={role.id} label={role.title} sublabel={role.dept} status={role.status} />
+            <PanelRow key={role.id} label={role.title} sublabel={role.dept} status={role.status} href={'/roles/' + role.id} />
           )) : <PanelEmpty message="No roles yet" />}
         </DashboardPanel>
 
         <DashboardPanel title="Candidates" count={candidates.length} addLabel="Add" onAdd={openAddCandidateModal} viewAllHref="/candidates">
           {candidates.length > 0 ? candidates.slice(0, 3).map((c) => (
-            <PanelRow key={c.id} label={c.name} sublabel={c.email} status={c.status} />
+            <PanelRow key={c.id} label={c.name} sublabel={c.email} status={c.status} href={'/candidates/' + c.id} />
           )) : <PanelEmpty message="No candidates yet" />}
         </DashboardPanel>
 
@@ -250,10 +250,11 @@ export default function DashboardPage() {
         {assessments.length > 0 ? assessments.slice(0, 5).map((a) => {
           const candCount = a.candIds?.length || 0;
           return (
-            <div key={a.id} style={{
+            <Link key={a.id} href={'/assessment/' + a.id} style={{
               display: 'grid', gridTemplateColumns: '2fr 1fr 0.8fr 0.6fr',
               padding: '10px 16px', borderBottom: '1px solid var(--border-light)',
               alignItems: 'center', transition: 'background-color 0.1s ease',
+              textDecoration: 'none', color: 'inherit', cursor: 'pointer',
             }}
               onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
               onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
@@ -304,7 +305,7 @@ export default function DashboardPage() {
                   {a.status ? a.status.charAt(0).toUpperCase() + a.status.slice(1) : ''}
                 </span>
               </div>
-            </div>
+            </Link>
           );
         }) : (
           <PanelEmpty message="No assessments yet" />
@@ -372,23 +373,27 @@ const STATUS_COLORS = {
   idle: 'var(--brown-light)', published: 'var(--accent-green)', expired: 'var(--red)', archived: 'var(--brown-light)',
 };
 
-function PanelRow({ label, sublabel, status }) {
+function PanelRow({ label, sublabel, status, href }) {
   const color = STATUS_COLORS[status] || 'var(--brown-light)';
+  const Tag = href ? Link : 'div';
+  const linkProps = href ? { href, style: { textDecoration: 'none', color: 'inherit' } } : {};
   return (
-    <div style={{ display: 'flex', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid var(--border-light)', transition: 'background-color 0.1s ease' }}
-      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
-      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</div>
-        {sublabel && <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sublabel}</div>}
-      </div>
-      {status && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-          <span style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: color }} />
-          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
+    <Tag {...linkProps}>
+      <div style={{ display: 'flex', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid var(--border-light)', transition: 'background-color 0.1s ease', cursor: href ? 'pointer' : 'default' }}
+        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</div>
+          {sublabel && <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sublabel}</div>}
         </div>
-      )}
-    </div>
+        {status && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+            <span style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: color }} />
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
+          </div>
+        )}
+      </div>
+    </Tag>
   );
 }
 

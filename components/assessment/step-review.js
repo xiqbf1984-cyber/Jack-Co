@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAssessmentStore } from '@/stores/assessment-store';
 import { useAppStore } from '@/stores/app-store';
-import { Loader2, Mail, ArrowRight } from 'lucide-react';
+import { Loader2, Mail } from 'lucide-react';
 
 // ====== SUCCESS PAGE ======
 
@@ -178,11 +178,7 @@ export default function StepReview() {
   const task = useAssessmentStore((s) => s.task);
   const role = useAssessmentStore((s) => s.role);
   const reset = useAssessmentStore((s) => s.reset);
-  const rubrics = useAssessmentStore((s) => s.rubrics);
-  const goToStep = useAssessmentStore((s) => s.goToStep);
   const addAssessment = useAppStore((s) => s.addAssessment);
-
-  const dimensions = rubrics.dimensions || [];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -238,17 +234,15 @@ export default function StepReview() {
     );
   }
 
-  const totalCriteria = dimensions.reduce((sum, d) => sum + (d.criteria || d.rubrics || []).length, 0);
-
   return (
     <div>
-      {/* AI bubble */}
+      {/* Review message */}
       <div style={{
         padding: '14px 18px',
         borderRadius: 14,
         backgroundColor: 'rgba(139,105,20,0.04)',
         border: '1px solid var(--border-light)',
-        marginBottom: 20,
+        marginBottom: 24,
       }}>
         <p style={{
           fontFamily: 'var(--font-body)',
@@ -257,78 +251,8 @@ export default function StepReview() {
           lineHeight: 1.6,
           margin: 0,
         }}>
-          Review the assessment details below and confirm when ready to send to candidates.
+          Everything is set. Confirm to send the assessment to {candidates.length} candidate{candidates.length !== 1 ? 's' : ''}.
         </p>
-      </div>
-
-      {/* Rubrics summary */}
-      <div style={{
-        backgroundColor: '#fff',
-        border: '1px solid var(--border-default)',
-        borderRadius: 14,
-        padding: '18px 20px',
-        marginBottom: 20,
-      }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          marginBottom: 12,
-        }}>
-          <div style={{
-            fontFamily: 'var(--font-mono)',
-            fontSize: 10,
-            fontWeight: 600,
-            color: 'var(--brown-muted)',
-            textTransform: 'uppercase',
-            letterSpacing: '0.04em',
-          }}>
-            Rubrics Summary
-          </div>
-          <button
-            onClick={() => goToStep(4)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--gold)',
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            }}
-          >
-            Edit Rubrics <ArrowRight size={10} />
-          </button>
-        </div>
-
-        {dimensions.length > 0 ? (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-            {dimensions.map((dim) => {
-              const count = (dim.criteria || dim.rubrics || []).length;
-              return (
-                <div key={dim.id} style={{
-                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                  padding: '8px 12px', borderRadius: 8,
-                  backgroundColor: 'var(--cream)',
-                }}>
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
-                    {dim.name}
-                  </span>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--brown-light)' }}>
-                    {count} criteria
-                  </span>
-                </div>
-              );
-            })}
-            <div style={{
-              textAlign: 'right', marginTop: 4,
-              fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--brown-muted)',
-            }}>
-              Total: {totalCriteria}
-            </div>
-          </div>
-        ) : (
-          <div style={{
-            padding: '16px', textAlign: 'center',
-            fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-light)',
-          }}>
-            No rubrics defined yet.
-          </div>
-        )}
       </div>
 
       {/* Confirm button */}
