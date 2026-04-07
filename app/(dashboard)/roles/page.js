@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Search, Briefcase, MoreVertical, CirclePlus, X, StopCircle, Copy, Lock, Archive, Trash2 } from 'lucide-react';
+import { Plus, Search, Briefcase, MoreVertical, CirclePlus, X, StopCircle, Copy, Lock, Unlock, Archive, ArchiveRestore, Trash2, Play, AlertTriangle } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -38,7 +38,11 @@ function StatusFilterDropdown({ selected, onChange }) {
         display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 14px', borderRadius: 8,
         border: '1px solid var(--border-default)', background: '#fff', fontFamily: 'var(--font-body)',
         fontSize: 12, color: selected.length > 0 ? 'var(--brown)' : 'var(--brown-soft)', cursor: 'pointer',
-      }}>
+        transition: 'border-color 0.15s ease',
+      }}
+        onMouseEnter={function (e) { e.currentTarget.style.borderColor = 'var(--border-hover)'; }}
+        onMouseLeave={function (e) { e.currentTarget.style.borderColor = 'var(--border-default)'; }}
+      >
         <CirclePlus size={13} />Status
         {selected.length > 0 && <span style={{ marginLeft: 2, padding: '0 6px', borderRadius: 10, backgroundColor: 'var(--cream)', fontSize: 10, fontWeight: 600, color: 'var(--brown)' }}>{selected.length}</span>}
       </button>
@@ -75,12 +79,53 @@ function StatusFilterDropdown({ selected, onChange }) {
   );
 }
 
-function RoleActions({ roleId }) {
+function ConfirmDialog({ message, onConfirm, onCancel }) {
+  return (
+    <>
+      <div onClick={onCancel} style={{
+        position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.25)',
+        zIndex: 100, backdropFilter: 'blur(2px)',
+      }} />
+      <div style={{
+        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 340, padding: '24px', backgroundColor: '#fff', borderRadius: 14,
+        boxShadow: 'var(--shadow-modal)', zIndex: 101, animation: 'fadeScale .15s ease both',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+          <div style={{
+            width: 32, height: 32, borderRadius: 8, backgroundColor: 'rgba(192,57,43,0.1)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <AlertTriangle size={16} style={{ color: 'var(--red)' }} />
+          </div>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)' }}>
+            Confirm Action
+          </span>
+        </div>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', lineHeight: 1.5, marginBottom: 20 }}>
+          {message}
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+          <button onClick={onCancel} className="btn-secondary" style={{ padding: '7px 16px', fontSize: 12 }}>Cancel</button>
+          <button onClick={onConfirm} style={{
+            padding: '7px 16px', fontSize: 12, fontFamily: 'var(--font-body)', fontWeight: 600,
+            border: 'none', borderRadius: 8, cursor: 'pointer',
+            backgroundColor: 'var(--red)', color: '#fff',
+          }}>Delete</button>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function RoleActions({ role }) {
   var [open, setOpen] = useState(false);
+  var [confirmDelete, setConfirmDelete] = useState(false);
   var ref = useRef(null);
   var removeRole = useAppStore(function (s) { return s.removeRole; });
   var updateRole = useAppStore(function (s) { return s.updateRole; });
   var duplicateRole = useAppStore(function (s) { return s.duplicateRole; });
+  var addNotification = useAppStore(function (s) { return s.addNotification; });
 
   useEffect(function () {
     function handleClick(e) { if (ref.current && !ref.current.contains(e.target)) setOpen(false); }
@@ -88,29 +133,96 @@ function RoleActions({ roleId }) {
     return function () { document.removeEventListener('mousedown', handleClick); };
   }, []);
 
-  var items = [
-    { icon: StopCircle, label: 'Stop Hiring', color: 'var(--brown)', action: function () { updateRole(roleId, { status: 'draft' }); } },
-    { icon: Copy, label: 'Copy Role', color: 'var(--brown)', action: function () { duplicateRole(roleId); } },
-    { icon: Lock, label: 'Make Private', color: 'var(--brown)', action: function () { /* visual only */ } },
-    { icon: Archive, label: 'Archive Role', color: 'var(--brown)', action: function () { updateRole(roleId, { status: 'archived' }); } },
-    { icon: Trash2, label: 'Delete Role', color: 'var(--red)', action: function () { removeRole(roleId); } },
-  ];
+  var isActive = role.status === 'active';
+  var isArchived = role.status === 'archived';
+  var isPrivate = role.isPrivate || false;
+
+  var items = [];
+
+  // Stop Hiring / Start Hiring
+  if (isActive) {
+    items.push({
+      icon: StopCircle, label: 'Stop Hiring', color: 'var(--brown)',
+      action: function () {
+        updateRole(role.id, { status: 'draft' });
+        addNotification({ type: 'role', title: 'Role paused', message: role.title + ' is now a draft' });
+      },
+    });
+  } else if (!isArchived) {
+    items.push({
+      icon: Play, label: 'Start Hiring', color: 'var(--accent-green)',
+      action: function () {
+        updateRole(role.id, { status: 'active' });
+        addNotification({ type: 'role', title: 'Role activated', message: role.title + ' is now active' });
+      },
+    });
+  }
+
+  // Copy Role
+  items.push({
+    icon: Copy, label: 'Copy Role', color: 'var(--brown)',
+    action: function () {
+      duplicateRole(role.id);
+      addNotification({ type: 'role', title: 'Role duplicated', message: role.title + ' (Copy) created' });
+    },
+  });
+
+  // Make Private / Make Public
+  items.push({
+    icon: isPrivate ? Unlock : Lock,
+    label: isPrivate ? 'Make Public' : 'Make Private',
+    color: 'var(--brown)',
+    action: function () {
+      updateRole(role.id, { isPrivate: !isPrivate });
+      addNotification({ type: 'role', title: isPrivate ? 'Role is now public' : 'Role is now private', message: role.title });
+    },
+  });
+
+  // Archive / Unarchive
+  if (isArchived) {
+    items.push({
+      icon: ArchiveRestore, label: 'Unarchive', color: 'var(--brown)',
+      action: function () {
+        updateRole(role.id, { status: 'draft' });
+        addNotification({ type: 'role', title: 'Role unarchived', message: role.title + ' restored as draft' });
+      },
+    });
+  } else {
+    items.push({
+      icon: Archive, label: 'Archive Role', color: 'var(--brown)',
+      action: function () {
+        updateRole(role.id, { status: 'archived' });
+        addNotification({ type: 'role', title: 'Role archived', message: role.title + ' has been archived' });
+      },
+    });
+  }
+
+  // Delete
+  items.push({
+    icon: Trash2, label: 'Delete Role', color: 'var(--red)',
+    action: function () { setConfirmDelete(true); },
+  });
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button onClick={function (e) { e.stopPropagation(); setOpen(!open); }} style={{
         background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'var(--brown-light)', borderRadius: 4,
-      }}>
+        transition: 'color 0.1s ease',
+      }}
+        onMouseEnter={function (e) { e.currentTarget.style.color = 'var(--brown)'; }}
+        onMouseLeave={function (e) { e.currentTarget.style.color = 'var(--brown-light)'; }}
+      >
         <MoreVertical size={16} />
       </button>
       {open && (
-        <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 160, backgroundColor: '#fff', borderRadius: 10, border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-dropdown)', zIndex: 20, overflow: 'hidden', animation: 'fsd 0.12s ease both' }}>
+        <div style={{ position: 'absolute', right: 0, top: '100%', marginTop: 4, width: 170, backgroundColor: '#fff', borderRadius: 10, border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-dropdown)', zIndex: 20, overflow: 'hidden', animation: 'fsd 0.12s ease both' }}>
           {items.map(function (item) {
             var Icon = item.icon;
             return (
               <button key={item.label} onClick={function () { item.action(); setOpen(false); }} style={{
                 display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '9px 14px', border: 'none', background: 'transparent',
                 fontFamily: 'var(--font-body)', fontSize: 12, color: item.color, cursor: 'pointer', textAlign: 'left',
+                transition: 'background-color 0.1s ease',
               }}
                 onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = item.color === 'var(--red)' ? 'rgba(192,57,43,0.05)' : 'var(--cream)'; }}
                 onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>
@@ -120,6 +232,18 @@ function RoleActions({ roleId }) {
             );
           })}
         </div>
+      )}
+      {confirmDelete && (
+        <ConfirmDialog
+          message={'Are you sure you want to delete "' + role.title + '"? This action cannot be undone.'}
+          onConfirm={function () {
+            removeRole(role.id);
+            addNotification({ type: 'role', title: 'Role deleted', message: role.title + ' has been removed' });
+            setConfirmDelete(false);
+            setOpen(false);
+          }}
+          onCancel={function () { setConfirmDelete(false); }}
+        />
       )}
     </div>
   );
@@ -173,7 +297,10 @@ export default function RolesPage() {
         <div style={{ position: 'relative', width: 240 }}>
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
           <input type="text" value={search} onChange={function (e) { setSearch(e.target.value); }} placeholder="Search roles..."
-            style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, border: '1px solid var(--border-default)', background: '#fff', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', outline: 'none', boxSizing: 'border-box' }} />
+            style={{ width: '100%', paddingLeft: 32, paddingRight: 12, paddingTop: 8, paddingBottom: 8, borderRadius: 8, border: '1px solid var(--border-default)', background: '#fff', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', outline: 'none', boxSizing: 'border-box', transition: 'border-color 0.15s ease' }}
+            onFocus={function (e) { e.target.style.borderColor = 'var(--border-hover)'; }}
+            onBlur={function (e) { e.target.style.borderColor = 'var(--border-default)'; }}
+          />
         </div>
         <StatusFilterDropdown selected={statusFilter} onChange={setStatusFilter} />
         {statusFilter.length > 0 && (
@@ -194,16 +321,19 @@ export default function RolesPage() {
               <div key={role.id} style={{
                 display: 'flex', alignItems: 'center', padding: '14px 20px',
                 borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
-                transition: 'background-color 0.1s ease',
+                transition: 'background-color 0.15s ease',
               }}
-                onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
+                onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.015)'; }}
                 onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>
                 {/* Icon */}
                 <Briefcase size={14} style={{ color: 'var(--brown-light)', flexShrink: 0, marginRight: 14 }} />
 
-                {/* Title */}
-                <div style={{ flex: 1, minWidth: 0 }}>
+                {/* Title + private indicator */}
+                <div style={{ flex: 1, minWidth: 0, display: 'flex', alignItems: 'center', gap: 6 }}>
                   <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500, color: 'var(--brown)' }}>{role.title}</div>
+                  {role.isPrivate && (
+                    <Lock size={11} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
+                  )}
                 </div>
 
                 {/* Owner badge */}
@@ -233,7 +363,7 @@ export default function RolesPage() {
                 </span>
 
                 {/* Actions */}
-                <RoleActions roleId={role.id} />
+                <RoleActions role={role} />
               </div>
             );
           })}

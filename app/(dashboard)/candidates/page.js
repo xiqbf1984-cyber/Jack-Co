@@ -332,7 +332,10 @@ export default function CandidatesPage() {
               color: 'var(--brown)',
               outline: 'none',
               boxSizing: 'border-box',
+              transition: 'border-color 0.15s ease',
             }}
+            onFocus={(e) => { e.target.style.borderColor = 'var(--border-hover)'; }}
+            onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; }}
           />
         </div>
         <StatusFilterDropdown selectedStatuses={statusFilter} onChange={setStatusFilter} />

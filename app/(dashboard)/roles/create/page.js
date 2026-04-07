@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
-import { ROLE_CREATION_QUESTIONS, AI_ACKS, matchRole } from '@/lib/constants';
+import { matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
 import ChatPanel from '@/components/role-creation/chat-panel';
 import JDCanvas from '@/components/role-creation/jd-canvas';
@@ -17,97 +17,236 @@ var STAGES = [
   { key: 'jd-ready', label: 'JD Ready' },
 ];
 
-function inferDepartment(answers) {
-  var text = ((answers.title || '') + ' ' + (answers.own || '')).toLowerCase();
+// ─── Smart Input Analysis ───
+function analyzeInput(text) {
+  var lower = text.toLowerCase();
+  var extracted = {
+    title: null,
+    responsibilities: [],
+    skills: [],
+    experience: null,
+    location: null,
+    workMode: null,
+    fullPart: null,
+    salary: null,
+  };
+
+  // Title detection
+  var titlePatterns = [
+    /(?:looking for|hiring|need|want)\s+(?:a|an)\s+(.+?)(?:\.|,|to|who|with|$)/i,
+    /^(.+?)\s*[-–—]\s*/i,
+    /(?:role|position|job)(?:\s+(?:of|for|as))?\s*:?\s*(.+?)(?:\.|,|$)/i,
+  ];
+  for (var i = 0; i < titlePatterns.length; i++) {
+    var m = text.match(titlePatterns[i]);
+    if (m) {
+      extracted.title = m[1].trim().replace(/^(a|an)\s+/i, '');
+      break;
+    }
+  }
+
+  // Skills detection
+  var skillKeywords = ['python', 'javascript', 'typescript', 'react', 'node', 'pytorch', 'tensorflow',
+    'aws', 'gcp', 'azure', 'docker', 'kubernetes', 'sql', 'nosql', 'java', 'go', 'rust',
+    'machine learning', 'deep learning', 'nlp', 'computer vision', 'data science',
+    'system design', 'distributed systems', 'ci/cd', 'mlops', 'devops',
+    'rlhf', 'llm', 'transformer', 'fine-tuning', 'prompt engineering'];
+  skillKeywords.forEach(function (skill) {
+    if (lower.includes(skill)) extracted.skills.push(skill);
+  });
+
+  // Experience level
+  if (/(\d+)\+?\s*(?:years?|yrs?)/i.test(text)) {
+    var years = parseInt(RegExp.$1);
+    if (years <= 2) extracted.experience = 'Junior (1-2 years)';
+    else if (years <= 4) extracted.experience = 'Mid-level (3-4 years)';
+    else if (years <= 7) extracted.experience = 'Senior (5-7 years)';
+    else extracted.experience = 'Staff+ (8+ years)';
+  } else if (/\b(junior|entry)\b/i.test(text)) extracted.experience = 'Junior (1-2 years)';
+  else if (/\b(senior|sr\.?)\b/i.test(text)) extracted.experience = 'Senior (5-7 years)';
+  else if (/\b(staff|principal|lead)\b/i.test(text)) extracted.experience = 'Staff+ (8+ years)';
+
+  // Location
+  var locationMatch = text.match(/(?:based in|located in|location:\s*|in\s+)([A-Z][a-zA-Z\s,]+)/);
+  if (locationMatch) extracted.location = locationMatch[1].trim();
+
+  // Work mode
+  if (/\bremote\b/i.test(text)) extracted.workMode = 'Remote';
+  else if (/\bhybrid\b/i.test(text)) extracted.workMode = 'Hybrid';
+  else if (/\b(on-?site|in-?office|in office)\b/i.test(text)) extracted.workMode = 'On-site';
+
+  // Salary
+  var salaryMatch = text.match(/\$[\d,]+k?\s*[-–—]\s*\$?[\d,]+k?/i);
+  if (salaryMatch) extracted.salary = salaryMatch[0];
+
+  // Responsibilities (look for bullet-like patterns)
+  var respPatterns = text.match(/(?:will|should|responsible for|own|lead|build|design|develop|manage|drive)\s+[^.!?]+/gi);
+  if (respPatterns) extracted.responsibilities = respPatterns.slice(0, 5);
+
+  // Coverage assessment
+  var coverage = {
+    roleDefinition: !!(extracted.title || extracted.responsibilities.length > 0),
+    candidateProfile: !!(extracted.skills.length > 0 || extracted.experience),
+    basicConditions: !!(extracted.location || extracted.workMode),
+  };
+
+  return { extracted: extracted, coverage: coverage };
+}
+
+// ─── Generate Follow-up Questions ───
+function generateFollowUp(coverage, extracted, roundNumber) {
+  var questions = [];
+
+  if (!coverage.roleDefinition) {
+    questions.push('What will this person mainly be responsible for? What problems will they solve or what outcomes will they drive?');
+  }
+
+  if (!coverage.candidateProfile) {
+    if (extracted.skills.length === 0) {
+      questions.push('What are the must-have technical skills or domain expertise?');
+    }
+    if (!extracted.experience) {
+      questions.push('What experience level are you targeting?');
+    }
+  }
+
+  if (!coverage.basicConditions) {
+    questions.push('What\'s the work arrangement — remote, hybrid, or on-site? And full-time or part-time?');
+  }
+
+  // If we have the basics but could use more detail (round 1 only)
+  if (questions.length === 0 && roundNumber === 0) {
+    var extras = [];
+    if (extracted.responsibilities.length < 3) {
+      extras.push('Could you share 2-3 more specific responsibilities or projects this person would take on?');
+    }
+    if (!extracted.salary) {
+      // Don't ask about salary per the prompt rules - mark as [TBD]
+    }
+    if (extras.length > 0) questions = extras;
+  }
+
+  return questions;
+}
+
+// ─── Generate JD ───
+function generateJD(extracted, matched, company, allText) {
+  var title = extracted.title || (matched ? matched.title : 'Open Role');
+  var companyName = company?.name && company.name !== 'Your Company' ? company.name : null;
+  var companyDesc = company?.description || '';
+  var location = extracted.location || '[Location TBD]';
+  var workMode = extracted.workMode || '';
+  var experience = extracted.experience || '';
+
+  var lines = [];
+
+  // Header
+  if (companyName) {
+    lines.push('# ' + title);
+    lines.push('**' + companyName + '** | ' + location + (workMode ? ' | ' + workMode : ''));
+  } else {
+    lines.push('# ' + title);
+    lines.push(location + (workMode ? ' | ' + workMode : ''));
+  }
+
+  // About Company
+  if (companyName && companyDesc) {
+    lines.push('', '## About ' + companyName, '', companyDesc);
+  } else if (companyName) {
+    lines.push('', '## About ' + companyName, '', '[Company description to be added]');
+  }
+
+  // About the Role
+  lines.push('', '## About the Role', '');
+  var roleContext = extracted.responsibilities.length > 0
+    ? 'This role focuses on ' + extracted.responsibilities[0].toLowerCase().replace(/^(will|should)\s+/i, '') + '.'
+    : 'We are looking for a ' + title + ' to join our team.';
+  lines.push('We are hiring a **' + title + '** to strengthen our team. ' + roleContext + ' This is a ' + (experience || 'mid-to-senior level') + ' position reporting to the engineering/product leadership.');
+
+  // What You'll Do
+  lines.push('', '## What You\'ll Do', '');
+  if (extracted.responsibilities.length > 0) {
+    extracted.responsibilities.forEach(function (r) {
+      var clean = r.replace(/^(will|should|responsible for)\s+/i, '').trim();
+      clean = clean.charAt(0).toUpperCase() + clean.slice(1);
+      lines.push('- ' + clean);
+    });
+  }
+  // Add generic responsibilities based on role type
+  var generic = [
+    'Collaborate cross-functionally with engineering, product, and design teams',
+    'Contribute to technical direction and architectural decisions',
+    'Participate in code reviews and maintain high engineering standards',
+    'Mentor team members and foster a culture of continuous learning',
+  ];
+  var needed = Math.max(0, 5 - extracted.responsibilities.length);
+  for (var g = 0; g < needed && g < generic.length; g++) {
+    lines.push('- ' + generic[g]);
+  }
+
+  // What We're Looking For
+  lines.push('', '## What We\'re Looking For', '', '### Must Have', '');
+  if (extracted.skills.length > 0) {
+    lines.push('- Strong proficiency in ' + extracted.skills.slice(0, 3).join(', '));
+    if (extracted.skills.length > 3) {
+      lines.push('- Experience with ' + extracted.skills.slice(3).join(', '));
+    }
+  }
+  if (extracted.experience) {
+    lines.push('- ' + extracted.experience + ' of relevant professional experience');
+  }
+  lines.push('- Strong problem-solving skills and ability to work independently');
+  lines.push('- Excellent written and verbal communication skills');
+
+  lines.push('', '### Nice to Have', '');
+  lines.push('- Experience in a fast-paced startup or scale-up environment');
+  lines.push('- Open-source contributions or technical blog posts');
+  lines.push('- Familiarity with modern AI/ML tools and methodologies');
+
+  // Compensation
+  if (extracted.salary) {
+    lines.push('', '## Compensation', '', 'Salary range: ' + extracted.salary + ' (depending on experience)');
+  }
+
+  // Why Join Us
+  if (companyName) {
+    lines.push('', '## Why Join ' + companyName, '');
+    lines.push('- Work on cutting-edge technology with a talented team');
+    lines.push('- Competitive compensation and equity package');
+    lines.push('- Professional development budget and growth opportunities');
+    lines.push('- Collaborative and inclusive team culture');
+  }
+
+  return lines.join('\n');
+}
+
+function inferDepartment(extracted, allText) {
+  var text = ((extracted.title || '') + ' ' + allText).toLowerCase();
   if (text.includes('research') || text.includes('scientist')) return 'Research';
   if (text.includes('platform') || text.includes('infrastructure') || text.includes('devops')) return 'Infrastructure';
   if (text.includes('product') || text.includes('manager')) return 'Product';
   if (text.includes('data')) return 'Data';
   if (text.includes('nlp') || text.includes('language')) return 'NLP';
+  if (text.includes('frontend') || text.includes('front-end')) return 'Frontend';
+  if (text.includes('backend') || text.includes('back-end')) return 'Backend';
+  if (text.includes('fullstack') || text.includes('full-stack') || text.includes('full stack')) return 'Engineering';
   return 'Engineering';
-}
-
-function generateJD(answers, matched, company) {
-  var title = answers.title || (matched ? matched.title : 'Open Role');
-  var oneLiner = matched ? matched.oneLiner : '';
-  var companyName = company?.name || 'Your Company';
-  var companyDesc = company?.description || 'We are a forward-thinking technology company building cutting-edge AI solutions.';
-
-  var ownership = answers.own || 'core AI/ML initiatives';
-  var skills = answers.skills || 'Strong technical background';
-  var level = answers.level || 'Relevant experience level';
-  var extras = answers.extra || 'Competitive compensation';
-
-  var lines = [
-    '# ' + title,
-  ];
-
-  if (oneLiner) {
-    lines.push('', '*' + oneLiner + '*');
-  }
-
-  lines.push(
-    '',
-    '## About ' + companyName,
-    '',
-    companyDesc,
-    '',
-    '---',
-    '',
-    '## Role Overview',
-    '',
-    'We are looking for a **' + title + '** to join our team. This role will focus on ' + ownership.toLowerCase() + ', working cross-functionally to deliver impactful results.',
-    '',
-    '## Key Responsibilities',
-    '',
-    '- **Own and lead** ' + ownership,
-    '- Collaborate cross-functionally with engineering, product, and design teams',
-    '- Drive technical direction and best practices in ' + (answers.skills || 'relevant domain'),
-    '- Contribute to strategic planning and roadmap development',
-    '- Mentor team members and foster a culture of continuous improvement',
-    '',
-    '## Required Qualifications',
-    '',
-    '- **Skills:** ' + skills,
-    '- **Experience:** ' + level,
-    '- Experience with modern AI/ML tools, frameworks, and methodologies',
-    '- Strong communication skills and ability to work in cross-functional teams',
-    '- Track record of delivering production-quality work',
-    '',
-    '## What We Offer',
-    '',
-    '- ' + extras,
-    '- Opportunity to work on cutting-edge technology',
-    '- Collaborative and inclusive team environment',
-    '- Professional development and growth opportunities',
-  );
-
-  return lines.join('\n');
 }
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div style={{
-      display: 'flex',
-      gap: 6,
-    }}>
+    <div style={{ display: 'flex', gap: 6 }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
         var isDone = i < currentStage;
-
         var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
         var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
-
         return (
           <div key={stage.key} style={{ flex: 1 }}>
             <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
             <div style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 9,
-              marginTop: 5,
-              textAlign: 'center',
-              color: labelColor,
-              userSelect: 'none',
+              fontFamily: 'var(--font-mono)', fontSize: 9, marginTop: 5,
+              textAlign: 'center', color: labelColor, userSelect: 'none',
             }}>{stage.label}</div>
           </div>
         );
@@ -120,12 +259,11 @@ export default function RoleCreatePage() {
   var router = useRouter();
   var addRole = useAppStore(function (s) { return s.addRole; });
   var company = useAppStore(function (s) { return s.company; });
+  var addNotification = useAppStore(function (s) { return s.addNotification; });
 
   var [stage, setStage] = useState(0);
   var [messages, setMessages] = useState([]);
-  var [questionIndex, setQuestionIndex] = useState(0);
   var [isTyping, setIsTyping] = useState(false);
-  var [answers, setAnswers] = useState({});
   var [jdContent, setJDContent] = useState('');
   var [jdPortalTarget, setJDPortalTarget] = useState(null);
   var [description, setDescription] = useState('');
@@ -134,13 +272,15 @@ export default function RoleCreatePage() {
   var [showSuccessModal, setShowSuccessModal] = useState(false);
   var [savedRoleTitle, setSavedRoleTitle] = useState('');
   var [bodyEl, setBodyEl] = useState(null);
+  var [allText, setAllText] = useState('');
+  var [extractedData, setExtractedData] = useState(null);
+  var [followUpRound, setFollowUpRound] = useState(0);
+  var [jdGenerated, setJdGenerated] = useState(false);
   var [sharableLink] = useState(function () {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
 
-  useEffect(function () {
-    setBodyEl(document.body);
-  }, []);
+  useEffect(function () { setBodyEl(document.body); }, []);
 
   useEffect(function () {
     if (stage < 2) return;
@@ -155,14 +295,10 @@ export default function RoleCreatePage() {
 
   useEffect(function () {
     if (stage >= 2) {
-      window.dispatchEvent(
-        new CustomEvent('jd-panel-toggle', { detail: { visible: true } })
-      );
+      window.dispatchEvent(new CustomEvent('jd-panel-toggle', { detail: { visible: true } }));
     }
     return function () {
-      window.dispatchEvent(
-        new CustomEvent('jd-panel-toggle', { detail: { visible: false } })
-      );
+      window.dispatchEvent(new CustomEvent('jd-panel-toggle', { detail: { visible: false } }));
     };
   }, [stage]);
 
@@ -175,7 +311,7 @@ export default function RoleCreatePage() {
 
   var addAIMessage = useCallback(function (content) {
     setIsTyping(true);
-    var delay = 700 + Math.random() * 500;
+    var delay = 600 + Math.random() * 400;
     setTimeout(function () {
       setMessages(function (prev) { return prev.concat([{ role: 'ai', content: content }]); });
       setIsTyping(false);
@@ -184,81 +320,106 @@ export default function RoleCreatePage() {
 
   function handleSearchSubmit(text) {
     setDescription(text);
+    setAllText(text);
+
+    // Step 1: Analyze input
+    var analysis = analyzeInput(text);
+    setExtractedData(analysis.extracted);
+
     setStage(1);
-    doMatch(text);
+    var matchResult = doMatch(text);
     setMessages([{ role: 'user', content: text }]);
-    addAIMessage(
-      'Great, I\'ll help you build this role. ' + ROLE_CREATION_QUESTIONS[0].question
-    );
+
+    // If matched role found, enrich extracted data
+    if (matchResult.role) {
+      analysis.extracted.title = analysis.extracted.title || matchResult.role.title;
+    }
+
+    // Step 2: Check what's missing and ask in one batch
+    var followUps = generateFollowUp(analysis.coverage, analysis.extracted, 0);
+
+    if (followUps.length === 0) {
+      // Enough info to generate JD immediately
+      var jd = generateJD(analysis.extracted, matchResult.role, company, text);
+      setJDContent(jd);
+      setJdGenerated(true);
+      setStage(2);
+      addAIMessage('Great description! I have enough to generate your JD. Here it is on the right — feel free to edit it directly, or tell me if you want any changes.');
+    } else {
+      // Ask missing questions in one batch
+      var intro = 'Got it — I\'m already picturing this role. Just a few things I\'d love to clarify so the JD is spot-on:\n\n';
+      var numbered = followUps.map(function (q, i) { return (i + 1) + '. ' + q; }).join('\n');
+      addAIMessage(intro + numbered);
+    }
   }
 
   function handleChatSend(text) {
-    var currentQ = ROLE_CREATION_QUESTIONS[questionIndex];
-    var newAnswers = Object.assign({}, answers, { [currentQ.id]: text });
-    setAnswers(newAnswers);
-
     setMessages(function (prev) { return prev.concat([{ role: 'user', content: text }]); });
 
-    var allText = description + ' ' + Object.values(newAnswers).join(' ');
-    var matchResult = doMatch(allText);
+    var newAllText = allText + ' ' + text;
+    setAllText(newAllText);
 
-    var nextIndex = questionIndex + 1;
+    // Re-analyze with new info
+    var analysis = analyzeInput(newAllText);
+    setExtractedData(analysis.extracted);
 
-    if (nextIndex >= 3 && stage < 2) {
-      setStage(2);
-      var jd = generateJD(newAnswers, matchResult.role, company);
-      setJDContent(jd);
+    var matchResult = doMatch(newAllText);
+    if (matchResult.role) {
+      analysis.extracted.title = analysis.extracted.title || matchResult.role.title;
     }
 
-    setQuestionIndex(nextIndex);
+    var round = followUpRound + 1;
+    setFollowUpRound(round);
 
-    if (nextIndex < ROLE_CREATION_QUESTIONS.length) {
-      if (nextIndex >= 3) {
-        var updatedJD = generateJD(newAnswers, matchResult.role, company);
-        setJDContent(updatedJD);
-      }
+    // Check if we need more info (max 2 rounds)
+    var followUps = round < 2 ? generateFollowUp(analysis.coverage, analysis.extracted, round) : [];
 
-      var ack = AI_ACKS[Math.floor(Math.random() * AI_ACKS.length)];
-      addAIMessage(ack + ' ' + ROLE_CREATION_QUESTIONS[nextIndex].question);
+    if (followUps.length === 0 || round >= 2) {
+      // Generate JD
+      var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+      setJDContent(jd);
+      setJdGenerated(true);
+
+      if (stage < 2) setStage(2);
+
+      addAIMessage('Your JD is ready! You can edit it directly on the right panel. Let me know if you\'d like to adjust anything — I can tweak the tone, add sections, or restructure it.');
     } else {
-      var finalJD = generateJD(newAnswers, matchResult.role, company);
-      setJDContent(finalJD);
-      addAIMessage(
-        'Your JD is ready! Feel free to edit it on the right. Click Save Role when you\'re done.'
-      );
+      // One more round of follow-ups
+      var questions = followUps.map(function (q, i) { return (i + 1) + '. ' + q; }).join('\n');
+      addAIMessage('Thanks! Almost there — just need a bit more context:\n\n' + questions);
     }
   }
 
   function handleSaveRole() {
     if (!jdContent.trim()) return;
-
-    var title = answers.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
+    var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
     addRole({
       title: title,
-      dept: inferDepartment(answers),
-      salary: answers.extra || 'TBD',
+      dept: inferDepartment(extractedData || {}, allText),
+      salary: extractedData?.salary || 'TBD',
       status: 'active',
       roleRef: matchedRole,
       jd: jdContent,
       sharableLink: sharableLink,
     });
+    addNotification({ type: 'role', title: 'Role created', message: title + ' is now active' });
     setSavedRoleTitle(title);
     setShowSuccessModal(true);
   }
 
   function handleSaveForLater() {
     if (!jdContent.trim()) return;
-
-    var title = answers.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
+    var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
     addRole({
       title: title,
-      dept: inferDepartment(answers),
-      salary: answers.extra || 'TBD',
+      dept: inferDepartment(extractedData || {}, allText),
+      salary: extractedData?.salary || 'TBD',
       status: 'draft',
       roleRef: matchedRole,
       jd: jdContent,
       sharableLink: sharableLink,
     });
+    addNotification({ type: 'role', title: 'Draft saved', message: title + ' saved as draft' });
     setSavedRoleTitle(title);
     setShowSuccessModal(true);
   }
@@ -267,13 +428,15 @@ export default function RoleCreatePage() {
     setShowSuccessModal(false);
     setStage(0);
     setMessages([]);
-    setQuestionIndex(0);
-    setAnswers({});
     setJDContent('');
     setDescription('');
     setMatchedRole(null);
     setMatchScore(0);
     setJDPortalTarget(null);
+    setAllText('');
+    setExtractedData(null);
+    setFollowUpRound(0);
+    setJdGenerated(false);
   }
 
   function handleGoToAssessment() {
@@ -284,8 +447,6 @@ export default function RoleCreatePage() {
     setShowSuccessModal(false);
   }
 
-  var currentQuestion = ROLE_CREATION_QUESTIONS[questionIndex] || null;
-  var allQuestionsAnswered = questionIndex >= ROLE_CREATION_QUESTIONS.length;
   var isCompact = stage >= 2;
 
   function handleBack() {
@@ -294,8 +455,9 @@ export default function RoleCreatePage() {
     } else if (stage === 1 && messages.length <= 2) {
       setStage(0);
       setMessages([]);
-      setQuestionIndex(0);
-      setAnswers({});
+      setAllText('');
+      setExtractedData(null);
+      setFollowUpRound(0);
     } else {
       router.push('/roles');
     }
@@ -308,30 +470,22 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: 'hidden',
     }}>
-      {/* Header: Back + Title + Subtitle + Progress */}
+      {/* Header */}
       <div style={{ flexShrink: 0, backgroundColor: 'var(--cream)' }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button
             onClick={handleBack}
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 5,
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              color: 'var(--brown-soft)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 0,
-              marginBottom: 10,
+              display: 'flex', alignItems: 'center', gap: 5,
+              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 10,
             }}
           >
             <ArrowLeft size={13} />
             Back to Roles
           </button>
           <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>Create a Role</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Define a new role and generate a job description</p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Describe your role and we'll generate a professional job description</p>
         </div>
         <div style={{ padding: '0 24px 8px', borderBottom: '1px solid var(--border-default)' }}>
           <ProgressIndicator currentStage={stage} />
@@ -348,7 +502,7 @@ export default function RoleCreatePage() {
               <ChatPanel
                 messages={messages}
                 onSend={handleChatSend}
-                currentQuestion={allQuestionsAnswered ? null : currentQuestion}
+                currentQuestion={null}
                 isTyping={isTyping}
                 compact={isCompact}
               />
@@ -357,7 +511,7 @@ export default function RoleCreatePage() {
         )}
       </div>
 
-      {/* JD Canvas rendered into the layout's right panel via portal */}
+      {/* JD Canvas */}
       {stage >= 2 &&
         jdPortalTarget &&
         createPortal(
