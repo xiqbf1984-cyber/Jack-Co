@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Upload, X, FileText, Sparkles, Loader2, Check, ArrowRight } from 'lucide-react';
+import { Upload, X, FileText, Loader2, Check, ArrowRight, Wand2 } from 'lucide-react';
 
 const MOCK_PREDICTIONS = [
   {
@@ -82,30 +82,70 @@ export default function StepContext() {
 
   return (
     <div>
-      {/* AI bubble */}
-      <div style={{
-        padding: '14px 18px',
-        borderRadius: 14,
-        backgroundColor: 'rgba(139,105,20,0.04)',
-        border: '1px solid var(--border-light)',
-        marginBottom: 20,
-      }}>
-        <p style={{
+      {/* Title + subtitle */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{
           fontFamily: 'var(--font-body)',
-          fontSize: 13,
+          fontSize: 16,
+          fontWeight: 600,
           color: 'var(--brown)',
-          lineHeight: 1.6,
-          margin: 0,
+          margin: '0 0 6px 0',
         }}>
-          What business problem should this candidate solve? Describe your challenge, upload reference files, or let me predict likely challenges based on your context.
-        </p>
+          Define the Challenge
+        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 12,
+            color: 'var(--brown-soft)',
+            lineHeight: 1.5,
+            margin: 0,
+            flex: 1,
+          }}>
+            Describe the business problem this candidate should solve. We'll help predict real-world challenges.
+          </p>
+          {!predictions && (
+            <button
+              onClick={handlePredict}
+              disabled={predicting}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                padding: '5px 12px',
+                borderRadius: 8,
+                border: '1px solid var(--border-default)',
+                backgroundColor: '#fff',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: 'var(--brown-soft)',
+                cursor: predicting ? 'default' : 'pointer',
+                whiteSpace: 'nowrap',
+                opacity: predicting ? 0.6 : 1,
+                transition: 'border-color 0.15s ease',
+              }}
+            >
+              {predicting ? (
+                <>
+                  <Loader2 size={12} className="animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Wand2 size={12} style={{ color: 'var(--gold)' }} />
+                  Auto-generate challenge
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Textarea */}
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="Describe your team's current challenges, what problems you face, what you'd want this hire to solve..."
+        placeholder="What's the key challenge your team faces? What should this hire solve?"
         style={{
           width: '100%',
           padding: '14px 16px',
@@ -156,6 +196,14 @@ export default function StepContext() {
           Upload reference files
         </span>
         <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--brown-soft)',
+          marginTop: 4,
+        }}>
+          Add context files and notes for the candidate
+        </span>
+        <span style={{
           fontFamily: "var(--font-mono)",
           fontSize: 9,
           color: 'var(--brown-light)',
@@ -204,7 +252,7 @@ export default function StepContext() {
                 type="text"
                 value={fileDescriptions[idx] || ''}
                 onChange={(e) => handleFileDescChange(idx, e.target.value)}
-                placeholder="What is this file about?"
+                placeholder="Add notes about this file..."
                 style={{
                   width: '100%',
                   padding: '6px 10px',
@@ -223,27 +271,6 @@ export default function StepContext() {
         </div>
       )}
 
-      {/* Predict button */}
-      {!predictions && (
-        <button
-          onClick={handlePredict}
-          disabled={predicting}
-          className="btn-secondary"
-          style={{ width: '100%', justifyContent: 'center', marginBottom: 20 }}
-        >
-          {predicting ? (
-            <>
-              <Loader2 size={14} className="animate-spin" />
-              Analyzing your context...
-            </>
-          ) : (
-            <>
-              <Sparkles size={14} style={{ color: 'var(--gold)' }} />
-              Predict business challenges
-            </>
-          )}
-        </button>
-      )}
 
       {/* Prediction cards */}
       {predictions && (

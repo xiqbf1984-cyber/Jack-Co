@@ -71,10 +71,11 @@ function analyzeInput(text) {
   var locationMatch = text.match(/(?:based in|located in|location:\s*|in\s+)([A-Z][a-zA-Z\s,]+)/);
   if (locationMatch) extracted.location = locationMatch[1].trim();
 
-  // Work mode
+  // Work mode — also catch common variations
   if (/\bremote\b/i.test(text)) extracted.workMode = 'Remote';
   else if (/\bhybrid\b/i.test(text)) extracted.workMode = 'Hybrid';
-  else if (/\b(on-?site|in-?office|in office)\b/i.test(text)) extracted.workMode = 'On-site';
+  else if (/\b(on-?site|in-?office|in office|office)\b/i.test(text)) extracted.workMode = 'On-site';
+  else if (/\b(flexible|any|doesn.?t matter|no preference|good|ok|sure|yes)\b/i.test(text)) extracted.workMode = 'Flexible';
 
   // Salary
   var salaryMatch = text.match(/\$[\d,]+k?\s*[-–—]\s*\$?[\d,]+k?/i);
