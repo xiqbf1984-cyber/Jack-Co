@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useRef, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Search, Briefcase, MoreVertical, CirclePlus, X, StopCircle, Copy, Lock, Unlock, Archive, ArchiveRestore, Trash2, Play, AlertTriangle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Plus, Search, Briefcase, MoreVertical, CirclePlus, X, Eye, Copy, Lock, Unlock, Archive, ArchiveRestore, Trash2, AlertTriangle } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -137,26 +138,14 @@ function RoleActions({ role }) {
   var isArchived = role.status === 'archived';
   var isPrivate = role.isPrivate || false;
 
+  var router = useRouter();
   var items = [];
 
-  // Stop Hiring / Start Hiring
-  if (isActive) {
-    items.push({
-      icon: StopCircle, label: 'Stop Hiring', color: 'var(--brown)',
-      action: function () {
-        updateRole(role.id, { status: 'draft' });
-        addNotification({ type: 'role', title: 'Role paused', message: role.title + ' is now a draft' });
-      },
-    });
-  } else if (!isArchived) {
-    items.push({
-      icon: Play, label: 'Start Hiring', color: 'var(--accent-green)',
-      action: function () {
-        updateRole(role.id, { status: 'active' });
-        addNotification({ type: 'role', title: 'Role activated', message: role.title + ' is now active' });
-      },
-    });
-  }
+  // View Role
+  items.push({
+    icon: Eye, label: 'View Role', color: 'var(--brown)',
+    action: function () { router.push('/roles/' + role.id); },
+  });
 
   // Copy Role
   items.push({
@@ -264,6 +253,7 @@ function timeAgo(dateStr) {
 
 export default function RolesPage() {
   var roles = useAppStore(function (s) { return s.roles; });
+  var pageRouter = useRouter();
   var [search, setSearch] = useState('');
   var [statusFilter, setStatusFilter] = useState([]);
 
@@ -306,7 +296,7 @@ export default function RolesPage() {
         )}
         <div style={{ marginLeft: 'auto' }}>
           <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
-            <Plus size={13} /> Add Role
+            Add Role
           </Link>
         </div>
       </div>
@@ -338,7 +328,9 @@ export default function RolesPage() {
                 display: 'flex', alignItems: 'center', padding: '14px 20px',
                 borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
                 transition: 'background-color 0.15s ease',
+                cursor: 'pointer',
               }}
+                onClick={function () { pageRouter.push('/roles/' + role.id); }}
                 onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.015)'; }}
                 onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>
                 {/* Icon */}
