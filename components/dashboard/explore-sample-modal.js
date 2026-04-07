@@ -1,0 +1,145 @@
+'use client';
+
+import { useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import { useAppStore } from '@/stores/app-store';
+import { COLLAPSED_WIDTH, EXPANDED_WIDTH } from '@/components/layout/sidebar';
+import { Briefcase, Users, FileBarChart, Sparkles, X } from 'lucide-react';
+
+export default function ExploreSampleModal({ open, onClose }) {
+  const { user } = useUser();
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = sidebarCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
+  const [loading, setLoading] = useState(false);
+
+  if (!open) return null;
+
+  const userEmail = user?.emailAddresses?.[0]?.emailAddress || 'you@example.com';
+  const userName = user?.firstName || user?.username || 'You';
+
+  function handleExplore() {
+    setLoading(true);
+    const { addRole, addCandidate } = useAppStore.getState();
+
+    // Add sample roles
+    addRole({ title: 'Senior Full-Stack Engineer', dept: 'Engineering', salary: '$160k-$220k', status: 'active' });
+    addRole({ title: 'AI Research Scientist', dept: 'Research', salary: '$180k-$260k', status: 'active' });
+    addRole({ title: 'Product Designer', dept: 'Design', salary: '$130k-$180k', status: 'draft' });
+
+    // Add the current user as a candidate + sample others
+    addCandidate({ name: userName, email: userEmail, status: 'active', tz: 'PST' });
+    addCandidate({ name: 'Alex Chen', email: 'alex@example.com', status: 'active', tz: 'EST' });
+    addCandidate({ name: 'Sarah Kim', email: 'sarah@example.com', status: 'idle', tz: 'CST' });
+
+    setTimeout(() => {
+      setLoading(false);
+      onClose();
+    }, 400);
+  }
+
+  return (
+    <>
+      {/* Backdrop — sidebar stays clear */}
+      <div
+        onClick={onClose}
+        style={{
+          position: 'fixed', top: 0, right: 0, bottom: 0,
+          left: sidebarWidth,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          backdropFilter: 'blur(4px)',
+          zIndex: 90,
+          animation: 'fi .15s ease both',
+          transition: 'left 0.2s ease',
+        }}
+      />
+      {/* Modal */}
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        left: `calc(${sidebarWidth}px + (100vw - ${sidebarWidth}px) / 2)`,
+        transform: 'translate(-50%, -50%)',
+        width: 420, maxWidth: 'calc(100vw - 80px)',
+        backgroundColor: '#fff', borderRadius: 16,
+        boxShadow: 'var(--shadow-modal)', zIndex: 91,
+        padding: '32px',
+        animation: 'fadeScale .2s ease both',
+      }}>
+        {/* Close */}
+        <button onClick={onClose} style={{
+          position: 'absolute', top: 14, right: 14,
+          width: 28, height: 28, borderRadius: 6,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          border: 'none', background: 'transparent', cursor: 'pointer',
+          color: 'var(--brown-soft)',
+        }}>
+          <X size={16} />
+        </button>
+
+        {/* Content */}
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: 12,
+            background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 16px',
+          }}>
+            <Sparkles size={22} style={{ color: '#fff' }} />
+          </div>
+
+          <h2 style={{
+            fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600,
+            color: 'var(--brown)', marginBottom: 6,
+          }}>
+            Explore Sample Case
+          </h2>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)',
+            lineHeight: 1.6, marginBottom: 24,
+          }}>
+            We'll load sample data so you can experience<br />the full NeoHuman workflow.
+          </p>
+        </div>
+
+        {/* What you'll get */}
+        <div style={{
+          borderRadius: 10, backgroundColor: 'var(--cream)',
+          padding: '14px 16px', marginBottom: 24,
+        }}>
+          {[
+            { icon: Briefcase, text: '3 sample hiring roles with job descriptions' },
+            { icon: Users, text: 'Candidates including you (' + userEmail + ')' },
+            { icon: FileBarChart, text: 'Full hiring pipeline to explore' },
+          ].map((item) => {
+            const Icon = item.icon;
+            return (
+              <div key={item.text} style={{
+                display: 'flex', alignItems: 'center', gap: 10,
+                padding: '6px 0',
+              }}>
+                <Icon size={14} style={{ color: 'var(--gold)', flexShrink: 0 }} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
+                  {item.text}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Action */}
+        <button
+          onClick={handleExplore}
+          disabled={loading}
+          className="btn-primary"
+          style={{
+            width: '100%', padding: '11px 20px', fontSize: 13,
+            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            opacity: loading ? 0.6 : 1,
+          }}
+        >
+          <Sparkles size={14} />
+          {loading ? 'Setting up...' : 'Explore Sample Case'}
+        </button>
+      </div>
+    </>
+  );
+}

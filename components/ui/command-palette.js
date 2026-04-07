@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppStore } from '@/stores/app-store';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import {
   Search, LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
   Settings, HelpCircle, Plus, FileText, UserPlus, ArrowRight,
@@ -35,6 +36,8 @@ export default function CommandPalette({ open, onClose }) {
   const candidates = useAppStore((s) => s.candidates);
   const assessments = useAppStore((s) => s.assessments);
   const openAddCandidateModal = useAppStore((s) => s.openAddCandidateModal);
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = sidebarCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
 
   // Reset on open
   useEffect(() => {
@@ -157,24 +160,28 @@ export default function CommandPalette({ open, onClose }) {
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Backdrop — offset past sidebar so sidebar stays clear */}
       <div
         onClick={onClose}
         style={{
           position: 'fixed',
-          inset: 0,
-          backgroundColor: 'rgba(0,0,0,0.3)',
+          top: 0,
+          right: 0,
+          bottom: 0,
+          left: sidebarWidth,
+          backgroundColor: 'rgba(0,0,0,0.25)',
           zIndex: 100,
-          backdropFilter: 'blur(2px)',
+          backdropFilter: 'blur(3px)',
           animation: 'fi .1s ease both',
+          transition: 'left 0.2s ease',
         }}
       />
-      {/* Palette */}
+      {/* Palette — positioned in upper third of the content area */}
       <div style={{
         position: 'fixed',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
+        top: '22%',
+        left: `calc(${sidebarWidth}px + (100vw - ${sidebarWidth}px) / 2)`,
+        transform: 'translateX(-50%)',
         width: 520,
         maxHeight: '60vh',
         backgroundColor: '#fff',

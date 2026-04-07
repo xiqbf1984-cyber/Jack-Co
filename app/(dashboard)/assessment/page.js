@@ -53,6 +53,7 @@ export default function AssessmentsPage() {
       </div>
 
       {/* Search + Tab filters */}
+      {assessments.length > 0 && (
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{ position: 'relative', width: 220 }}>
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
@@ -78,16 +79,17 @@ export default function AssessmentsPage() {
           </Link>
         </div>
       </div>
+      )}
 
-      {/* Assessment cards */}
-      {filtered.length === 0 ? (
+      {/* Empty state */}
+      {assessments.length === 0 && (
         <div style={{
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: 400,
-          borderRadius: 12,
+          minHeight: 420,
+          borderRadius: 14,
           border: '1px solid var(--border-default)',
           background: '#fff',
         }}>
@@ -101,36 +103,38 @@ export default function AssessmentsPage() {
             justifyContent: 'center',
             marginBottom: 16,
           }}>
-            <Briefcase size={22} style={{ color: 'var(--gold)' }} />
+            <Briefcase size={20} style={{ color: 'var(--gold)' }} />
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
-            fontSize: 15,
+            fontSize: 16,
             fontWeight: 600,
             color: 'var(--brown)',
             marginBottom: 4,
-          }}>
-            {search || activeTab !== 'all' ? 'No assessments match your filters' : 'No assessments yet'}
-          </p>
+          }}>No assessments yet</p>
           <p style={{
             fontFamily: 'var(--font-body)',
             fontSize: 13,
             color: 'var(--brown-soft)',
             maxWidth: 320,
             textAlign: 'center',
+            lineHeight: 1.5,
             marginBottom: 20,
-          }}>
-            {search || activeTab !== 'all'
-              ? 'Try adjusting your search or filters'
-              : 'Create your first assessment to start evaluating candidates with AI-powered work samples.'}
-          </p>
-          {!search && activeTab === 'all' && (
-            <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', padding: '8px 18px', fontSize: 12, textDecoration: 'none' }}>
-              Create Assessment
-            </Link>
-          )}
+          }}>Create your first assessment to start evaluating candidates with AI-powered work samples.</p>
+          <Link href="/assessment/create" className="btn-primary" style={{ padding: '9px 22px', fontSize: 13, textDecoration: 'none' }}>
+            Create Assessment
+          </Link>
         </div>
-      ) : (
+      )}
+
+      {/* Assessment cards */}
+      {assessments.length > 0 && filtered.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: '80px 0' }}>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
+            No assessments match your filters
+          </p>
+        </div>
+      ) : assessments.length > 0 && filtered.length > 0 ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {filtered.map(function (assessment, i) {
             var statusInfo = STATUS_MAP[assessment.status] || STATUS_MAP.draft;
@@ -172,7 +176,7 @@ export default function AssessmentsPage() {
             <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>Viewing <strong style={{ color: 'var(--brown)' }}>{filtered.length}</strong> rows</span>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
