@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, Users, MoreHorizontal, CirclePlus, X } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
@@ -170,10 +171,14 @@ function StatusFilterDropdown({ selectedStatuses, onChange }) {
   );
 }
 
-function CandidateActions({ candId }) {
+function CandidateActions({ candId, candName }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const router = useRouter();
   const removeCandidate = useAppStore((s) => s.removeCandidate);
+  const addNotification = useAppStore((s) => s.addNotification);
+  const assessments = useAppStore((s) => s.assessments);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   useEffect(() => {
     function handleClick(e) {
@@ -186,7 +191,7 @@ function CandidateActions({ candId }) {
   return (
     <div ref={ref} style={{ position: 'relative' }}>
       <button
-        onClick={() => setOpen(!open)}
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
         style={{
           background: 'none', border: 'none', cursor: 'pointer',
           padding: 4, color: 'var(--brown-light)',
@@ -203,7 +208,7 @@ function CandidateActions({ candId }) {
           right: 0,
           top: '100%',
           marginTop: 4,
-          width: 140,
+          width: 160,
           backgroundColor: '#fff',
           borderRadius: 8,
           border: '1px solid var(--border-default)',
@@ -213,7 +218,10 @@ function CandidateActions({ candId }) {
           animation: 'fsd 0.12s ease both',
         }}>
           <button
-            onClick={() => { setOpen(false); }}
+            onClick={() => {
+              router.push('/candidates/' + candId);
+              setOpen(false);
+            }}
             style={{
               width: '100%', padding: '8px 12px', border: 'none', background: 'transparent',
               fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)',
@@ -223,7 +231,7 @@ function CandidateActions({ candId }) {
             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
           >View Profile</button>
           <button
-            onClick={() => { setOpen(false); }}
+            onClick={() => { setOpen(false); setShowInviteModal(true); }}
             style={{
               width: '100%', padding: '8px 12px', border: 'none', background: 'transparent',
               fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)',
@@ -234,7 +242,11 @@ function CandidateActions({ candId }) {
           >Send Invite</button>
           {removeCandidate && (
             <button
-              onClick={() => { removeCandidate(candId); setOpen(false); }}
+              onClick={() => {
+                removeCandidate(candId);
+                addNotification({ type: 'candidate', title: 'Candidate removed', message: (candName || 'Candidate') + ' has been removed' });
+                setOpen(false);
+              }}
               style={{
                 width: '100%', padding: '8px 12px', border: 'none', background: 'transparent',
                 fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--red)',
@@ -246,13 +258,95 @@ function CandidateActions({ candId }) {
           )}
         </div>
       )}
+      {/* Invite modal */}
+      {showInviteModal && (
+        <InviteModal
+          candName={candName}
+          assessments={assessments}
+          onClose={() => setShowInviteModal(false)}
+          onInvite={(assessmentName) => {
+            addNotification({
+              type: 'assessment',
+              title: 'Invite sent',
+              message: (candName || 'Candidate') + ' invited to ' + assessmentName,
+            });
+            setShowInviteModal(false);
+          }}
+        />
+      )}
     </div>
+  );
+}
+
+function InviteModal({ candName, assessments, onClose, onInvite }) {
+  useEffect(() => {
+    function handleKey(e) { if (e.key === 'Escape') onClose(); }
+    document.addEventListener('keydown', handleKey);
+    return () => document.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  return (
+    <>
+      <div onClick={onClose} style={{
+        position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.25)',
+        backdropFilter: 'blur(3px)', zIndex: 100,
+      }} />
+      <div style={{
+        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
+        width: 380, backgroundColor: '#fff', borderRadius: 14,
+        boxShadow: 'var(--shadow-modal)', zIndex: 101, padding: '24px',
+        animation: 'fadeScale .2s ease both',
+      }}>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
+          Invite {candName}
+        </div>
+        <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 16 }}>
+          Select an assessment to invite this candidate to.
+        </div>
+
+        {assessments.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 4, maxHeight: 240, overflowY: 'auto' }}>
+            {assessments.map((a) => (
+              <button key={a.id} onClick={() => onInvite(a.name)} style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                padding: '10px 12px', borderRadius: 8, border: 'none',
+                background: 'transparent', fontFamily: 'var(--font-body)',
+                fontSize: 12, color: 'var(--brown)', cursor: 'pointer',
+                textAlign: 'left', transition: 'background-color 0.1s ease',
+              }}
+                onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--cream)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+              >
+                <span>{a.name}</span>
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>
+                  {a.status}
+                </span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '20px 0' }}>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>
+              No assessments yet. Create one first.
+            </div>
+            <a href="/assessment/create" className="btn-primary" style={{
+              display: 'inline-flex', padding: '7px 16px', fontSize: 11, textDecoration: 'none',
+            }}>Create Assessment</a>
+          </div>
+        )}
+
+        <div style={{ marginTop: 16, display: 'flex', justifyContent: 'flex-end' }}>
+          <button onClick={onClose} className="btn-secondary" style={{ padding: '7px 14px', fontSize: 11 }}>Cancel</button>
+        </div>
+      </div>
+    </>
   );
 }
 
 export default function CandidatesPage() {
   const candidates = useAppStore((s) => s.candidates);
   const openModal = useAppStore((s) => s.openAddCandidateModal);
+  const router = useRouter();
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState([]);
 
@@ -394,7 +488,7 @@ export default function CandidatesPage() {
         <div style={{
           borderRadius: 12,
           border: '1px solid var(--border-default)',
-          overflow: 'hidden',
+          overflow: 'visible',
           background: '#fff',
         }}>
           {/* Header row */}
@@ -407,14 +501,7 @@ export default function CandidatesPage() {
             borderBottom: '1px solid var(--border-default)',
             backgroundColor: 'var(--cream)',
           }}>
-            {[
-              { label: 'Candidate', sortable: true },
-              { label: 'Status', sortable: true },
-              { label: 'Timezone', sortable: false },
-              { label: 'Assessments', sortable: true },
-              { label: 'Last Active', sortable: true },
-              { label: '', sortable: false },
-            ].map((h, i) => (
+            {['Candidate', 'Status', 'Timezone', 'Assessments', 'Last Active', ''].map((label, i) => (
               <span key={i} style={{
                 fontFamily: 'var(--font-body)',
                 fontSize: 11,
@@ -423,12 +510,8 @@ export default function CandidatesPage() {
                 display: 'flex',
                 alignItems: 'center',
                 gap: 3,
-                cursor: h.sortable ? 'pointer' : 'default',
               }}>
-                {h.label}
-                {h.sortable && h.label && (
-                  <span style={{ fontSize: 9, opacity: 0.5 }}>&#8597;</span>
-                )}
+                {label}
               </span>
             ))}
           </div>
@@ -443,6 +526,7 @@ export default function CandidatesPage() {
             return (
               <div
                 key={cand.id}
+                onClick={() => router.push('/candidates/' + cand.id)}
                 style={{
                   display: 'grid',
                   gridTemplateColumns: '2fr 1fr 1fr 0.8fr 1fr 40px',
@@ -451,6 +535,7 @@ export default function CandidatesPage() {
                   alignItems: 'center',
                   borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
                   transition: 'background-color 0.1s ease',
+                  cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
                 onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
@@ -537,7 +622,7 @@ export default function CandidatesPage() {
                 }}>{cand.lastActive || '\u2014'}</span>
 
                 {/* Actions */}
-                <CandidateActions candId={cand.id} />
+                <CandidateActions candId={cand.id} candName={cand.name} />
               </div>
             );
           })}

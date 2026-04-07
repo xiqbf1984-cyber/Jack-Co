@@ -94,40 +94,33 @@ function analyzeInput(text) {
   return { extracted: extracted, coverage: coverage };
 }
 
-// ─── Generate Follow-up Questions ───
-function generateFollowUp(coverage, extracted, roundNumber) {
-  var questions = [];
-
+// ─── Generate the NEXT single follow-up question ───
+function getNextQuestion(coverage, extracted) {
+  // Ask ONE question at a time, in priority order
   if (!coverage.roleDefinition) {
-    questions.push('What will this person mainly be responsible for? What problems will they solve or what outcomes will they drive?');
+    if (!extracted.title) {
+      return 'What\'s the job title for this role?';
+    }
+    return 'What will this person mainly own or be responsible for?';
   }
 
-  if (!coverage.candidateProfile) {
-    if (extracted.skills.length === 0) {
-      questions.push('What are the must-have technical skills or domain expertise?');
-    }
-    if (!extracted.experience) {
-      questions.push('What experience level are you targeting?');
-    }
+  if (!extracted.experience) {
+    return 'What experience level are you looking for — junior, mid, senior, or staff+?';
+  }
+
+  if (extracted.skills.length === 0) {
+    return 'What are the must-have technical skills for this role?';
   }
 
   if (!coverage.basicConditions) {
-    questions.push('What\'s the work arrangement — remote, hybrid, or on-site? And full-time or part-time?');
+    return 'Is this remote, hybrid, or on-site?';
   }
 
-  // If we have the basics but could use more detail (round 1 only)
-  if (questions.length === 0 && roundNumber === 0) {
-    var extras = [];
-    if (extracted.responsibilities.length < 3) {
-      extras.push('Could you share 2-3 more specific responsibilities or projects this person would take on?');
-    }
-    if (!extracted.salary) {
-      // Don't ask about salary per the prompt rules - mark as [TBD]
-    }
-    if (extras.length > 0) questions = extras;
+  if (extracted.responsibilities.length < 2) {
+    return 'Any specific projects or outcomes this person should drive in the first 6 months?';
   }
 
-  return questions;
+  return null; // All covered — generate JD
 }
 
 // ─── Generate JD ───
@@ -326,34 +319,27 @@ export default function RoleCreatePage() {
     setDescription(text);
     setAllText(text);
 
-    // Step 1: Analyze input
     var analysis = analyzeInput(text);
     setExtractedData(analysis.extracted);
-
     setStage(1);
     var matchResult = doMatch(text);
     setMessages([{ role: 'user', content: text }]);
 
-    // If matched role found, enrich extracted data
     if (matchResult.role) {
       analysis.extracted.title = analysis.extracted.title || matchResult.role.title;
     }
 
-    // Step 2: Check what's missing and ask in one batch
-    var followUps = generateFollowUp(analysis.coverage, analysis.extracted, 0);
+    // Ask ONE question at a time
+    var nextQ = getNextQuestion(analysis.coverage, analysis.extracted);
 
-    if (followUps.length === 0) {
-      // Enough info to generate JD immediately
+    if (!nextQ) {
       var jd = generateJD(analysis.extracted, matchResult.role, company, text);
       setJDContent(jd);
       setJdGenerated(true);
       setStage(2);
-      addAIMessage('Great description! I have enough to generate your JD. Here it is on the right — feel free to edit it directly, or tell me if you want any changes.');
+      addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
     } else {
-      // Ask missing questions in one batch
-      var intro = 'Got it — I\'m already picturing this role. Just a few things I\'d love to clarify so the JD is spot-on:\n\n';
-      var numbered = followUps.map(function (q, i) { return (i + 1) + '. ' + q; }).join('\n');
-      addAIMessage(intro + numbered);
+      addAIMessage('Got it — I can already picture this role. ' + nextQ);
     }
   }
 
@@ -375,22 +361,22 @@ export default function RoleCreatePage() {
     var round = followUpRound + 1;
     setFollowUpRound(round);
 
-    // Check if we need more info (max 2 rounds)
-    var followUps = round < 2 ? generateFollowUp(analysis.coverage, analysis.extracted, round) : [];
+    // Ask next single question, or generate JD if all covered (max 5 rounds)
+    var nextQ = round < 5 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
 
-    if (followUps.length === 0 || round >= 2) {
-      // Generate JD
+    if (!nextQ || round >= 5) {
       var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
       setJDContent(jd);
       setJdGenerated(true);
-
       if (stage < 2) setStage(2);
-
-      addAIMessage('Your JD is ready! You can edit it directly on the right panel. Let me know if you\'d like to adjust anything — I can tweak the tone, add sections, or restructure it.');
+      addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
     } else {
-      // One more round of follow-ups
-      var questions = followUps.map(function (q, i) { return (i + 1) + '. ' + q; }).join('\n');
-      addAIMessage('Thanks! Almost there — just need a bit more context:\n\n' + questions);
+      // Update JD preview if we're already in stage 2
+      if (stage >= 2) {
+        var updatedJd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+        setJDContent(updatedJd);
+      }
+      addAIMessage('Thanks! ' + nextQ);
     }
   }
 
@@ -407,23 +393,6 @@ export default function RoleCreatePage() {
       sharableLink: sharableLink,
     });
     addNotification({ type: 'role', title: 'Role created', message: title + ' is now active' });
-    setSavedRoleTitle(title);
-    setShowSuccessModal(true);
-  }
-
-  function handleSaveForLater() {
-    if (!jdContent.trim()) return;
-    var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
-    addRole({
-      title: title,
-      dept: inferDepartment(extractedData || {}, allText),
-      salary: extractedData?.salary || 'TBD',
-      status: 'draft',
-      roleRef: matchedRole,
-      jd: jdContent,
-      sharableLink: sharableLink,
-    });
-    addNotification({ type: 'role', title: 'Draft saved', message: title + ' saved as draft' });
     setSavedRoleTitle(title);
     setShowSuccessModal(true);
   }
@@ -475,7 +444,7 @@ export default function RoleCreatePage() {
       overflow: 'hidden',
     }}>
       {/* Header */}
-      <div style={{ flexShrink: 0, backgroundColor: 'var(--cream)' }}>
+      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 5 }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button
             onClick={handleBack}
@@ -524,7 +493,6 @@ export default function RoleCreatePage() {
               content={jdContent}
               onChange={setJDContent}
               onSave={handleSaveRole}
-              onSaveForLater={handleSaveForLater}
               matchedRoleName={matchedRole ? matchedRole.title : null}
               matchScore={matchScore}
               sharableLink={sharableLink}

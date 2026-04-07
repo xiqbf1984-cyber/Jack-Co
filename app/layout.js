@@ -1,4 +1,5 @@
 import { ClerkProvider } from '@clerk/nextjs';
+import FilmGrainOverlay from '@/components/ui/film-grain-overlay';
 import "./globals.css";
 
 export const metadata = {
@@ -18,7 +19,10 @@ export default function RootLayout({ children }) {
             rel="stylesheet"
           />
         </head>
-        <body className="noise-texture">{children}</body>
+        <body className="noise-texture">
+          <FilmGrainOverlay />
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );

@@ -7,7 +7,7 @@ import Topbar from '@/components/layout/topbar';
 import HeroSection from '@/components/landing/hero-section';
 
 export default function LandingPage() {
-  const [tab, setTab] = useState('For Companies');
+  const [tab, setTab] = useState('Hiring Human');
   const { isSignedIn, isLoaded } = useAuth();
   const router = useRouter();
 

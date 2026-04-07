@@ -7,12 +7,12 @@ import { useUser, useClerk } from '@clerk/nextjs';
 import { useAppStore } from '@/stores/app-store';
 import { SIDEBAR_NAV } from '@/lib/constants';
 import {
-  LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
+  Home, Briefcase, ClipboardList, Users, BarChart3,
   Settings, HelpCircle, Bell, Search, LogOut, ChevronLeft, ChevronRight, User,
 } from 'lucide-react';
 
 const iconMap = {
-  LayoutDashboard, Briefcase, Trophy, Users, BarChart3,
+  Home, Briefcase, ClipboardList, Users, BarChart3,
 };
 
 const EXPANDED_WIDTH = 210;

@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import { useAppStore } from '@/stores/app-store';
+import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import { X, Bell, Trophy, UserPlus, Briefcase, CheckCheck } from 'lucide-react';
 
 const TYPE_ICONS = {
@@ -32,6 +33,8 @@ export default function NotificationPanel({ open, onClose }) {
   const notifications = useAppStore((s) => s.notifications);
   const markNotificationRead = useAppStore((s) => s.markNotificationRead);
   const markAllNotificationsRead = useAppStore((s) => s.markAllNotificationsRead);
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
+  const sidebarWidth = sidebarCollapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
   const ref = useRef(null);
 
   useEffect(() => {
@@ -57,10 +60,11 @@ export default function NotificationPanel({ open, onClose }) {
       ref={ref}
       style={{
         position: 'fixed',
-        right: 16,
-        top: 16,
+        left: sidebarWidth + 8,
+        bottom: 60,
         width: 360,
         maxHeight: 480,
+        transition: 'left 0.2s ease',
         backgroundColor: '#fff',
         borderRadius: 14,
         boxShadow: 'var(--shadow-modal)',
