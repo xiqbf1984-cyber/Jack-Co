@@ -284,11 +284,11 @@ function CandidateDetailCard({ candidate, onUpdate, onRemove, defaultExpanded })
 
 export default function StepCandidates() {
   const wizardCandidates = useAssessmentStore((s) => s.candidates);
-  const teamTrial = useAssessmentStore((s) => s.teamTrial);
+
   const addCandidate = useAssessmentStore((s) => s.addCandidate);
   const removeCandidate = useAssessmentStore((s) => s.removeCandidate);
   const updateCandidate = useAssessmentStore((s) => s.updateCandidate);
-  const setTeamTrial = useAssessmentStore((s) => s.setTeamTrial);
+
   const completeStep = useAssessmentStore((s) => s.completeStep);
 
   const poolCandidates = useAppStore((s) => s.candidates);
@@ -336,77 +336,26 @@ export default function StepCandidates() {
 
   return (
     <div>
-      {/* AI bubble */}
-      <div style={{
-        padding: '14px 18px',
-        borderRadius: 14,
-        backgroundColor: 'rgba(139,105,20,0.04)',
-        border: '1px solid var(--border-light)',
-        marginBottom: 20,
-      }}>
+      {/* Title + subtitle */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 16,
+          fontWeight: 600,
+          color: 'var(--brown)',
+          margin: '0 0 6px 0',
+        }}>
+          Add Candidates
+        </h2>
         <p style={{
           fontFamily: 'var(--font-body)',
-          fontSize: 13,
-          color: 'var(--brown)',
-          lineHeight: 1.6,
+          fontSize: 12,
+          color: 'var(--brown-soft)',
+          lineHeight: 1.5,
           margin: 0,
         }}>
-          Assign candidates to this assessment. Add new ones or select from your existing pool.
+          Invite candidates to this assessment
         </p>
-      </div>
-
-      {/* Team Trial toggle */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        backgroundColor: 'var(--cream-row-even)',
-        borderRadius: 12,
-        padding: '14px 16px',
-        marginBottom: 16,
-      }}>
-        <div>
-          <div style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 13,
-            color: 'var(--brown)',
-          }}>
-            Team Trial
-          </div>
-          <div style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 11,
-            color: 'var(--brown-muted)',
-            marginTop: 3,
-          }}>
-            Candidates will work in teams and receive a contribution score.
-          </div>
-        </div>
-        <button
-          onClick={() => setTeamTrial(!teamTrial)}
-          style={{
-            width: 36,
-            height: 20,
-            borderRadius: 10,
-            border: 'none',
-            backgroundColor: teamTrial ? 'var(--accent-green)' : 'var(--border-default)',
-            cursor: 'pointer',
-            position: 'relative',
-            flexShrink: 0,
-            transition: 'background-color 0.2s ease',
-          }}
-        >
-          <div style={{
-            width: 16,
-            height: 16,
-            borderRadius: '50%',
-            backgroundColor: '#fff',
-            position: 'absolute',
-            top: 2,
-            left: teamTrial ? 18 : 2,
-            transition: 'left 0.2s ease',
-          }} />
-        </button>
       </div>
 
       {/* Search + action bar */}
@@ -438,8 +387,8 @@ export default function StepCandidates() {
             }}
           />
         </div>
-        <button className="btn-secondary" style={{ fontSize: 11, padding: '8px 12px' }}>
-          <Upload size={12} /> Bulk upload
+        <button className="btn-secondary" style={{ fontSize: 11, padding: '8px 12px' }} title="Upload a CSV file (columns: name, email)">
+          <Upload size={12} /> CSV upload
         </button>
         <button className="btn-primary" style={{ fontSize: 11, padding: '8px 12px' }} onClick={handleAddNew}>
           <Plus size={12} /> Add

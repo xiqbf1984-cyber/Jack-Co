@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Upload, X, FileText, Sparkles, Loader2, Check, ArrowRight } from 'lucide-react';
+import { Upload, X, FileText, Loader2, Check, ArrowRight, Wand2 } from 'lucide-react';
 
 const MOCK_PREDICTIONS = [
   {
@@ -59,6 +59,9 @@ export default function StepContext() {
     setTimeout(() => {
       setPredicting(false);
       setPredictions(MOCK_PREDICTIONS);
+      // Fill the first prediction into the textarea
+      setSelectedPrediction(MOCK_PREDICTIONS[0].id);
+      setDescription(MOCK_PREDICTIONS[0].description);
     }, 2500);
   }, []);
 
@@ -82,30 +85,70 @@ export default function StepContext() {
 
   return (
     <div>
-      {/* AI bubble */}
-      <div style={{
-        padding: '14px 18px',
-        borderRadius: 14,
-        backgroundColor: 'rgba(139,105,20,0.04)',
-        border: '1px solid var(--border-light)',
-        marginBottom: 20,
-      }}>
-        <p style={{
+      {/* Title + subtitle */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{
           fontFamily: 'var(--font-body)',
-          fontSize: 13,
+          fontSize: 16,
+          fontWeight: 600,
           color: 'var(--brown)',
-          lineHeight: 1.6,
-          margin: 0,
+          margin: '0 0 6px 0',
         }}>
-          What business problem should this candidate solve? Describe your challenge, upload reference files, or let me predict likely challenges based on your context.
-        </p>
+          Define the Problem
+        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 12,
+            color: 'var(--brown-soft)',
+            lineHeight: 1.5,
+            margin: 0,
+            flex: 1,
+          }}>
+            Describe the business problem candidates should solve.
+          </p>
+          {!predictions && (
+            <button
+              onClick={handlePredict}
+              disabled={predicting}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 5,
+                padding: '5px 12px',
+                borderRadius: 8,
+                border: '1px solid var(--border-default)',
+                backgroundColor: '#fff',
+                fontFamily: 'var(--font-body)',
+                fontSize: 11,
+                color: 'var(--brown-soft)',
+                cursor: predicting ? 'default' : 'pointer',
+                whiteSpace: 'nowrap',
+                opacity: predicting ? 0.6 : 1,
+                transition: 'border-color 0.15s ease',
+              }}
+            >
+              {predicting ? (
+                <>
+                  <Loader2 size={12} className="animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Wand2 size={12} style={{ color: 'var(--gold)' }} />
+                  Generate predictions
+                </>
+              )}
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Textarea */}
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
-        placeholder="Describe your team's current challenges, what problems you face, what you'd want this hire to solve..."
+        placeholder="What's the key challenge your team faces? What should this hire solve?"
         style={{
           width: '100%',
           padding: '14px 16px',
@@ -126,126 +169,7 @@ export default function StepContext() {
         onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; }}
       />
 
-      {/* File upload */}
-      <label style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        border: '2px dashed var(--border-default)',
-        borderRadius: 14,
-        padding: '28px 16px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        backgroundColor: '#fff',
-        marginBottom: 16,
-        transition: 'border-color 0.15s ease',
-      }}>
-        <input
-          type="file"
-          multiple
-          style={{ display: 'none' }}
-          onChange={handleFileAdd}
-        />
-        <Upload size={20} style={{ color: 'var(--brown-light)' }} />
-        <span style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          color: 'var(--brown-muted)',
-          marginTop: 6,
-        }}>
-          Upload reference files
-        </span>
-        <span style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 9,
-          color: 'var(--brown-light)',
-          marginTop: 4,
-        }}>
-          PDF, DOC, CSV, TXT, MD, Images
-        </span>
-      </label>
-
-      {/* Uploaded files list */}
-      {files.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
-          {files.map((f, idx) => (
-            <div key={idx} style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              padding: '8px 12px',
-              borderRadius: 10,
-              backgroundColor: 'var(--cream-card)',
-              marginBottom: 5,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <FileText size={12} style={{ color: 'var(--gold)' }} />
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 11,
-                  color: 'var(--brown)',
-                  flex: 1,
-                }}>
-                  {f.name || f}
-                </span>
-                <button
-                  onClick={() => handleFileRemove(idx)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: 2,
-                  }}
-                >
-                  <X size={11} style={{ color: 'var(--brown-light)' }} />
-                </button>
-              </div>
-              <input
-                type="text"
-                value={fileDescriptions[idx] || ''}
-                onChange={(e) => handleFileDescChange(idx, e.target.value)}
-                placeholder="What is this file about?"
-                style={{
-                  width: '100%',
-                  padding: '6px 10px',
-                  borderRadius: 8,
-                  border: '1px solid var(--border-default)',
-                  backgroundColor: '#fff',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 10,
-                  color: 'var(--brown)',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Predict button */}
-      {!predictions && (
-        <button
-          onClick={handlePredict}
-          disabled={predicting}
-          className="btn-secondary"
-          style={{ width: '100%', justifyContent: 'center', marginBottom: 20 }}
-        >
-          {predicting ? (
-            <>
-              <Loader2 size={14} className="animate-spin" />
-              Analyzing your context...
-            </>
-          ) : (
-            <>
-              <Sparkles size={14} style={{ color: 'var(--gold)' }} />
-              Predict business challenges
-            </>
-          )}
-        </button>
-      )}
-
-      {/* Prediction cards */}
+      {/* Prediction cards — below textarea */}
       {predictions && (
         <div style={{ marginBottom: 20 }}>
           {predictions.map((pred, i) => {
@@ -254,6 +178,7 @@ export default function StepContext() {
               <button
                 key={pred.id}
                 onClick={() => handleSelectPrediction(pred)}
+                onMouseEnter={() => setDescription(pred.description)}
                 style={{
                   display: 'block',
                   width: '100%',
@@ -319,6 +244,111 @@ export default function StepContext() {
               </button>
             );
           })}
+        </div>
+      )}
+
+      {/* File upload — below predictions */}
+      <label style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        border: '2px dashed var(--border-default)',
+        borderRadius: 14,
+        padding: '28px 16px',
+        textAlign: 'center',
+        cursor: 'pointer',
+        backgroundColor: '#fff',
+        marginBottom: 16,
+        transition: 'border-color 0.15s ease',
+      }}>
+        <input
+          type="file"
+          multiple
+          style={{ display: 'none' }}
+          onChange={handleFileAdd}
+        />
+        <Upload size={20} style={{ color: 'var(--brown-light)' }} />
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 12,
+          color: 'var(--brown-muted)',
+          marginTop: 6,
+        }}>
+          Upload reference files
+        </span>
+        <span style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 11,
+          color: 'var(--brown-soft)',
+          marginTop: 4,
+        }}>
+          Add context files and notes for the candidate
+        </span>
+        <span style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: 9,
+          color: 'var(--brown-light)',
+          marginTop: 4,
+        }}>
+          PDF, DOC, CSV, TXT, MD, Images
+        </span>
+      </label>
+
+      {/* Uploaded files list */}
+      {files.length > 0 && (
+        <div style={{ marginBottom: 16 }}>
+          {files.map((f, idx) => (
+            <div key={idx} style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 4,
+              padding: '8px 12px',
+              borderRadius: 10,
+              backgroundColor: 'var(--cream-card)',
+              marginBottom: 5,
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <FileText size={12} style={{ color: 'var(--gold)' }} />
+                <span style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 11,
+                  color: 'var(--brown)',
+                  flex: 1,
+                }}>
+                  {f.name || f}
+                </span>
+                <button
+                  onClick={() => handleFileRemove(idx)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: 2,
+                  }}
+                >
+                  <X size={11} style={{ color: 'var(--brown-light)' }} />
+                </button>
+              </div>
+              <input
+                type="text"
+                value={fileDescriptions[idx] || ''}
+                onChange={(e) => handleFileDescChange(idx, e.target.value)}
+                placeholder="Add notes about this file..."
+                style={{
+                  width: '100%',
+                  padding: '6px 10px',
+                  borderRadius: 8,
+                  border: '1px solid var(--border-default)',
+                  backgroundColor: '#fff',
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 10,
+                  color: 'var(--brown)',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              />
+            </div>
+          ))}
         </div>
       )}
 

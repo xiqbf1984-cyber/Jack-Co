@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Send, Paperclip, Link2 } from 'lucide-react';
+import { ArrowUp, Paperclip, Link2 } from 'lucide-react';
 import ChatBubble from './chat-bubble';
 import TypingIndicator from './typing-indicator';
 import ChipSuggestions from './chip-suggestions';
@@ -195,7 +195,7 @@ export default function ChatPanel({
               transition: 'all 0.2s ease',
             }}
           >
-            <Send size={compact ? 14 : 15} />
+            <ArrowUp size={compact ? 14 : 15} />
           </button>
         </form>
       </div>

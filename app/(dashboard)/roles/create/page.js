@@ -71,10 +71,11 @@ function analyzeInput(text) {
   var locationMatch = text.match(/(?:based in|located in|location:\s*|in\s+)([A-Z][a-zA-Z\s,]+)/);
   if (locationMatch) extracted.location = locationMatch[1].trim();
 
-  // Work mode
+  // Work mode — also catch common variations
   if (/\bremote\b/i.test(text)) extracted.workMode = 'Remote';
   else if (/\bhybrid\b/i.test(text)) extracted.workMode = 'Hybrid';
-  else if (/\b(on-?site|in-?office|in office)\b/i.test(text)) extracted.workMode = 'On-site';
+  else if (/\b(on-?site|in-?office|in office|office)\b/i.test(text)) extracted.workMode = 'On-site';
+  else if (/\b(flexible|any|doesn.?t matter|no preference|good|ok|sure|yes)\b/i.test(text)) extracted.workMode = 'Flexible';
 
   // Salary
   var salaryMatch = text.match(/\$[\d,]+k?\s*[-–—]\s*\$?[\d,]+k?/i);
@@ -116,11 +117,8 @@ function getNextQuestion(coverage, extracted) {
     return 'Is this remote, hybrid, or on-site?';
   }
 
-  if (extracted.responsibilities.length < 2) {
-    return 'Any specific projects or outcomes this person should drive in the first 6 months?';
-  }
-
-  return null; // All covered — generate JD
+  // All essentials covered — generate JD
+  return null;
 }
 
 // ─── Generate JD ───
@@ -443,8 +441,8 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: 'hidden',
     }}>
-      {/* Header */}
-      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 5 }}>
+      {/* Header — sticky so chat scrolls beneath it */}
+      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0 }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button
             onClick={handleBack}

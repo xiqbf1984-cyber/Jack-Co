@@ -3,7 +3,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 
 export default function CreateAssessmentLayout({ children }) {
-  const [splitRatio, setSplitRatio] = useState(0.60);
+  const [splitRatio, setSplitRatio] = useState(0.38);
   const isDragging = useRef(false);
   const containerRef = useRef(null);
 
@@ -20,7 +20,7 @@ export default function CreateAssessmentLayout({ children }) {
       var rect = containerRef.current.getBoundingClientRect();
       var px = e.clientX - rect.left;
       var ratio = px / rect.width;
-      var clamped = Math.max(0.35, Math.min(0.72, ratio));
+      var clamped = Math.max(0.28, Math.min(0.65, ratio));
       setSplitRatio(clamped);
     }
 
