@@ -197,12 +197,16 @@ export default function HeroSection({ tab }) {
             }}
           />
           <div style={{
-            position: 'fixed', top: '50%', left: '50%',
-            transform: 'translate(-50%, -50%)',
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 101, pointerEvents: 'none',
+          }}>
+          <div style={{
             width: 380, backgroundColor: '#fff', borderRadius: 20,
             boxShadow: '0 24px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)',
-            zIndex: 101, padding: '48px 40px 40px',
+            padding: '48px 40px 40px',
             textAlign: 'center', animation: 'fadeScale .2s ease both',
+            pointerEvents: 'auto',
           }}>
             <div style={{
               fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 700,
@@ -223,6 +227,7 @@ export default function HeroSection({ tab }) {
             >
               Got it
             </button>
+          </div>
           </div>
         </>
       )}
