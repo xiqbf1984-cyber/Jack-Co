@@ -47,7 +47,7 @@ export default function HeroSection({ tab }) {
           className="text-body-lg"
           style={{ color: 'var(--brown-muted)', maxWidth: 440 }}
         >
-          See how candidates actually work with AI.
+          Evaluate real work, not resumes.
         </p>
 
         {isCompanies && (

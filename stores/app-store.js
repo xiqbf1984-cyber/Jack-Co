@@ -104,7 +104,7 @@ export const useAppStore = create((set, get) => ({
     const [rolesData, candidatesData, assessmentsData] = await Promise.all([
       orgId ? fetchRoles(orgId) : null,
       orgId ? fetchCandidates(orgId) : null,
-      fetchAssessments(dbUser.id),
+      fetchAssessments(dbUser.id, orgId),
     ]);
 
     set({

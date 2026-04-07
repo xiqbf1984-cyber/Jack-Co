@@ -33,8 +33,8 @@ export default function HireTypeCards() {
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 500, color: 'var(--brown)', marginBottom: 8 }}>
             Hiring Human
           </div>
-          <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)' }}>
-            See how candidates work with AI
+          <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)', whiteSpace: 'nowrap' }}>
+            Evaluate real candidates with AI
           </div>
         </div>
       </Link>
@@ -74,7 +74,7 @@ export default function HireTypeCards() {
           Hiring AI
         </div>
         <div style={{ fontSize: 12, fontFamily: 'var(--font-body)', color: 'var(--brown-muted)' }}>
-          Know which agent actually works
+          Find the best AI agent for your team
         </div>
       </div>
     </div>
