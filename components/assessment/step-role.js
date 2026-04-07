@@ -48,7 +48,7 @@ export default function StepRole() {
 
       {/* Search */}
       {roles.length > 2 && (
-        <div style={{ position: 'relative', marginBottom: 16 }}>
+        <div style={{ position: 'relative', marginBottom: 16, maxWidth: 400 }}>
           <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
           <input
             type="text" value={search} onChange={function (e) { setSearch(e.target.value); }}
