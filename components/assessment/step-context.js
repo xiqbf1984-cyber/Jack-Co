@@ -2,27 +2,24 @@
 
 import { useState, useCallback } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Upload, X, FileText, Loader2, Check, ArrowRight, Wand2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Upload, X, FileText, Loader2, Check, ArrowRight, Sparkles } from 'lucide-react';
 
 var MOCK_PREDICTIONS = [
   {
     id: 'pred-1',
     label: 'Most Likely',
     title: 'AI Autonomous Remediation Governance Failure',
-    description: 'As your team scales AI-driven device management from pilot to 750+ locations, the current human oversight model will likely fail to prevent autonomous actions in SOX-regulated systems during high-traffic periods.',
-    whyFits: 'This candidate would design the human-AI handoff protocols and confidence routing that prevent unsupervised actions in critical systems.',
+    whyFits: 'Design human-AI handoff protocols and confidence routing that prevent unsupervised actions in critical systems.',
   },
   {
     id: 'pred-2',
     title: 'Scaling Knowledge Management Across Distributed Teams',
-    description: 'As the team grows, institutional knowledge is siloed. New hires take 3-4 months to become productive because documentation is scattered and outdated.',
-    whyFits: 'Tests the candidate\'s ability to design systems that capture and distribute organizational knowledge using AI tools.',
+    whyFits: 'Design systems that capture and distribute organizational knowledge using AI tools.',
   },
   {
     id: 'pred-3',
     title: 'Cross-functional Decision Latency at Scale',
-    description: 'Strategic decisions are delayed because data analysis takes too long and stakeholders lack real-time visibility into key metrics across departments.',
-    whyFits: 'Evaluates whether the candidate can build AI-augmented decision support systems that serve multiple stakeholder groups.',
+    whyFits: 'Build AI-augmented decision support systems that serve multiple stakeholder groups.',
   },
 ];
 
@@ -37,7 +34,6 @@ export default function StepContext() {
   var [predicting, setPredicting] = useState(false);
   var [predictions, setPredictions] = useState(null);
   var [selectedPrediction, setSelectedPrediction] = useState(null);
-  var [expandedPred, setExpandedPred] = useState(null);
 
   var handleFileAdd = function (e) {
     var newFiles = Array.from(e.target.files || []);
@@ -48,9 +44,6 @@ export default function StepContext() {
     setFiles(function (prev) { return prev.filter(function (_, i) { return i !== idx; }); });
     setFileDescriptions(function (prev) { return prev.filter(function (_, i) { return i !== idx; }); });
   };
-  var handleFileDescChange = function (idx, val) {
-    setFileDescriptions(function (prev) { return prev.map(function (d, i) { return i === idx ? val : d; }); });
-  };
 
   var handlePredict = useCallback(function () {
     setPredicting(true);
@@ -58,13 +51,13 @@ export default function StepContext() {
       setPredicting(false);
       setPredictions(MOCK_PREDICTIONS);
       setSelectedPrediction(MOCK_PREDICTIONS[0].id);
-      setDescription(MOCK_PREDICTIONS[0].description);
+      setDescription(MOCK_PREDICTIONS[0].title);
     }, 2500);
   }, []);
 
   var handleSelectPrediction = function (pred) {
     setSelectedPrediction(pred.id);
-    setDescription(pred.description);
+    setDescription(pred.title);
   };
 
   var handleContinue = function () {
@@ -82,32 +75,18 @@ export default function StepContext() {
 
   return (
     <div>
-      {/* Title row */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
-        <div>
-          <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', margin: '0 0 4px 0' }}>
-            Define the Problem
-          </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', margin: 0 }}>
-            We'll predict the real business challenges your company may face.
-          </p>
-        </div>
-        {!predictions && (
-          <button onClick={handlePredict} disabled={predicting} style={{
-            display: 'inline-flex', alignItems: 'center', gap: 5,
-            padding: '6px 14px', borderRadius: 8,
-            border: '1px solid var(--border-default)', backgroundColor: '#fff',
-            fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)',
-            cursor: predicting ? 'default' : 'pointer', whiteSpace: 'nowrap',
-            opacity: predicting ? 0.6 : 1, flexShrink: 0,
-          }}>
-            {predicting ? <><Loader2 size={12} className="animate-spin" /> Analyzing...</> : <><Wand2 size={12} style={{ color: 'var(--gold)' }} /> Generate predictions</>}
-          </button>
-        )}
+      {/* Title */}
+      <div style={{ marginBottom: 20 }}>
+        <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', margin: '0 0 4px 0' }}>
+          Define the Problem
+        </h2>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', margin: 0 }}>
+          Describe the challenge or let AI predict one for you.
+        </p>
       </div>
 
-      {/* Left-Right split: input on left, predictions on right */}
-      <div style={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gap: 24 }}>
+      {/* Two-column layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 3fr', gap: 28 }}>
         {/* Left: textarea + upload */}
         <div>
           <textarea
@@ -125,7 +104,6 @@ export default function StepContext() {
             onBlur={function (e) { e.target.style.borderColor = 'var(--border-default)'; }}
           />
 
-          {/* File upload */}
           <label style={{
             display: 'flex', flexDirection: 'column', alignItems: 'center',
             border: '1.5px dashed var(--border-default)', borderRadius: 12,
@@ -142,7 +120,6 @@ export default function StepContext() {
             </span>
           </label>
 
-          {/* Uploaded files */}
           {files.map(function (f, idx) {
             return (
               <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 8, backgroundColor: 'var(--cream)', marginBottom: 4 }}>
@@ -154,106 +131,136 @@ export default function StepContext() {
               </div>
             );
           })}
-
         </div>
 
-        {/* Right: AI predictions */}
-        <div style={{ minHeight: 200 }}>
-          {predictions ? (
-            <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
+        {/* Right: AI predictions — ranked list */}
+        <div>
+          {/* Header row with label + generate button */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
               AI Predictions
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {predictions.map(function (pred) {
+            {!predictions && (
+              <button onClick={handlePredict} disabled={predicting} style={{
+                display: 'inline-flex', alignItems: 'center', gap: 5,
+                padding: '5px 12px', borderRadius: 6,
+                border: '1px solid var(--border-default)', backgroundColor: '#fff',
+                fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)',
+                cursor: predicting ? 'default' : 'pointer', whiteSpace: 'nowrap',
+                opacity: predicting ? 0.6 : 1,
+              }}>
+                {predicting ? <><Loader2 size={10} className="animate-spin" /> Analyzing...</> : <><Sparkles size={10} style={{ color: 'var(--gold)' }} /> Generate</>}
+              </button>
+            )}
+          </div>
+
+          {predictions ? (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+              {predictions.map(function (pred, idx) {
                 var isChosen = selectedPrediction === pred.id;
-                var isExpanded = expandedPred === pred.id;
                 return (
-                  <div
-                    key={pred.id}
-                    style={{
-                      borderRadius: 12,
-                      border: isChosen ? '1.5px solid var(--gold)' : '1px solid var(--border-default)',
-                      backgroundColor: isChosen ? 'rgba(139,105,20,0.03)' : '#fff',
-                      overflow: 'hidden', transition: 'all 0.15s ease',
-                    }}
-                  >
-                    {/* Header — clickable to select */}
+                  <div key={pred.id} style={{ animation: 'fsu .2s ease ' + (idx * 0.06) + 's both' }}>
                     <button
                       onClick={function () { handleSelectPrediction(pred); }}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: 10, width: '100%',
-                        padding: '14px 16px', border: 'none', background: 'transparent',
+                        display: 'flex', alignItems: 'center', gap: 12, width: '100%',
+                        padding: '12px 14px', border: 'none', background: 'transparent',
                         cursor: 'pointer', textAlign: 'left',
+                        borderLeft: isChosen ? '3px solid var(--gold)' : '3px solid transparent',
+                        backgroundColor: isChosen ? 'rgba(139,105,20,0.04)' : 'transparent',
+                        borderRadius: 0,
+                        transition: 'all 0.15s ease',
                       }}
                     >
-                      <div style={{ flex: 1 }}>
-                        {pred.label && (
-                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--gold)', marginBottom: 4 }}>{pred.label}</div>
-                        )}
-                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
-                          {pred.title}
+                      {/* Rank */}
+                      <span style={{
+                        fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 700,
+                        color: isChosen ? 'var(--gold)' : 'var(--brown-light)',
+                        width: 18, textAlign: 'center', flexShrink: 0,
+                      }}>
+                        {idx + 1}
+                      </span>
+
+                      {/* Content */}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          {pred.label && (
+                            <span style={{
+                              fontFamily: 'var(--font-mono)', fontSize: 8, fontWeight: 600,
+                              color: 'var(--gold)', backgroundColor: 'rgba(139,105,20,0.08)',
+                              padding: '1px 5px', borderRadius: 3, textTransform: 'uppercase',
+                              letterSpacing: '0.03em', flexShrink: 0,
+                            }}>{pred.label}</span>
+                          )}
+                          <span style={{
+                            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: isChosen ? 600 : 500,
+                            color: 'var(--brown)',
+                            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                          }}>
+                            {pred.title}
+                          </span>
                         </div>
                       </div>
+
+                      {/* Check */}
                       {isChosen && <Check size={14} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />}
                     </button>
 
-                    {/* Expand toggle */}
-                    <button
-                      onClick={function () { setExpandedPred(isExpanded ? null : pred.id); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 4, width: '100%',
-                        padding: '0 16px 10px', border: 'none', background: 'transparent',
-                        cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 10,
-                        color: 'var(--brown-soft)',
-                      }}
-                    >
-                      {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
-                      {isExpanded ? 'Collapse' : 'Read more'}
-                    </button>
-
-                    {/* Expanded content */}
-                    {isExpanded && (
-                      <div style={{ padding: '0 16px 14px', animation: 'fsd .15s ease' }}>
-                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.6, marginBottom: 10 }}>
-                          {pred.description}
-                        </div>
-                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--accent-green)', lineHeight: 1.4 }}>
-                          <strong>Why this fits:</strong> {pred.whyFits}
-                        </div>
+                    {/* Why it fits — shows only when selected */}
+                    {isChosen && (
+                      <div style={{
+                        padding: '0 14px 12px 47px',
+                        animation: 'fsd .15s ease',
+                      }}>
+                        <span style={{
+                          fontFamily: 'var(--font-body)', fontSize: 11,
+                          color: 'var(--accent-green)', lineHeight: 1.5,
+                        }}>
+                          {pred.whyFits}
+                        </span>
                       </div>
+                    )}
+
+                    {/* Divider */}
+                    {idx < predictions.length - 1 && (
+                      <div style={{ height: 1, backgroundColor: 'var(--border-light)', margin: '0 14px 0 47px' }} />
                     )}
                   </div>
                 );
               })}
             </div>
-          </div>
           ) : (
-          <div style={{
-            borderRadius: 12, border: '1px dashed var(--border-default)',
-            padding: '32px 20px', textAlign: 'center',
-            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
-          }}>
-            <Wand2 size={20} style={{ color: 'var(--brown-light)' }} />
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500, color: 'var(--brown-soft)' }}>
-              AI Predictions
+            <div style={{
+              padding: '28px 20px', textAlign: 'center',
+              borderRadius: 10, border: '1px dashed var(--border-default)',
+            }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.5 }}>
+                {predicting ? 'Analyzing your role and context...' : 'Start typing or generate predictions'}
+              </div>
             </div>
-            <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-light)', maxWidth: 220, lineHeight: 1.5 }}>
-              Click "Generate predictions" to see what challenges your company may face.
-            </div>
-          </div>
           )}
         </div>
       </div>
 
-      {/* Continue — below grid, always visible when enough text */}
-      {canContinue && (
-        <div style={{ marginTop: 20 }}>
-          <button onClick={handleContinue} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            Continue <ArrowRight size={14} />
-          </button>
-        </div>
-      )}
+      {/* Continue — always visible, sticky at bottom */}
+      <div style={{
+        position: 'sticky', bottom: 0,
+        padding: '16px 0', marginTop: 20,
+        backgroundColor: 'var(--cream)',
+      }}>
+        <button
+          onClick={handleContinue}
+          disabled={!canContinue}
+          className="btn-primary"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            opacity: canContinue ? 1 : 0.4,
+            cursor: canContinue ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Continue <ArrowRight size={14} />
+        </button>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
 import Typewriter from './typewriter';
-import { ArrowRight, Bot } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 var ROLES = [
   'AI Research Engineer', 'Full-Stack Developer', 'Product Designer',
@@ -197,40 +197,37 @@ export default function HeroSection({ tab }) {
             }}
           />
           <div style={{
-            position: 'fixed', top: '50%', left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 360, backgroundColor: '#fff', borderRadius: 16,
-            boxShadow: 'var(--shadow-modal)', zIndex: 101,
-            padding: '36px', textAlign: 'center',
-            animation: 'fadeScale .2s ease both',
+            position: 'fixed', top: 0, left: 0, right: 0, bottom: 0,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            zIndex: 101, pointerEvents: 'none',
+          }}>
+          <div style={{
+            width: 380, backgroundColor: '#fff', borderRadius: 20,
+            boxShadow: '0 24px 80px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)',
+            padding: '48px 40px 40px',
+            textAlign: 'center', animation: 'fadeScale .2s ease both',
+            pointerEvents: 'auto',
           }}>
             <div style={{
-              width: 48, height: 48, borderRadius: 12,
-              backgroundColor: 'rgba(139,105,20,0.06)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 16px',
-            }}>
-              <Bot size={22} style={{ color: 'var(--brown-soft)' }} />
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600,
-              color: 'var(--brown)', marginBottom: 8,
+              fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 700,
+              color: 'var(--brown)', marginBottom: 10, letterSpacing: '-0.01em',
             }}>
               Coming Soon
             </div>
             <div style={{
               fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)',
-              lineHeight: 1.6, marginBottom: 24,
+              lineHeight: 1.5, marginBottom: 28,
             }}>
-              AI agent evaluation is launching soon. We'll notify you when it's ready.
+              AI-powered hiring evaluation is on its way.
             </div>
             <button
               onClick={function () { setShowComingSoon(false); }}
-              className="btn-secondary"
-              style={{ padding: '8px 20px', fontSize: 12 }}
+              className="btn-primary"
+              style={{ padding: '10px 28px', fontSize: 12 }}
             >
               Got it
             </button>
+          </div>
           </div>
         </>
       )}

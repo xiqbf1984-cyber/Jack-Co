@@ -63,7 +63,7 @@ export default function StepTask() {
   // Group by category
   var grouped = {};
   allTasks.filter(filterTask).forEach(function (t) {
-    if (!q && recommendedIds.has(t.id)) return;
+    // recommended tasks stay in their categories (badge shown on card)
     var key = t.categoryName || 'Other';
     if (!grouped[key]) grouped[key] = [];
     grouped[key].push(t);
@@ -95,20 +95,6 @@ export default function StepTask() {
         />
       </div>
 
-      {/* Recommended */}
-      {!q && recommended.length > 0 && (
-        <div style={{ marginBottom: 24 }}>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
-            Recommended
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
-            {recommended.filter(filterTask).map(function (t) {
-              return renderCompactCard(t, selected(t), handleSelect, setHoveredTask, function (e) { setTooltipPos({ x: e.clientX, y: e.clientY }); });
-            })}
-          </div>
-        </div>
-      )}
-
       {/* All tasks by category */}
       {Object.entries(grouped).map(function (entry) {
         var catName = entry[0]; var tasks = entry[1];
@@ -117,9 +103,9 @@ export default function StepTask() {
             <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--brown-light)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
               {stripCodePrefix(catName)}
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
               {tasks.map(function (t) {
-                return renderCompactCard(t, selected(t), handleSelect, setHoveredTask, function (e) { setTooltipPos({ x: e.clientX, y: e.clientY }); });
+                return renderCompactCard(t, selected(t), handleSelect, setHoveredTask, function (e) { setTooltipPos({ x: e.clientX, y: e.clientY }); }, recommendedIds.has(t.id));
               })}
             </div>
           </div>
@@ -160,7 +146,7 @@ export default function StepTask() {
   );
 }
 
-function renderCompactCard(t, isSelected, onSelect, onHover, onMouseMove) {
+function renderCompactCard(t, isSelected, onSelect, onHover, onMouseMove, isRecommended) {
   return (
     <button
       key={t.id}
@@ -184,6 +170,16 @@ function renderCompactCard(t, isSelected, onSelect, onHover, onMouseMove) {
       <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)', lineHeight: 1.4 }}>
         {t.produces}
       </div>
+      {isRecommended && (
+        <div style={{ marginTop: 6 }}>
+          <span style={{
+            fontFamily: 'var(--font-mono)', fontSize: 8, fontWeight: 600,
+            color: 'var(--gold)', backgroundColor: 'rgba(139,105,20,0.08)',
+            padding: '2px 6px', borderRadius: 4, textTransform: 'uppercase',
+            letterSpacing: '0.04em',
+          }}>Recommended</span>
+        </div>
+      )}
     </button>
   );
 }

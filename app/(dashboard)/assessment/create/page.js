@@ -66,7 +66,7 @@ export default function CreateAssessmentPage() {
 
       {/* Content */}
       <div style={{ flex: 1, overflowY: 'auto' }}>
-        <div style={{ maxWidth: currentStep >= 3 ? 760 : undefined, padding: '24px 32px 80px' }}>
+        <div style={{ maxWidth: currentStep >= 3 ? 860 : 1060, margin: '0 auto', padding: '24px 32px 80px' }}>
           {showBack && (
             <button
               onClick={function () { goToStep(currentStep - 1); }}
