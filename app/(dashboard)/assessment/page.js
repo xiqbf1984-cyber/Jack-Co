@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, Briefcase } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
 
@@ -47,14 +47,9 @@ export default function AssessmentsPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Assessments</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your candidate assessments</p>
-        </div>
-        <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
-          Create Assessment
-        </Link>
+      <div>
+        <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Assessments</h1>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your candidate assessments</p>
       </div>
 
       {/* Search + Tab filters */}
@@ -77,17 +72,61 @@ export default function AssessmentsPage() {
             );
           })}
         </div>
+        <div style={{ marginLeft: 'auto' }}>
+          <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
+            Create Assessment
+          </Link>
+        </div>
       </div>
 
       {/* Assessment cards */}
       {filtered.length === 0 ? (
-        <div style={{ textAlign: 'center', padding: '80px 0' }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)' }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 400,
+          borderRadius: 12,
+          border: '1px solid var(--border-default)',
+          background: '#fff',
+        }}>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: 12,
+            backgroundColor: 'rgba(139,105,20,0.06)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 16,
+          }}>
+            <Briefcase size={22} style={{ color: 'var(--gold)' }} />
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 15,
+            fontWeight: 600,
+            color: 'var(--brown)',
+            marginBottom: 4,
+          }}>
             {search || activeTab !== 'all' ? 'No assessments match your filters' : 'No assessments yet'}
           </p>
+          <p style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown-soft)',
+            maxWidth: 320,
+            textAlign: 'center',
+            marginBottom: 20,
+          }}>
+            {search || activeTab !== 'all'
+              ? 'Try adjusting your search or filters'
+              : 'Create your first assessment to start evaluating candidates with AI-powered work samples.'}
+          </p>
           {!search && activeTab === 'all' && (
-            <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', marginTop: 16, padding: '8px 18px', fontSize: 12, textDecoration: 'none' }}>
-              Create your first assessment
+            <Link href="/assessment/create" className="btn-primary" style={{ display: 'inline-flex', padding: '8px 18px', fontSize: 12, textDecoration: 'none' }}>
+              Create Assessment
             </Link>
           )}
         </div>

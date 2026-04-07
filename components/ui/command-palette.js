@@ -172,9 +172,9 @@ export default function CommandPalette({ open, onClose }) {
       {/* Palette */}
       <div style={{
         position: 'fixed',
-        top: '18%',
+        top: '50%',
         left: '50%',
-        transform: 'translateX(-50%)',
+        transform: 'translate(-50%, -50%)',
         width: 520,
         maxHeight: '60vh',
         backgroundColor: '#fff',

@@ -282,14 +282,9 @@ export default function RolesPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Roles</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your hiring roles and job descriptions</p>
-        </div>
-        <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
-          <Plus size={13} /> Add Role
-        </Link>
+      <div>
+        <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>Roles</h1>
+        <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>Manage your hiring roles and job descriptions</p>
       </div>
 
       {/* Search + Filter */}
@@ -308,6 +303,11 @@ export default function RolesPage() {
             <X size={10} /> Clear
           </button>
         )}
+        <div style={{ marginLeft: 'auto' }}>
+          <Link href="/roles/create" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '8px 16px', textDecoration: 'none', fontSize: 12 }}>
+            <Plus size={13} /> Add Role
+          </Link>
+        </div>
       </div>
 
       {/* Table */}

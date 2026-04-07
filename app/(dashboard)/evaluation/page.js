@@ -227,23 +227,22 @@ export default function EvaluationPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '64px 24px',
-          borderRadius: 14,
+          minHeight: 400,
+          borderRadius: 12,
           border: '1px solid var(--border-default)',
           background: '#fff',
-          boxShadow: 'var(--shadow-card)',
         }}>
           <div style={{
-            width: 56,
-            height: 56,
-            borderRadius: 16,
-            background: 'linear-gradient(135deg, rgba(139,105,20,0.08), rgba(196,163,50,0.12))',
+            width: 48,
+            height: 48,
+            borderRadius: 12,
+            backgroundColor: 'rgba(139,105,20,0.06)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             marginBottom: 16,
           }}>
-            <BarChart3 size={24} style={{ color: 'var(--gold)' }} />
+            <BarChart3 size={22} style={{ color: 'var(--gold)' }} />
           </div>
           <p style={{
             fontFamily: 'var(--font-body)',
@@ -256,7 +255,9 @@ export default function EvaluationPage() {
             fontFamily: 'var(--font-body)',
             fontSize: 13,
             color: 'var(--brown-soft)',
-          }}>Results will appear here as candidates complete their assessments</p>
+            maxWidth: 320,
+            textAlign: 'center',
+          }}>Results will appear here once candidates complete assessments.</p>
         </div>
       )}
     </div>
