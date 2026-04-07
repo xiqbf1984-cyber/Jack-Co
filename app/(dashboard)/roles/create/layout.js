@@ -22,10 +22,8 @@ export default function RoleCreateLayout({ children }) {
       var rect = containerRef.current.getBoundingClientRect();
       var px = e.clientX - rect.left;
       var ratio = px / rect.width;
-      var clamped = Math.max(0.28, Math.min(0.60, ratio));
-      setSplitRatio(clamped);
+      setSplitRatio(Math.max(0.28, Math.min(0.60, ratio)));
     }
-
     function handleMouseUp() {
       if (isDragging.current) {
         isDragging.current = false;
@@ -33,7 +31,6 @@ export default function RoleCreateLayout({ children }) {
         document.body.style.userSelect = '';
       }
     }
-
     document.addEventListener('mousemove', handleMouseMove);
     document.addEventListener('mouseup', handleMouseUp);
     return function () {
@@ -43,28 +40,22 @@ export default function RoleCreateLayout({ children }) {
   }, []);
 
   useEffect(function () {
-    function handleToggle(e) {
-      setRightPanelVisible(e.detail?.visible ?? false);
-    }
+    function handleToggle(e) { setRightPanelVisible(e.detail?.visible ?? false); }
     window.addEventListener('jd-panel-toggle', handleToggle);
     return function () { window.removeEventListener('jd-panel-toggle', handleToggle); };
   }, []);
 
-  // Measure header height from the page's header element
+  // Measure header
   useEffect(function () {
     function measure() {
-      var header = document.getElementById('role-create-header');
-      if (header) setHeaderHeight(header.offsetHeight);
+      var h = document.getElementById('role-create-header');
+      if (h) setHeaderHeight(h.offsetHeight);
     }
     measure();
-    var timer = setInterval(measure, 300);
-    var timeoutId = setTimeout(function () { clearInterval(timer); }, 3000);
+    var t = setInterval(measure, 300);
+    setTimeout(function () { clearInterval(t); }, 3000);
     window.addEventListener('resize', measure);
-    return function () {
-      clearInterval(timer);
-      clearTimeout(timeoutId);
-      window.removeEventListener('resize', measure);
-    };
+    return function () { clearInterval(t); window.removeEventListener('resize', measure); };
   }, [rightPanelVisible]);
 
   return (
@@ -79,41 +70,52 @@ export default function RoleCreateLayout({ children }) {
         overflow: 'hidden',
       }}
     >
-      {/* Split panels */}
+      {/*
+        The page renders its header (with id="role-create-header") inside the left panel.
+        We use its measured height to create a full-width header zone.
+      */}
+
+      {/* Full-width header zone — covers both panels */}
+      {rightPanelVisible && headerHeight > 0 && (
+        <div style={{
+          position: 'absolute', top: 0, left: 0, right: 0,
+          height: headerHeight,
+          backgroundColor: 'var(--cream)',
+          zIndex: 3,
+          pointerEvents: 'none',
+        }} />
+      )}
+
+      {/* Content split */}
       <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
         {/* Left panel */}
-        <div
-          style={{
-            flex: rightPanelVisible ? 'none' : '1',
-            width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
-            minWidth: rightPanelVisible ? 320 : undefined,
-            transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-          }}
-        >
+        <div style={{
+          flex: rightPanelVisible ? 'none' : '1',
+          width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
+          minWidth: rightPanelVisible ? 320 : undefined,
+          transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          zIndex: 4,
+        }}>
           {typeof children === 'object' && children}
         </div>
 
-        {/* Divider */}
+        {/* Divider — starts below header */}
         {rightPanelVisible && (
           <div
             onMouseDown={handleMouseDown}
             style={{
-              width: 6, cursor: 'col-resize',
+              width: 5, cursor: 'col-resize',
               backgroundColor: 'var(--border-light)', flexShrink: 0,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transition: 'background-color 0.15s ease', zIndex: 2,
+              marginTop: headerHeight,
+              transition: 'background-color 0.15s ease',
             }}
             onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
             onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
-          >
-            <div style={{ width: 3, height: 40, borderRadius: 2, backgroundColor: 'var(--border-default)' }} />
-          </div>
+          />
         )}
 
-        {/* Right panel – JD canvas, with top padding matching header height */}
+        {/* Right panel — starts below header */}
         {rightPanelVisible && (
           <div
             id="jd-canvas-panel"
@@ -122,7 +124,7 @@ export default function RoleCreateLayout({ children }) {
               overflow: 'hidden',
               animation: 'canvasIn 0.35s ease-out',
               display: 'flex', flexDirection: 'column',
-              paddingTop: headerHeight > 0 ? headerHeight : 0,
+              marginTop: headerHeight,
             }}
           />
         )}

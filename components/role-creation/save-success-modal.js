@@ -5,153 +5,85 @@ import { ArrowRight } from 'lucide-react';
 export default function SaveSuccessModal({ roleTitle, onCreateAnother, onGoToAssessment, onStay }) {
   return (
     <div style={{
-      position: 'fixed',
-      inset: 0,
-      zIndex: 2000,
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: 'rgba(26,22,18,0.4)',
-      backdropFilter: 'blur(12px)',
-      WebkitBackdropFilter: 'blur(12px)',
-      animation: 'fadeIn 0.2s ease',
+      position: 'fixed', inset: 0, zIndex: 2000,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      backgroundColor: 'rgba(26,22,18,0.35)',
+      backdropFilter: 'blur(8px)',
+      animation: 'fi 0.15s ease',
     }}>
       <div style={{
-        background: '#fff',
-        borderRadius: 20,
-        padding: '36px 32px 28px',
-        width: '100%',
-        maxWidth: 440,
-        boxShadow: '0 20px 60px rgba(0,0,0,.15)',
-        animation: 'fadeScale 0.3s ease both',
+        background: '#fff', borderRadius: 16,
+        padding: '32px 28px 24px',
+        width: '100%', maxWidth: 380,
+        boxShadow: 'var(--shadow-modal)',
+        animation: 'fadeScale 0.2s ease both',
+        textAlign: 'center',
       }}>
-        {/* Success icon */}
+        {/* Check icon */}
         <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: 20,
+          width: 40, height: 40, borderRadius: '50%',
+          backgroundColor: 'rgba(39, 130, 91, 0.1)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          margin: '0 auto 14px',
         }}>
-          <div style={{
-            width: 48,
-            height: 48,
-            borderRadius: '50%',
-            backgroundColor: 'rgba(39, 130, 91, 0.1)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M5 13l4 4L19 7" stroke="var(--accent-green)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </div>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path d="M5 13l4 4L19 7" stroke="var(--accent-green)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
         </div>
 
-        {/* Title */}
         <h2 style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 20,
-          fontWeight: 700,
-          color: 'var(--brown)',
-          textAlign: 'center',
-          marginBottom: 6,
+          fontFamily: 'var(--font-body)', fontSize: 17, fontWeight: 600,
+          color: 'var(--brown)', marginBottom: 4,
         }}>
-          Role Created
+          {roleTitle} saved
         </h2>
         <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-          color: 'var(--brown-soft)',
-          textAlign: 'center',
-          marginBottom: 28,
-          lineHeight: 1.5,
+          fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
+          marginBottom: 20,
         }}>
-          <strong style={{ color: 'var(--brown)' }}>{roleTitle}</strong> has been saved successfully. What would you like to do next?
+          What's next?
         </p>
 
-        {/* Action options */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-          {/* Create assessment */}
-          <button
-            type="button"
-            onClick={onGoToAssessment}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 14,
-              padding: '16px 18px',
-              borderRadius: 14,
-              border: '1.5px solid rgba(39, 130, 91, 0.25)',
-              backgroundColor: 'rgba(39, 130, 91, 0.04)',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              textAlign: 'left',
-            }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(39, 130, 91, 0.08)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'rgba(39, 130, 91, 0.04)'; }}
+        {/* Actions */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <button onClick={onGoToAssessment} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '12px 14px', borderRadius: 10,
+            border: '1px solid var(--border-default)', background: '#fff',
+            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
+            color: 'var(--brown)', cursor: 'pointer',
+            transition: 'background-color 0.1s ease',
+          }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--cream)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fff'; }}
           >
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
-                Create an Assessment
-              </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)', marginTop: 2 }}>
-                Set up an AI assessment for this role
-              </div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
+            Create Assessment
+            <ArrowRight size={14} style={{ color: 'var(--brown-light)' }} />
           </button>
 
-          {/* Create another role */}
-          <button
-            type="button"
-            onClick={onCreateAnother}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 14,
-              padding: '16px 18px',
-              borderRadius: 14,
-              border: '1.5px solid rgba(139, 105, 20, 0.2)',
-              backgroundColor: 'rgba(139, 105, 20, 0.03)',
-              cursor: 'pointer',
-              transition: 'all 0.15s ease',
-              textAlign: 'left',
-            }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(139, 105, 20, 0.07)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'rgba(139, 105, 20, 0.03)'; }}
+          <button onClick={onCreateAnother} style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '12px 14px', borderRadius: 10,
+            border: '1px solid var(--border-default)', background: '#fff',
+            fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
+            color: 'var(--brown)', cursor: 'pointer',
+            transition: 'background-color 0.1s ease',
+          }}
+            onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--cream)'; }}
+            onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#fff'; }}
           >
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
-                Create Another Role
-              </div>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-muted)', marginTop: 2 }}>
-                Start a new JD from scratch
-              </div>
-            </div>
-            <ArrowRight size={16} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
+            Create Another Role
+            <ArrowRight size={14} style={{ color: 'var(--brown-light)' }} />
           </button>
         </div>
 
-        {/* Stay link */}
-        <div style={{ textAlign: 'center', marginTop: 18 }}>
-          <button
-            type="button"
-            onClick={onStay}
-            style={{
-              fontFamily: 'var(--font-body)',
-              fontSize: 12,
-              color: 'var(--brown-muted)',
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '4px 8px',
-              transition: 'color 0.15s ease',
-            }}
-            onMouseEnter={function (e) { e.currentTarget.style.color = 'var(--brown)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.color = 'var(--brown-muted)'; }}
-          >
-            Stay and keep editing
-          </button>
-        </div>
+        <button onClick={onStay} style={{
+          fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-light)',
+          background: 'none', border: 'none', cursor: 'pointer',
+          marginTop: 14, padding: '4px 8px',
+        }}>
+          Keep editing
+        </button>
       </div>
     </div>
   );
