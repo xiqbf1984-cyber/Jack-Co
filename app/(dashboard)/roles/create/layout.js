@@ -87,7 +87,7 @@ export default function RoleCreateLayout({ children }) {
       )}
 
       {/* Content split */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div style={{ flex: 1, display: 'flex', minHeight: 0 }}>
         {/* Left panel — overflow visible so header extends across both panels */}
         <div style={{
           flex: rightPanelVisible ? 'none' : '1',
