@@ -42,7 +42,7 @@ export default function ExploreSampleModal({ open, onClose }) {
         zIndex: 91, pointerEvents: 'none', transition: 'left 0.2s ease',
       }}>
         <div style={{
-          width: 400, backgroundColor: '#fff', borderRadius: 14,
+          width: 420, backgroundColor: '#fff', borderRadius: 14,
           boxShadow: 'var(--shadow-modal)', padding: '28px 24px',
           animation: 'fadeScale .2s ease both', pointerEvents: 'auto',
           position: 'relative',
@@ -56,12 +56,37 @@ export default function ExploreSampleModal({ open, onClose }) {
             <X size={14} />
           </button>
 
-          <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 17, fontWeight: 600, color: 'var(--brown)', marginBottom: 8, textAlign: 'center' }}>
+          <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 17, fontWeight: 600, color: 'var(--brown)', marginBottom: 6 }}>
             Explore Sample Case
           </h2>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', textAlign: 'center', lineHeight: 1.5, marginBottom: 20 }}>
-            We'll load sample roles, candidates, and a ready-to-use hiring pipeline for you to explore.
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.5, marginBottom: 20 }}>
+            We'll set up a complete hiring pipeline with sample data.
           </p>
+
+          {/* What gets created */}
+          <div style={{
+            borderRadius: 10, backgroundColor: 'var(--cream)',
+            padding: '14px 16px', marginBottom: 16,
+          }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600, color: 'var(--brown-light)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
+              What we'll create
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
+                <strong>3 Roles</strong> — Full-Stack Engineer, AI Researcher, Product Designer
+              </div>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
+                <strong>3 Candidates</strong> — including you ({userEmail})
+              </div>
+            </div>
+          </div>
+
+          <div style={{
+            fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)',
+            lineHeight: 1.5, marginBottom: 20, padding: '0 2px',
+          }}>
+            Try sending yourself an assessment to experience the full candidate workflow firsthand.
+          </div>
 
           <button
             onClick={handleExplore}

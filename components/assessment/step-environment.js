@@ -229,25 +229,6 @@ export default function StepEnvironment() {
         </p>
       </div>
 
-      {/* AI bubble */}
-      <div style={{
-        padding: '14px 18px',
-        borderRadius: 14,
-        backgroundColor: 'rgba(139,105,20,0.04)',
-        border: '1px solid var(--border-light)',
-        marginBottom: 20,
-      }}>
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-          color: 'var(--brown)',
-          lineHeight: 1.6,
-          margin: 0,
-        }}>
-          Here's your Assessment Environment. You can edit any section directly, or tell me what to change in the chat below.
-        </p>
-      </div>
-
       {/* Document card */}
       <div style={{
         backgroundColor: '#fff',
