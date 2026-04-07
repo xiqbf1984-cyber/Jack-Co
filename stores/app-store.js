@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import { MOCK_ROLES, MOCK_CANDIDATES, MOCK_ASSESSMENTS } from '@/lib/constants';
 import { supabase, getUserByClerkId, getUserOrgId } from '@/lib/supabase';
 import { fetchRoles, createRole, updateRoleDb, deleteRoleDb, duplicateRoleDb } from '@/lib/api/roles';
-import { fetchCandidates, createCandidateDb, deleteCandidateDb } from '@/lib/api/candidates';
-import { fetchAssessments } from '@/lib/api/assessments';
+import { fetchCandidates, createCandidateDb, updateCandidateDb, deleteCandidateDb } from '@/lib/api/candidates';
+import { fetchAssessments, createAssessmentDb } from '@/lib/api/assessments';
 
 export const useAppStore = create((set, get) => ({
   hiringManager: {
@@ -205,14 +205,33 @@ export const useAppStore = create((set, get) => ({
     }
   },
 
+  updateCandidate: (id, data) => {
+    set((s) => ({ candidates: s.candidates.map((c) => c.id === id ? { ...c, ...data } : c) }));
+    updateCandidateDb(id, data).catch((e) => console.error('updateCandidate failed:', e));
+  },
+
   removeCandidate: (id) => {
     set((s) => ({ candidates: s.candidates.filter((c) => c.id !== id) }));
     deleteCandidateDb(id).catch((e) => console.error('deleteCandidate failed:', e));
   },
 
-  addAssessment: (assessment) => set((s) => ({
-    assessments: [{ id: 'a-' + Date.now(), ...assessment }, ...s.assessments],
-  })),
+  addAssessment: (assessment) => {
+    const s = get();
+    const tempId = 'a-' + Date.now();
+    const tempAssessment = { id: tempId, createdAt: new Date().toISOString(), ...assessment };
+    set({ assessments: [tempAssessment, ...s.assessments] });
+
+    // Async: sync to DB
+    if (s.dbUser?.id && s.orgId) {
+      createAssessmentDb(s.dbUser.id, s.orgId, assessment).then((dbAssessment) => {
+        if (dbAssessment) {
+          set((cur) => ({
+            assessments: cur.assessments.map((a) => a.id === tempId ? { ...tempAssessment, ...dbAssessment } : a),
+          }));
+        }
+      }).catch((e) => console.error('addAssessment failed:', e));
+    }
+  },
 
   openAddCandidateModal: () => set({ addCandidateModalOpen: true }),
   closeAddCandidateModal: () => set({ addCandidateModalOpen: false }),

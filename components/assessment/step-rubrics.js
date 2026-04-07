@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Plus, Trash2, Search } from 'lucide-react';
 
 var MOCK_RUBRICS = [
   {
@@ -38,12 +38,68 @@ var MOCK_RUBRICS = [
   },
 ];
 
+var WEIGHT_OPTIONS = ['Essential', 'Important', 'Optional'];
+
+var weightColors = {
+  Essential: 'var(--accent-green)',
+  Important: 'var(--gold)',
+  Optional: 'var(--brown-light)',
+};
+
+var cardStyle = {
+  borderRadius: 12,
+  border: '1px solid var(--border-default)',
+  background: '#fff',
+  padding: '16px 20px',
+  marginBottom: 24,
+};
+
 export default function StepRubrics() {
   var completeStep = useAssessmentStore(function (s) { return s.completeStep; });
   var goToStep = useAssessmentStore(function (s) { return s.goToStep; });
   var updateRubrics = useAssessmentStore(function (s) { return s.updateRubrics; });
   var [dimensions, setDimensions] = useState(MOCK_RUBRICS);
-  var [expandedId, setExpandedId] = useState(MOCK_RUBRICS[0]?.id || null);
+  var [search, setSearch] = useState('');
+
+  function handleUpdateCriterion(dimId, critId, data) {
+    setDimensions(function (dims) {
+      return dims.map(function (dim) {
+        if (dim.id !== dimId) return dim;
+        return {
+          ...dim,
+          criteria: dim.criteria.map(function (c) {
+            return c.id === critId ? { ...c, ...data } : c;
+          }),
+        };
+      });
+    });
+  }
+
+  function handleDeleteCriterion(dimId, critId) {
+    setDimensions(function (dims) {
+      return dims.map(function (dim) {
+        if (dim.id !== dimId) return dim;
+        return { ...dim, criteria: dim.criteria.filter(function (c) { return c.id !== critId; }) };
+      });
+    });
+  }
+
+  function handleAddCriterion(dimId) {
+    setDimensions(function (dims) {
+      return dims.map(function (dim) {
+        if (dim.id !== dimId) return dim;
+        return {
+          ...dim,
+          criteria: dim.criteria.concat([{
+            id: 'custom-' + Date.now(),
+            title: 'New criterion',
+            description: 'Describe what to evaluate',
+            weight: 'Important',
+          }]),
+        };
+      });
+    });
+  }
 
   function handleContinue() {
     updateRubrics({ dimensions: dimensions });
@@ -51,9 +107,12 @@ export default function StepRubrics() {
     goToStep(5);
   }
 
+  var q = search.toLowerCase();
+
   return (
     <div>
-      <div style={{ marginBottom: 20 }}>
+      {/* Page title */}
+      <div style={{ marginBottom: 24 }}>
         <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', margin: 0, marginBottom: 4 }}>
           Evaluation Rubrics
         </h3>
@@ -62,100 +121,120 @@ export default function StepRubrics() {
         </p>
       </div>
 
-      {/* Rubric dimensions */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 24 }}>
-        {dimensions.map(function (dim) {
-          var isExpanded = expandedId === dim.id;
-          return (
-            <div key={dim.id} style={{
-              borderRadius: 12, border: '1px solid var(--border-default)',
-              background: '#fff', overflow: 'hidden',
-            }}>
-              {/* Dimension header */}
-              <button
-                onClick={function () { setExpandedId(isExpanded ? null : dim.id); }}
-                style={{
-                  display: 'flex', alignItems: 'center', width: '100%',
-                  padding: '14px 18px', border: 'none', background: 'transparent',
-                  cursor: 'pointer', textAlign: 'left', gap: 10,
-                }}
-              >
-                {isExpanded ? <ChevronUp size={14} style={{ color: 'var(--brown-soft)' }} /> : <ChevronDown size={14} style={{ color: 'var(--brown-soft)' }} />}
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
-                    {dim.name}
-                  </div>
-                  <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)', marginTop: 2 }}>
-                    {dim.description}
-                  </div>
+      {/* Dimensions */}
+      {dimensions.map(function (dim) {
+        var filteredCriteria = q
+          ? dim.criteria.filter(function (c) { return c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q); })
+          : dim.criteria;
+
+        if (q && filteredCriteria.length === 0) return null;
+
+        return (
+          <div key={dim.id} style={{ marginBottom: 24 }}>
+            {/* Section header — above card */}
+            <div style={{ marginBottom: 10 }}>
+              <h4 style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', margin: '0 0 3px 0' }}>
+                {dim.name}
+              </h4>
+              <p style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)', margin: 0 }}>
+                {dim.description}
+              </p>
+            </div>
+
+            {/* Card — editable table */}
+            <div style={cardStyle}>
+              {/* Toolbar */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                <div style={{ position: 'relative', width: 220 }}>
+                  <Search size={11} style={{ position: 'absolute', left: 8, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />
+                  <input
+                    type="text" value={search}
+                    onChange={function (e) { setSearch(e.target.value); }}
+                    placeholder="Search criteria..."
+                    style={{
+                      width: '100%', paddingLeft: 24, paddingRight: 8, paddingTop: 5, paddingBottom: 5,
+                      borderRadius: 6, border: '1px solid var(--border-default)', background: '#fff',
+                      fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown)',
+                      outline: 'none', boxSizing: 'border-box',
+                    }}
+                  />
                 </div>
-                <span style={{
-                  fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--brown-light)',
-                  backgroundColor: 'var(--cream)', padding: '2px 8px', borderRadius: 4,
-                }}>
-                  {dim.criteria.length} criteria
-                </span>
-              </button>
+                <button
+                  onClick={function () { handleAddCriterion(dim.id); }}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 4,
+                    fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 600, color: 'var(--brown)',
+                    background: 'none', border: '1px solid var(--border-default)', borderRadius: 6,
+                    padding: '4px 10px', cursor: 'pointer',
+                  }}
+                >
+                  <Plus size={12} /> Add Criterion
+                </button>
+              </div>
 
-              {/* Expanded: criteria table */}
-              {isExpanded && (
-                <div style={{ borderTop: '1px solid var(--border-light)' }}>
-                  {/* Table header */}
-                  <div style={{
-                    display: 'grid', gridTemplateColumns: '1fr 2fr 80px 40px',
-                    padding: '8px 18px', backgroundColor: 'var(--cream)',
-                    borderBottom: '1px solid var(--border-light)',
+              {/* Table header */}
+              <div style={{
+                display: 'grid', gridTemplateColumns: '1.5fr 2.5fr 80px 36px',
+                padding: '6px 0', borderBottom: '1px solid var(--border-light)',
+                marginBottom: 4,
+              }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-soft)', textTransform: 'uppercase' }}>Title</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-soft)', textTransform: 'uppercase' }}>Description</span>
+                <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-soft)', textTransform: 'uppercase' }}>Weight</span>
+                <span />
+              </div>
+
+              {/* Criteria rows */}
+              {filteredCriteria.map(function (c) {
+                return (
+                  <div key={c.id} style={{
+                    display: 'grid', gridTemplateColumns: '1.5fr 2.5fr 80px 36px',
+                    padding: '8px 0', borderBottom: '1px solid var(--border-light)',
+                    alignItems: 'center',
                   }}>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-soft)', textTransform: 'uppercase' }}>Title</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-soft)', textTransform: 'uppercase' }}>Description</span>
-                    <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-soft)', textTransform: 'uppercase' }}>Weight</span>
-                    <span />
-                  </div>
-
-                  {/* Criteria rows */}
-                  {dim.criteria.map(function (c) {
-                    var weightColor = c.weight === 'Essential' ? 'var(--accent-green)' : c.weight === 'Important' ? 'var(--gold)' : 'var(--brown-light)';
-                    return (
-                      <div key={c.id} style={{
-                        display: 'grid', gridTemplateColumns: '1fr 2fr 80px 40px',
-                        padding: '10px 18px', borderBottom: '1px solid var(--border-light)',
-                        alignItems: 'center',
-                      }}>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', fontWeight: 500 }}>
-                          {c.title}
-                        </span>
-                        <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>
-                          {c.description}
-                        </span>
-                        <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: weightColor, fontWeight: 600 }}>
-                          {c.weight}
-                        </span>
-                        <button style={{
-                          background: 'none', border: 'none', cursor: 'pointer', padding: 4,
-                          color: 'var(--brown-light)', display: 'flex', alignItems: 'center',
-                        }}>
-                          <Trash2 size={12} />
-                        </button>
-                      </div>
-                    );
-                  })}
-
-                  {/* Add criterion */}
-                  <div style={{ padding: '10px 18px' }}>
-                    <button style={{
-                      display: 'flex', alignItems: 'center', gap: 4,
-                      fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--gold)',
-                      background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                    }}>
-                      <Plus size={12} /> Add Criterion
+                    <input
+                      type="text" defaultValue={c.title}
+                      onBlur={function (e) { handleUpdateCriterion(dim.id, c.id, { title: e.target.value }); }}
+                      style={{
+                        fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', fontWeight: 500,
+                        border: 'none', outline: 'none', background: 'transparent', padding: '2px 0',
+                        width: '100%', boxSizing: 'border-box',
+                      }}
+                    />
+                    <input
+                      type="text" defaultValue={c.description}
+                      onBlur={function (e) { handleUpdateCriterion(dim.id, c.id, { description: e.target.value }); }}
+                      style={{
+                        fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)',
+                        border: 'none', outline: 'none', background: 'transparent', padding: '2px 4px',
+                        width: '100%', boxSizing: 'border-box',
+                      }}
+                    />
+                    <select
+                      value={c.weight}
+                      onChange={function (e) { handleUpdateCriterion(dim.id, c.id, { weight: e.target.value }); }}
+                      style={{
+                        fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600,
+                        color: weightColors[c.weight] || 'var(--brown-light)',
+                        border: '1px solid var(--border-light)', borderRadius: 4,
+                        background: 'transparent', padding: '2px 4px', cursor: 'pointer', outline: 'none',
+                      }}
+                    >
+                      {WEIGHT_OPTIONS.map(function (w) { return <option key={w} value={w}>{w}</option>; })}
+                    </select>
+                    <button
+                      onClick={function () { handleDeleteCriterion(dim.id, c.id); }}
+                      style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, color: 'var(--brown-light)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                    >
+                      <Trash2 size={12} />
                     </button>
                   </div>
-                </div>
-              )}
+                );
+              })}
             </div>
-          );
-        })}
-      </div>
+          </div>
+        );
+      })}
 
       {/* Continue */}
       <button onClick={handleContinue} className="btn-primary" style={{
