@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/nextjs';
 import Sidebar from '@/components/layout/sidebar';
 import { EXPANDED_WIDTH, COLLAPSED_WIDTH } from '@/components/layout/sidebar';
 import AddCandidateModal from '@/components/candidates/add-candidate-modal';
@@ -11,11 +12,22 @@ import { useAppStore } from '@/stores/app-store';
 
 export default function DashboardLayout({ children }) {
   const collapsed = useAppStore((s) => s.sidebarCollapsed);
+  const initializeData = useAppStore((s) => s.initializeData);
+  const dataInitialized = useAppStore((s) => s.dataInitialized);
   const marginLeft = collapsed ? COLLAPSED_WIDTH : EXPANDED_WIDTH;
+
+  const { user, isLoaded } = useUser();
 
   const [cmdOpen, setCmdOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+
+  // Initialize data from Supabase when Clerk user is available
+  useEffect(() => {
+    if (isLoaded && user?.id && !dataInitialized) {
+      initializeData(user.id);
+    }
+  }, [isLoaded, user?.id, dataInitialized, initializeData]);
 
   // Global ⌘K shortcut
   useEffect(() => {
