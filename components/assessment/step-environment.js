@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Loader2, Pencil, Send, ArrowRight } from 'lucide-react';
+import { Loader2, ArrowRight, Download } from 'lucide-react';
 
 function generateMockDocument(task, context, role, selectedRole) {
   const taskName = task.name || 'the assigned task';
@@ -21,106 +21,64 @@ function generateMockDocument(task, context, role, selectedRole) {
       { id: 'd6', text: 'POS outage prevention measures' },
     ],
     resources: [
-      { id: 'r1', name: 'NASA TLX Documentation', type: 'url', usage: 'Reference' },
-      { id: 'r2', name: 'BPMN Human-Agentic Workflows', type: 'url', usage: 'Reference' },
-      { id: 'r3', name: 'EU AI Act Article 14', type: 'url', usage: 'Reference' },
+      { id: 'r1', name: 'xIQ Platform Architecture Overview', type: 'PDF', description: 'Complete technical architecture documentation for the xIQ Digital Workplace Platform, including integration points and API specifications.' },
+      { id: 'r2', name: 'Incident Ticket Export (6 weeks)', type: 'CSV', description: 'Raw ticket data from the 750-location pilot covering all device categories, resolution times, and escalation paths.' },
+      { id: 'r3', name: 'Deployment Runbook', type: 'MD', description: 'Step-by-step deployment procedures, rollback plans, and environment configuration for the xIQ platform.' },
+      { id: 'r4', name: 'Store Network Topology Pack', type: 'ZIP', description: 'Network diagrams, device inventories, and connectivity specs for all 750 pilot locations.' },
       ...(context.files || []).map((f, i) => ({
         id: `rf${i}`,
         name: typeof f === 'string' ? f : f.name,
-        type: 'file',
-        usage: 'Required',
+        type: 'PDF',
+        description: 'Uploaded context file for the assessment.',
       })),
+      { id: 'r5', name: 'NASA TLX Documentation', type: 'URL', description: 'Task Load Index methodology for measuring and conducting subjective workload assessments.' },
+      { id: 'r6', name: 'BPMN Human-Agentic Workflows', type: 'URL', description: 'Business Process Model and Notation standards for designing human-AI collaborative workflows.' },
+      { id: 'r7', name: 'EU AI Act Article 14', type: 'URL', description: 'European Union regulation on human oversight requirements for high-risk AI systems.' },
     ],
   };
 }
 
-function EditableSection({ title, text, onSave }) {
-  const [editing, setEditing] = useState(false);
-  const [value, setValue] = useState(text);
-  const [highlighted, setHighlighted] = useState(false);
+const cardStyle = {
+  borderRadius: 12,
+  border: '1px solid var(--border-default)',
+  background: '#fff',
+  padding: '20px 24px',
+  marginBottom: 16,
+};
 
-  useEffect(() => { setValue(text); }, [text]);
+const sectionTitleStyle = {
+  fontFamily: 'var(--font-body)',
+  fontSize: 14,
+  fontWeight: 600,
+  color: 'var(--brown)',
+  margin: '0 0 12px 0',
+};
 
-  const handleSave = () => {
-    onSave(value);
-    setEditing(false);
-    setHighlighted(true);
-    setTimeout(() => setHighlighted(false), 1500);
-  };
+const badgeColors = {
+  PDF: { bg: 'var(--brown)', color: '#fff' },
+  ZIP: { bg: 'var(--brown)', color: '#fff' },
+  MD: { bg: 'var(--brown-soft)', color: '#fff' },
+  CSV: { bg: 'var(--accent-green)', color: '#fff' },
+  URL: { bg: '#a3b18a', color: '#fff' },
+};
 
+function TypeBadge({ type }) {
+  const colors = badgeColors[type] || badgeColors.PDF;
   return (
-    <div style={{ marginTop: 20 }}>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        borderBottom: '1px solid var(--border-light)',
-        paddingBottom: 6,
-        marginBottom: 10,
-      }}>
-        <span style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 10,
-          color: 'var(--brown-muted)',
-          textTransform: 'uppercase',
-        }}>
-          {title}
-        </span>
-        {!editing && (
-          <button
-            onClick={() => setEditing(true)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: 4,
-            }}
-          >
-            <Pencil size={13} style={{ color: 'var(--brown-light)' }} />
-          </button>
-        )}
-      </div>
-
-      {editing ? (
-        <textarea
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          onBlur={handleSave}
-          onKeyDown={(e) => { if (e.key === 'Escape') handleSave(); }}
-          autoFocus
-          style={{
-            width: '100%',
-            padding: '12px 14px',
-            borderRadius: 10,
-            border: '1px solid rgba(139,105,20,0.3)',
-            backgroundColor: 'rgba(139,105,20,0.03)',
-            fontFamily: 'var(--font-body)',
-            fontSize: 12,
-            color: 'var(--brown)',
-            lineHeight: 1.7,
-            minHeight: 120,
-            outline: 'none',
-            resize: 'vertical',
-            boxSizing: 'border-box',
-          }}
-        />
-      ) : (
-        <p style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          color: 'var(--brown)',
-          lineHeight: 1.7,
-          whiteSpace: 'pre-wrap',
-          margin: 0,
-          padding: '4px 0',
-          backgroundColor: highlighted ? 'rgba(139,105,20,0.08)' : 'transparent',
-          transition: 'background-color 1.5s ease-out',
-          borderRadius: 4,
-        }}>
-          {text}
-        </p>
-      )}
-    </div>
+    <span style={{
+      fontSize: 9,
+      fontFamily: 'var(--font-mono)',
+      fontWeight: 600,
+      textTransform: 'uppercase',
+      padding: '3px 8px',
+      borderRadius: 4,
+      background: colors.bg,
+      color: colors.color,
+      flexShrink: 0,
+      letterSpacing: '0.3px',
+    }}>
+      {type}
+    </span>
   );
 }
 
@@ -134,8 +92,11 @@ export default function StepEnvironment() {
 
   const [loading, setLoading] = useState(true);
   const [doc, setDoc] = useState(null);
-  const [chatInput, setChatInput] = useState('');
-  const [chatMessages, setChatMessages] = useState([]);
+
+  // Refs for contentEditable elements
+  const contextRef = useRef(null);
+  const roleRef = useRef(null);
+  const deliverableRefs = useRef([]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -146,32 +107,24 @@ export default function StepEnvironment() {
     return () => clearTimeout(timer);
   }, [task, context, role, selectedRole]);
 
-  const handleChatSend = useCallback(() => {
-    if (!chatInput.trim()) return;
-    const userMsg = chatInput.trim();
-    setChatMessages((prev) => [...prev, { role: 'user', text: userMsg }]);
-    setChatInput('');
-
-    const timer = setTimeout(() => {
-      setChatMessages((prev) => [
-        ...prev,
-        { role: 'ai', text: `I've updated the assessment environment based on your request: "${userMsg}". The changes have been applied.` },
-      ]);
-    }, 800);
-    return () => clearTimeout(timer);
-  }, [chatInput]);
-
   const handleConfirm = () => {
     if (!doc) return;
+
+    const currentContext = contextRef.current ? contextRef.current.innerText : doc.contextText;
+    const currentRole = roleRef.current ? roleRef.current.innerText : doc.yourRoleText;
+    const currentDeliverables = deliverableRefs.current.map((ref, i) =>
+      ref ? ref.innerText : doc.deliverables[i].text
+    );
+
     updateEnvironment({
       role: selectedRole.name || role.title,
       taskType: task.name,
       jobTitle: role.title,
-      contextText: doc.contextText,
-      yourRoleText: doc.yourRoleText,
-      deliverables: doc.deliverables.map((d) => d.text),
+      contextText: currentContext,
+      yourRoleText: currentRole,
+      deliverables: currentDeliverables,
       resources: doc.resources.map((r) => r.name),
-      chatHistory: chatMessages,
+      chatHistory: [],
     });
     completeStep(3);
   };
@@ -205,6 +158,9 @@ export default function StepEnvironment() {
     );
   }
 
+  const fileResources = doc.resources.filter((r) => r.type !== 'URL');
+  const urlResources = doc.resources.filter((r) => r.type === 'URL');
+
   return (
     <div>
       {/* Title + subtitle */}
@@ -216,7 +172,7 @@ export default function StepEnvironment() {
           color: 'var(--brown)',
           margin: '0 0 6px 0',
         }}>
-          Configure Environment
+          Assessment Environment
         </h2>
         <p style={{
           fontFamily: 'var(--font-body)',
@@ -229,241 +185,258 @@ export default function StepEnvironment() {
         </p>
       </div>
 
-      {/* Document card */}
-      <div style={{
-        backgroundColor: '#fff',
-        border: '1px solid var(--border-default)',
-        borderRadius: 16,
-        padding: 24,
-        marginBottom: 20,
-      }}>
-        {/* Title */}
-        <div style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 10,
-          color: 'var(--gold)',
-          marginBottom: 14,
-          textTransform: 'uppercase',
-          letterSpacing: '0.5px',
-        }}>
-          ASSESSMENT ENVIRONMENT
-        </div>
-
-        {/* Metadata */}
-        <div style={{ marginBottom: 20 }}>
-          {[
-            { label: 'Role', value: selectedRole.name || role.title },
-            { label: 'Task', value: task.name },
-            { label: 'Job', value: role.title },
-          ].map((row) => (
-            <div key={row.label} style={{
+      {/* Header Block */}
+      <div style={cardStyle}>
+        {[
+          { label: 'Role', value: selectedRole.name || role.title },
+          { label: 'Task', value: task.name },
+          { label: 'Task Type', value: task.category || task.name },
+        ].map((row, i) => (
+          <div key={row.label} style={{
+            display: 'flex',
+            alignItems: 'baseline',
+            gap: 12,
+            marginBottom: i < 2 ? 8 : 0,
+          }}>
+            <span style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              color: 'var(--gold)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.3px',
+              flexShrink: 0,
+              minWidth: 70,
+              fontWeight: 600,
+            }}>
+              {row.label}
+            </span>
+            <span style={{
               fontFamily: 'var(--font-body)',
-              fontSize: 11,
-              color: 'var(--brown-light)',
-              marginBottom: 3,
+              fontSize: 13,
+              color: 'var(--brown)',
             }}>
-              {row.label}: {row.value}
-            </div>
-          ))}
-        </div>
-
-        {/* Editable sections */}
-        <EditableSection
-          title="Context"
-          text={doc.contextText}
-          onSave={(val) => setDoc({ ...doc, contextText: val })}
-        />
-
-        <EditableSection
-          title="Your Role"
-          text={doc.yourRoleText}
-          onSave={(val) => setDoc({ ...doc, yourRoleText: val })}
-        />
-
-        {/* Deliverables */}
-        <div style={{ marginTop: 20 }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid var(--border-light)',
-            paddingBottom: 6,
-            marginBottom: 10,
-          }}>
-            <span style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 10,
-              color: 'var(--brown-muted)',
-              textTransform: 'uppercase',
-            }}>
-              Deliverables
+              {row.value}
             </span>
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-              <Pencil size={13} style={{ color: 'var(--brown-light)' }} />
-            </button>
           </div>
-          <div>
-            {doc.deliverables.map((d, i) => (
-              <div key={d.id} style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 12,
-                color: 'var(--brown)',
-                lineHeight: 1.7,
-                marginBottom: 4,
-              }}>
-                {String.fromCharCode(97 + i)}) {d.text}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Resources */}
-        <div style={{ marginTop: 20 }}>
-          <div style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            borderBottom: '1px solid var(--border-light)',
-            paddingBottom: 6,
-            marginBottom: 10,
-          }}>
-            <span style={{
-              fontFamily: "var(--font-mono)",
-              fontSize: 10,
-              color: 'var(--brown-muted)',
-              textTransform: 'uppercase',
-            }}>
-              Resources
-            </span>
-            <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4 }}>
-              <Pencil size={13} style={{ color: 'var(--brown-light)' }} />
-            </button>
-          </div>
-          <div>
-            {doc.resources.map((r, i) => (
-              <div key={r.id} style={{
-                display: 'flex',
-                gap: 8,
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                color: 'var(--brown)',
-                padding: '4px 0',
-                borderBottom: i < doc.resources.length - 1 ? '1px solid var(--border-light)' : 'none',
-              }}>
-                <span style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 10,
-                  color: 'var(--brown-light)',
-                  width: 20,
-                  flexShrink: 0,
-                }}>
-                  {i + 1}
-                </span>
-                <span style={{ flex: 1 }}>{r.name}</span>
-                <span style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 9,
-                  color: 'var(--brown-light)',
-                }}>
-                  {r.type}
-                </span>
-                <span style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 9,
-                  color: 'var(--brown-light)',
-                }}>
-                  {r.usage}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        ))}
       </div>
 
-      {/* Chat messages */}
-      {chatMessages.length > 0 && (
-        <div style={{ marginBottom: 12 }}>
-          {chatMessages.map((msg, idx) => (
-            <div
-              key={idx}
-              style={{
-                padding: '10px 14px',
-                borderRadius: 12,
-                maxWidth: '85%',
-                marginBottom: 6,
-                marginLeft: msg.role === 'user' ? 'auto' : 0,
-                backgroundColor: msg.role === 'user'
-                  ? 'rgba(139,105,20,0.06)'
-                  : 'var(--cream-row-even)',
-                border: msg.role === 'user' ? '1px solid var(--border-light)' : 'none',
-                animation: 'fsu .15s ease',
-              }}
-            >
-              <p style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 12,
-                color: 'var(--brown)',
-                margin: 0,
-                lineHeight: 1.5,
-              }}>{msg.text}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Chat input */}
-      <div style={{
-        display: 'flex',
-        gap: 8,
-        padding: '8px 12px',
-        borderRadius: 14,
-        border: '1px solid var(--border-default)',
-        backgroundColor: '#fff',
-        marginBottom: 20,
-      }}>
-        <input
-          type="text"
-          value={chatInput}
-          onChange={(e) => setChatInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleChatSend()}
-          placeholder='Type a modification, e.g. "Add a deliverable about cost-benefit analysis"'
+      {/* Context Section */}
+      <div style={cardStyle}>
+        <h3 style={sectionTitleStyle}>Context</h3>
+        <p
+          ref={contextRef}
+          contentEditable
+          suppressContentEditableWarning
           style={{
-            flex: 1,
-            border: 'none',
-            outline: 'none',
             fontFamily: 'var(--font-body)',
-            fontSize: 12,
+            fontSize: 13,
             color: 'var(--brown)',
-            backgroundColor: 'transparent',
-          }}
-        />
-        <button
-          onClick={handleChatSend}
-          disabled={!chatInput.trim()}
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: '50%',
-            border: 'none',
-            backgroundColor: chatInput.trim() ? 'var(--gold)' : 'var(--cream-row-even)',
-            cursor: chatInput.trim() ? 'pointer' : 'default',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
+            lineHeight: 1.7,
+            margin: 0,
+            outline: 'none',
+            cursor: 'text',
+            borderRadius: 6,
+            padding: '4px 2px',
           }}
         >
-          <Send size={12} style={{ color: chatInput.trim() ? '#fff' : 'var(--brown-light)' }} />
-        </button>
+          {doc.contextText}
+        </p>
       </div>
 
-      {/* Confirm button */}
+      {/* Your Role Section */}
+      <div style={cardStyle}>
+        <h3 style={sectionTitleStyle}>Your Role</h3>
+        <p
+          ref={roleRef}
+          contentEditable
+          suppressContentEditableWarning
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 13,
+            color: 'var(--brown)',
+            lineHeight: 1.7,
+            margin: 0,
+            outline: 'none',
+            cursor: 'text',
+            borderRadius: 6,
+            padding: '4px 2px',
+          }}
+        >
+          {doc.yourRoleText}
+        </p>
+      </div>
+
+      {/* Deliverables Section */}
+      <div style={cardStyle}>
+        <h3 style={sectionTitleStyle}>Deliverables</h3>
+        <div>
+          {doc.deliverables.map((d, i) => (
+            <div key={d.id} style={{
+              display: 'flex',
+              gap: 8,
+              marginBottom: i < doc.deliverables.length - 1 ? 6 : 0,
+            }}>
+              <span style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                color: 'var(--brown)',
+                lineHeight: 1.7,
+                flexShrink: 0,
+                fontWeight: 600,
+              }}>
+                {i + 1}.
+              </span>
+              <span
+                ref={(el) => { deliverableRefs.current[i] = el; }}
+                contentEditable
+                suppressContentEditableWarning
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13,
+                  color: 'var(--brown)',
+                  lineHeight: 1.7,
+                  outline: 'none',
+                  cursor: 'text',
+                  flex: 1,
+                }}
+              >
+                {d.text}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Resources / Attachments Section */}
+      <div style={cardStyle}>
+        {/* Header row */}
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 16,
+        }}>
+          <h3 style={{ ...sectionTitleStyle, margin: 0 }}>Attachments</h3>
+          <button style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: 10,
+            fontWeight: 600,
+            color: '#fff',
+            background: 'var(--brown)',
+            border: 'none',
+            borderRadius: 6,
+            padding: '5px 12px',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 5,
+            textTransform: 'uppercase',
+            letterSpacing: '0.3px',
+          }}>
+            <Download size={11} />
+            Download All
+          </button>
+        </div>
+
+        {/* File resources */}
+        {fileResources.map((r, i) => (
+          <div key={r.id} style={{
+            display: 'flex',
+            gap: 12,
+            alignItems: 'flex-start',
+            padding: '10px 0',
+            borderBottom: i < fileResources.length - 1 ? '1px solid var(--border-default)' : 'none',
+          }}>
+            <TypeBadge type={r.type} />
+            <div style={{ flex: 1 }}>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 13,
+                fontWeight: 600,
+                color: 'var(--brown)',
+                marginBottom: 3,
+              }}>
+                {r.name}
+              </div>
+              <div style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 12,
+                color: 'var(--brown-soft)',
+                lineHeight: 1.5,
+              }}>
+                {r.description}
+              </div>
+            </div>
+          </div>
+        ))}
+
+        {/* Reference Links header */}
+        {urlResources.length > 0 && (
+          <>
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: 10,
+              fontWeight: 600,
+              color: 'var(--brown-soft)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              marginTop: 20,
+              marginBottom: 10,
+              paddingBottom: 6,
+              borderBottom: '1px solid var(--border-default)',
+            }}>
+              Reference Links
+            </div>
+
+            {urlResources.map((r, i) => (
+              <div key={r.id} style={{
+                display: 'flex',
+                gap: 12,
+                alignItems: 'flex-start',
+                padding: '10px 0',
+                borderBottom: i < urlResources.length - 1 ? '1px solid var(--border-default)' : 'none',
+              }}>
+                <TypeBadge type="URL" />
+                <div style={{ flex: 1 }}>
+                  <a
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                    style={{
+                      fontFamily: 'var(--font-body)',
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: 'var(--gold)',
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      display: 'inline-block',
+                      marginBottom: 3,
+                    }}
+                  >
+                    {r.name}
+                  </a>
+                  <div style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: 12,
+                    color: 'var(--brown-soft)',
+                    lineHeight: 1.5,
+                  }}>
+                    {r.description}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
+
+      {/* Continue button */}
       <button
         onClick={handleConfirm}
         className="btn-primary"
         style={{ width: '100%', justifyContent: 'center' }}
       >
-        Confirm Assessment Environment
+        Continue
         <ArrowRight size={14} />
       </button>
     </div>
