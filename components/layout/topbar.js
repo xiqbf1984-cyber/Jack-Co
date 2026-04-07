@@ -50,10 +50,9 @@ export default function Topbar({ tab, onTabChange }) {
       {/* Center - Toggle */}
       <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)' }}>
         <ToggleBar
-          options={['For Candidates', 'For Companies']}
+          options={['Hiring Human', 'Hiring AI']}
           value={tab}
           onChange={onTabChange}
-          disabledOptions={['For Candidates']}
         />
       </div>
 
