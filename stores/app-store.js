@@ -29,6 +29,12 @@ export const useAppStore = create((set, get) => ({
   sidebarCollapsed: false,
   draft: null,
 
+  notifications: [
+    { id: 1, type: 'assessment', title: 'Assessment completed', message: 'Alex Chen completed the AI Research Engineer assessment', timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), read: false },
+    { id: 2, type: 'candidate', title: 'New candidate added', message: 'Sarah Kim was added to the candidate pool', timestamp: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), read: false },
+    { id: 3, type: 'role', title: 'Role status changed', message: 'ML Platform Engineer role is now active', timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), read: true },
+  ],
+
   setHiringManager: (data) => set((s) => ({ hiringManager: { ...s.hiringManager, ...data } })),
   setCompany: (data) => set((s) => ({ company: { ...s.company, ...data } })),
 
@@ -61,6 +67,16 @@ export const useAppStore = create((set, get) => ({
   openAddCandidateModal: () => set({ addCandidateModalOpen: true }),
   closeAddCandidateModal: () => set({ addCandidateModalOpen: false }),
   toggleSidebar: () => set((s) => ({ sidebarCollapsed: !s.sidebarCollapsed })),
+
+  addNotification: (notification) => set((s) => ({
+    notifications: [{ id: Date.now(), read: false, timestamp: new Date().toISOString(), ...notification }, ...s.notifications],
+  })),
+  markNotificationRead: (id) => set((s) => ({
+    notifications: s.notifications.map((n) => n.id === id ? { ...n, read: true } : n),
+  })),
+  markAllNotificationsRead: () => set((s) => ({
+    notifications: s.notifications.map((n) => ({ ...n, read: true })),
+  })),
 
   saveDraft: (assessmentData) => {
     const draft = { data: assessmentData, savedAt: new Date().toISOString() };

@@ -6,6 +6,7 @@ import { useAppStore } from '@/stores/app-store';
 import StatCards from '@/components/dashboard/stat-cards';
 import QuickActions from '@/components/dashboard/quick-actions';
 import CompanyProfileCard from '@/components/dashboard/company-profile-card';
+import GettingStarted from '@/components/dashboard/getting-started';
 import HiringRolesList from '@/components/dashboard/hiring-roles-list';
 import RecentCandidatesList from '@/components/dashboard/recent-candidates-list';
 import { FileText } from 'lucide-react';
@@ -104,15 +105,18 @@ export default function DashboardPage() {
       {/* Stat Cards */}
       <StatCards />
 
-      {/* Quick Actions + Company Profile */}
+      {/* Quick Actions + Getting Started + Company Profile */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1.2fr 0.8fr',
+        gridTemplateColumns: '1fr 1fr',
         gap: 16,
         alignItems: 'start',
       }}>
         <QuickActions />
-        <CompanyProfileCard />
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <CompanyProfileCard />
+          <GettingStarted />
+        </div>
       </div>
 
       {/* Hiring Roles + Recent Candidates */}
