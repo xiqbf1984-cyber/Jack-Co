@@ -18,8 +18,12 @@ export default function HeroSection({ tab }) {
   const isCompanies = tab === 'For Companies';
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: '0 24px' }}>
-      <h1>
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      textAlign: 'center', padding: '0 24px',
+      paddingTop: 60,
+    }}>
+      <h1 style={{ marginBottom: 16 }}>
         {alreadyPlayed ? (
           <span className="text-display-hero">Who do you want to hire?</span>
         ) : (
@@ -31,29 +35,36 @@ export default function HeroSection({ tab }) {
         )}
       </h1>
 
-      {done && (
+      {/* Subtitle + cards fade in without shifting position */}
+      <div style={{
+        opacity: done ? 1 : 0,
+        transition: 'opacity 0.4s ease',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
         <p
-          className="animate-fsu text-body-lg"
-          style={{ color: 'var(--brown-muted)', maxWidth: 440, marginTop: 16 }}
+          className="text-body-lg"
+          style={{ color: 'var(--brown-muted)', maxWidth: 440 }}
         >
-          See How Candidates Actually Work with AI.
+          See how candidates actually work with AI.
         </p>
-      )}
 
-      {done && isCompanies && (
-        <div className="animate-fsu" style={{ marginTop: 48 }}>
-          <HireTypeCards />
-        </div>
-      )}
+        {isCompanies && (
+          <div style={{ marginTop: 48 }}>
+            <HireTypeCards />
+          </div>
+        )}
 
-      {done && !isCompanies && (
-        <p
-          className="animate-fsu text-body-sm"
-          style={{ color: 'var(--brown-light)', marginTop: 48 }}
-        >
-          Candidate features coming soon.
-        </p>
-      )}
+        {!isCompanies && (
+          <p
+            className="text-body-sm"
+            style={{ color: 'var(--brown-light)', marginTop: 48 }}
+          >
+            Candidate features coming soon.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
