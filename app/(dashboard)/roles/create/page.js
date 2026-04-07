@@ -46,15 +46,24 @@ function analyzeInput(text) {
     }
   }
 
-  // Skills detection
+  // Skills detection — broad matching
   var skillKeywords = ['python', 'javascript', 'typescript', 'react', 'node', 'pytorch', 'tensorflow',
     'aws', 'gcp', 'azure', 'docker', 'kubernetes', 'sql', 'nosql', 'java', 'go', 'rust',
     'machine learning', 'deep learning', 'nlp', 'computer vision', 'data science',
     'system design', 'distributed systems', 'ci/cd', 'mlops', 'devops',
-    'rlhf', 'llm', 'transformer', 'fine-tuning', 'prompt engineering'];
+    'rlhf', 'llm', 'transformer', 'fine-tuning', 'prompt engineering',
+    'coding', 'programming', 'engineering', 'design', 'product', 'management',
+    'communication', 'leadership', 'analytics', 'modeling', 'writing',
+    'c++', 'swift', 'kotlin', 'ruby', 'php', 'scala', 'html', 'css',
+    'figma', 'sketch', 'adobe', 'excel', 'tableau', 'power bi',
+    'agile', 'scrum', 'kanban', 'jira', 'git', 'linux'];
   skillKeywords.forEach(function (skill) {
     if (lower.includes(skill)) extracted.skills.push(skill);
   });
+  // Treat any answer longer than 2 chars during skills question as a skill
+  if (extracted.skills.length === 0 && lower.length > 2 && lower !== 'good' && lower !== 'yes') {
+    extracted.skills.push(lower.trim());
+  }
 
   // Experience level
   if (/(\d+)\+?\s*(?:years?|yrs?)/i.test(text)) {
@@ -360,9 +369,9 @@ export default function RoleCreatePage() {
     setFollowUpRound(round);
 
     // Ask next single question, or generate JD if all covered (max 5 rounds)
-    var nextQ = round < 5 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
+    var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
 
-    if (!nextQ || round >= 5) {
+    if (!nextQ || round >= 3) {
       var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
       setJDContent(jd);
       setJdGenerated(true);
@@ -441,8 +450,11 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: 'hidden',
     }}>
-      {/* Header — sticky so chat scrolls beneath it */}
-      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0 }}>
+      {/* Header — sticky, spans full layout width in split mode */}
+      <div id="role-create-header" style={{
+        flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
+        width: isCompact ? '200%' : '100%',
+      }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button
             onClick={handleBack}
