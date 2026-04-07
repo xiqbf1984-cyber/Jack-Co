@@ -6,10 +6,12 @@ import Link from 'next/link';
 import { useAppStore } from '@/stores/app-store';
 import StatCards from '@/components/dashboard/stat-cards';
 import CompanyProfileCard from '@/components/dashboard/company-profile-card';
-import GettingStarted from '@/components/dashboard/getting-started';
 import HiringRolesList from '@/components/dashboard/hiring-roles-list';
 import RecentCandidatesList from '@/components/dashboard/recent-candidates-list';
-import { FileText, Plus, Briefcase, Users, Sparkles, ArrowRight } from 'lucide-react';
+import {
+  FileText, Plus, Briefcase, Users, Sparkles, Trophy,
+  Play, Monitor, FileBarChart,
+} from 'lucide-react';
 
 function formatTimeAgo(isoString) {
   if (!isoString) return '';
@@ -27,78 +29,115 @@ export default function DashboardPage() {
   const roles = useAppStore((s) => s.roles);
   const candidates = useAppStore((s) => s.candidates);
   const assessments = useAppStore((s) => s.assessments);
+  const dataInitialized = useAppStore((s) => s.dataInitialized);
   const draft = useAppStore((s) => s.draft);
   const loadDraft = useAppStore((s) => s.loadDraft);
   const clearDraft = useAppStore((s) => s.clearDraft);
   const openAddCandidateModal = useAppStore((s) => s.openAddCandidateModal);
   const router = useRouter();
 
-  useEffect(() => {
-    loadDraft();
-  }, [loadDraft]);
+  useEffect(() => { loadDraft(); }, [loadDraft]);
 
   const displayName = company.name && company.name !== 'Your Company' ? company.name : 'there';
+
+  // ─── Loading state: prevent flash ───
+  if (!dataInitialized) {
+    return (
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        minHeight: '60vh',
+      }}>
+        <div style={{
+          fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)',
+          animation: 'fi .3s ease both',
+        }}>Loading...</div>
+      </div>
+    );
+  }
+
   const isZeroData = roles.length === 0 && candidates.length === 0 && assessments.length === 0;
 
-  // ─── Zero-data onboarding state ───
+  // ─── Zero-data onboarding ───
   if (isZeroData) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-        {/* Welcome */}
-        <div>
-          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)' }}>
-            Welcome to NeoHuman
+      <div style={{
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        justifyContent: 'center', minHeight: '70vh', gap: 32,
+      }}>
+        {/* Hero */}
+        <div style={{ textAlign: 'center' }}>
+          <div style={{
+            width: 56, height: 56, borderRadius: 14,
+            background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            margin: '0 auto 16px',
+          }}>
+            <Briefcase size={24} style={{ color: '#fff' }} />
+          </div>
+          <h1 style={{
+            fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600,
+            color: 'var(--brown)', marginBottom: 6,
+          }}>
+            Get Started
           </h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)', marginTop: 4 }}>
-            Let's set up your hiring pipeline. Start by creating a role or explore our sample case.
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)',
+          }}>
+            Choose how you want to begin with NeoHuman
           </p>
         </div>
 
-        {/* Hero onboarding card */}
+        {/* Two cards side by side */}
         <div style={{
-          borderRadius: 16,
-          border: '1px solid var(--border-default)',
-          background: '#fff',
-          padding: '48px 40px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          textAlign: 'center',
-          animation: 'fsu .3s ease both',
+          display: 'grid', gridTemplateColumns: '1fr 1fr',
+          gap: 16, width: '100%', maxWidth: 640,
         }}>
+          {/* Recommended: Explore Sample */}
           <div style={{
-            width: 56, height: 56, borderRadius: 14,
-            background: 'linear-gradient(135deg, rgba(139,105,20,0.12), rgba(196,163,50,0.08))',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            marginBottom: 20,
+            borderRadius: 14, border: '1px solid var(--border-default)',
+            background: '#fff', padding: '28px 24px',
+            display: 'flex', flexDirection: 'column', gap: 14,
+            position: 'relative', animation: 'fsu .25s ease both',
           }}>
-            <Briefcase size={24} style={{ color: 'var(--gold)' }} />
-          </div>
-
-          <h2 style={{
-            fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600,
-            color: 'var(--brown)', marginBottom: 8,
-          }}>
-            Create your first role
-          </h2>
-          <p style={{
-            fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown-soft)',
-            maxWidth: 360, lineHeight: 1.6, marginBottom: 24,
-          }}>
-            Describe the position you're hiring for, and our AI will help you generate a professional job description in seconds.
-          </p>
-
-          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <Link href="/roles/create" className="btn-primary" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 6,
-              padding: '10px 24px', fontSize: 13, textDecoration: 'none',
+            <span style={{
+              position: 'absolute', top: -10, left: 16,
+              padding: '2px 10px', borderRadius: 6,
+              background: 'var(--gold)', color: '#fff',
+              fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
+            }}>Recommended</span>
+            <div style={{
+              width: 36, height: 36, borderRadius: 9,
+              backgroundColor: 'rgba(139,105,20,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
-              <Plus size={14} /> Create a Role
-            </Link>
+              <Play size={16} style={{ color: 'var(--gold)' }} />
+            </div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
+                Explore Sample Case
+              </div>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.5 }}>
+                See how NeoHuman works with pre-built sample data.
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+              {[
+                { icon: Briefcase, text: 'Sample roles & JDs' },
+                { icon: Users, text: 'Example candidates' },
+                { icon: FileBarChart, text: 'See the full workflow' },
+              ].map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <Icon size={12} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>{item.text}</span>
+                  </div>
+                );
+              })}
+            </div>
             <button
               onClick={() => {
-                // Load sample mock data for exploration
-                const { addRole, addCandidate, addAssessment } = useAppStore.getState();
+                const { addRole, addCandidate } = useAppStore.getState();
                 addRole({ title: 'AI Research Engineer', dept: 'Research', salary: '$180k-$250k', status: 'active' });
                 addRole({ title: 'ML Platform Engineer', dept: 'Infrastructure', salary: '$160k-$220k', status: 'active' });
                 addRole({ title: 'AI Product Manager', dept: 'Product', salary: '$150k-$200k', status: 'draft' });
@@ -106,31 +145,56 @@ export default function DashboardPage() {
                 addCandidate({ name: 'Sarah Kim', email: 'sarah@outlook.com', status: 'completed', tz: 'EST' });
                 addCandidate({ name: 'James Liu', email: 'jliu@pm.me', status: 'idle', tz: 'CST' });
               }}
+              className="btn-primary"
               style={{
-                display: 'inline-flex', alignItems: 'center', gap: 6,
-                padding: '10px 24px', borderRadius: 8,
-                border: '1px solid var(--border-default)', background: '#fff',
-                fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
-                color: 'var(--brown)', cursor: 'pointer',
-                transition: 'all 0.15s ease',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                padding: '9px 20px', fontSize: 12, width: '100%', marginTop: 'auto',
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.04)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.boxShadow = 'none'; }}
             >
-              <Sparkles size={14} style={{ color: 'var(--gold)' }} /> Explore Sample Case
+              <Sparkles size={13} /> Explore Sample
             </button>
           </div>
-        </div>
 
-        {/* Company Profile + Getting Started */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: 16,
-          alignItems: 'start',
-        }}>
-          <CompanyProfileCard />
-          <GettingStarted />
+          {/* Create a Role */}
+          <div style={{
+            borderRadius: 14, border: '1px solid var(--border-default)',
+            background: '#fff', padding: '28px 24px',
+            display: 'flex', flexDirection: 'column', gap: 14,
+            animation: 'fsu .25s ease 0.05s both',
+          }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 9,
+              backgroundColor: 'rgba(139,105,20,0.08)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <Plus size={16} style={{ color: 'var(--brown-soft)' }} />
+            </div>
+            <div>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
+                Create a Role
+              </div>
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.5 }}>
+                Set up a new hiring role and generate a job description with AI.
+              </div>
+            </div>
+            <div style={{ flex: 1 }} />
+            <Link
+              href="/roles/create"
+              style={{
+                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                padding: '9px 20px', borderRadius: 8,
+                border: '1px solid var(--border-default)', background: '#fff',
+                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
+                color: 'var(--brown)', textDecoration: 'none',
+                transition: 'all 0.15s ease', width: '100%',
+                boxSizing: 'border-box',
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.boxShadow = '0 2px 6px rgba(0,0,0,0.04)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.boxShadow = 'none'; }}
+            >
+              <Plus size={13} /> Create Role
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -180,58 +244,192 @@ export default function DashboardPage() {
       {/* Stat Cards */}
       <StatCards />
 
-      {/* Company Profile (left) + Getting Started (right) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, alignItems: 'start' }}>
-        <CompanyProfileCard />
-        <GettingStarted />
+      {/* Main content: 3-panel grid — Roles, Candidates, Assessments */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, alignItems: 'start' }}>
+        {/* Roles */}
+        <DashboardPanel
+          title="Roles"
+          count={roles.length}
+          addLabel="Add role"
+          addHref="/roles/create"
+          viewAllHref="/roles"
+        >
+          {roles.length > 0 ? (
+            roles.slice(0, 4).map((role) => (
+              <PanelRow key={role.id} label={role.title} sublabel={role.dept} status={role.status} />
+            ))
+          ) : (
+            <PanelEmpty message="No roles yet" />
+          )}
+        </DashboardPanel>
+
+        {/* Candidates */}
+        <DashboardPanel
+          title="Candidates"
+          count={candidates.length}
+          addLabel="Add candidate"
+          onAdd={openAddCandidateModal}
+          viewAllHref="/candidates"
+        >
+          {candidates.length > 0 ? (
+            candidates.slice(0, 4).map((c) => (
+              <PanelRow key={c.id} label={c.name} sublabel={c.email} status={c.status} />
+            ))
+          ) : (
+            <PanelEmpty message="No candidates yet" />
+          )}
+        </DashboardPanel>
+
+        {/* Assessments */}
+        <DashboardPanel
+          title="Assessments"
+          count={assessments.length}
+          addLabel="Create"
+          addHref="/assessment/create"
+          viewAllHref="/assessment"
+        >
+          {assessments.length > 0 ? (
+            assessments.slice(0, 4).map((a) => (
+              <PanelRow key={a.id} label={a.name} sublabel={a.roleTitle} status={a.status} />
+            ))
+          ) : (
+            <PanelEmpty message="No assessments yet" />
+          )}
+        </DashboardPanel>
       </div>
 
-      {/* Hiring Roles + Recent Candidates */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
-        {/* Roles panel */}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 700, color: 'var(--brown)' }}>
-              Hiring Roles
-            </h3>
-            <Link href="/roles/create" style={{
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              padding: '5px 12px', borderRadius: 7,
-              backgroundColor: 'var(--gold)', color: '#fff',
-              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-              textDecoration: 'none', transition: 'opacity 0.15s ease',
-            }}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-            >
-              <Plus size={12} /> Add role
-            </Link>
-          </div>
-          <HiringRolesList hideHeader />
-        </div>
+      {/* Company Profile */}
+      <CompanyProfileCard />
+    </div>
+  );
+}
 
-        {/* Candidates panel */}
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
-            <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 700, color: 'var(--brown)' }}>
-              Recent Candidates
-            </h3>
-            <button onClick={openAddCandidateModal} style={{
-              display: 'inline-flex', alignItems: 'center', gap: 4,
-              padding: '5px 12px', borderRadius: 7,
-              backgroundColor: 'var(--gold)', color: '#fff',
-              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-              border: 'none', cursor: 'pointer', transition: 'opacity 0.15s ease',
-            }}
-              onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
-            >
-              <Plus size={12} /> Add candidate
-            </button>
-          </div>
-          <RecentCandidatesList hideHeader />
+// ─── Reusable dashboard panel ───
+function DashboardPanel({ title, count, addLabel, addHref, onAdd, viewAllHref, children }) {
+  const addButton = addHref ? (
+    <Link href={addHref} style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      padding: '4px 10px', borderRadius: 6,
+      backgroundColor: 'var(--gold)', color: '#fff',
+      fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 500,
+      textDecoration: 'none', transition: 'opacity 0.15s ease',
+    }}
+      onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+    >
+      <Plus size={10} /> {addLabel}
+    </Link>
+  ) : onAdd ? (
+    <button onClick={onAdd} style={{
+      display: 'inline-flex', alignItems: 'center', gap: 4,
+      padding: '4px 10px', borderRadius: 6,
+      backgroundColor: 'var(--gold)', color: '#fff',
+      fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 500,
+      border: 'none', cursor: 'pointer', transition: 'opacity 0.15s ease',
+    }}
+      onMouseEnter={(e) => { e.currentTarget.style.opacity = '0.85'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.opacity = '1'; }}
+    >
+      <Plus size={10} /> {addLabel}
+    </button>
+  ) : null;
+
+  return (
+    <div style={{
+      borderRadius: 12, border: '1px solid var(--border-default)',
+      background: '#fff', overflow: 'hidden',
+    }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '14px 16px', borderBottom: '1px solid var(--border-light)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)' }}>
+            {title}
+          </span>
+          {count > 0 && (
+            <span style={{
+              fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--brown-soft)',
+              backgroundColor: 'var(--cream)', padding: '1px 6px', borderRadius: 4,
+            }}>{count}</span>
+          )}
         </div>
+        {addButton}
       </div>
+      {/* Content */}
+      <div>
+        {children}
+      </div>
+      {/* Footer */}
+      {count > 4 && viewAllHref && (
+        <Link href={viewAllHref} style={{
+          display: 'block', padding: '10px 16px',
+          borderTop: '1px solid var(--border-light)',
+          fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--gold)',
+          textDecoration: 'none', textAlign: 'center',
+        }}>
+          See all {count} ›
+        </Link>
+      )}
+    </div>
+  );
+}
+
+// ─── Panel row item ───
+const STATUS_COLORS = {
+  active: 'var(--accent-green)',
+  completed: 'var(--accent-green)',
+  draft: 'var(--brown-light)',
+  idle: 'var(--brown-light)',
+  published: 'var(--accent-green)',
+  expired: 'var(--red)',
+  archived: 'var(--brown-light)',
+};
+
+function PanelRow({ label, sublabel, status }) {
+  const statusColor = STATUS_COLORS[status] || 'var(--brown-light)';
+  const statusLabel = status ? status.charAt(0).toUpperCase() + status.slice(1) : '';
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', padding: '10px 16px',
+      borderBottom: '1px solid var(--border-light)',
+      transition: 'background-color 0.1s ease',
+    }}
+      onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500,
+          color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+        }}>{label}</div>
+        {sublabel && (
+          <div style={{
+            fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)',
+            overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+          }}>{sublabel}</div>
+        )}
+      </div>
+      {statusLabel && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+          <span style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: statusColor }} />
+          <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>
+            {statusLabel}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PanelEmpty({ message }) {
+  return (
+    <div style={{
+      padding: '32px 16px', textAlign: 'center',
+      fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-light)',
+    }}>
+      {message}
     </div>
   );
 }
