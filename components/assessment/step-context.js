@@ -155,12 +155,6 @@ export default function StepContext() {
             );
           })}
 
-          {/* Continue */}
-          {canContinue && (
-            <button onClick={handleContinue} className="btn-primary" style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
-              Continue <ArrowRight size={14} />
-            </button>
-          )}
         </div>
 
         {/* Right: AI predictions */}
@@ -251,6 +245,15 @@ export default function StepContext() {
           )}
         </div>
       </div>
+
+      {/* Continue — below grid, always visible when enough text */}
+      {canContinue && (
+        <div style={{ marginTop: 20 }}>
+          <button onClick={handleContinue} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            Continue <ArrowRight size={14} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }

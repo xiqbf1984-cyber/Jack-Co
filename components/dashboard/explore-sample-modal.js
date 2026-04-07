@@ -72,8 +72,8 @@ export default function ExploreSampleModal({ open, onClose }) {
               What we'll create
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
-                <strong>3 Roles</strong> — Full-Stack Engineer, AI Researcher, Product Designer
+              <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown)' }}>
+                <strong>3 Roles</strong> — Full-Stack Engineer, AI Researcher, Designer
               </div>
               <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)' }}>
                 <strong>3 Candidates</strong> — including you ({userEmail})
