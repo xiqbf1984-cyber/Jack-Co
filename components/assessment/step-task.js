@@ -17,6 +17,7 @@ export default function StepTask() {
   var selectedTask = useAssessmentStore(function (s) { return s.task; });
   var [search, setSearch] = useState('');
   var [hoveredTask, setHoveredTask] = useState(null);
+  var [tooltipPos, setTooltipPos] = useState({ x: 0, y: 0 });
 
   var hasJD = !!role.jd;
   var taskCategories = selectedRole.taskCategories || [];
@@ -102,7 +103,7 @@ export default function StepTask() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
             {recommended.filter(filterTask).map(function (t) {
-              return renderCompactCard(t, selected(t), handleSelect, setHoveredTask);
+              return renderCompactCard(t, selected(t), handleSelect, setHoveredTask, function (e) { setTooltipPos({ x: e.clientX, y: e.clientY }); });
             })}
           </div>
         </div>
@@ -118,7 +119,7 @@ export default function StepTask() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
               {tasks.map(function (t) {
-                return renderCompactCard(t, selected(t), handleSelect, setHoveredTask);
+                return renderCompactCard(t, selected(t), handleSelect, setHoveredTask, function (e) { setTooltipPos({ x: e.clientX, y: e.clientY }); });
               })}
             </div>
           </div>
@@ -128,8 +129,8 @@ export default function StepTask() {
       {/* Hover detail panel */}
       {hoveredTask && (
         <div style={{
-          position: 'fixed', bottom: 16, right: 16,
-          width: 320, backgroundColor: '#fff', borderRadius: 12,
+          position: 'fixed', top: tooltipPos.y + 10, left: tooltipPos.x + 10,
+          width: 300, backgroundColor: '#fff', borderRadius: 12,
           border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-dropdown)',
           padding: '16px', zIndex: 50, animation: 'fsu .15s ease both',
         }}>
@@ -156,12 +157,13 @@ export default function StepTask() {
   );
 }
 
-function renderCompactCard(t, isSelected, onSelect, onHover) {
+function renderCompactCard(t, isSelected, onSelect, onHover, onMouseMove) {
   return (
     <button
       key={t.id}
       onClick={function () { onSelect(t); }}
-      onMouseEnter={function () { onHover(t); }}
+      onMouseEnter={function (e) { onHover(t); if (onMouseMove) onMouseMove(e); }}
+      onMouseMove={function (e) { if (onMouseMove) onMouseMove(e); }}
       onMouseLeave={function () { onHover(null); }}
       style={{
         padding: '12px 14px', borderRadius: 10,

@@ -2,9 +2,9 @@
 
 import { useState, useCallback } from 'react';
 import { useAssessmentStore } from '@/stores/assessment-store';
-import { Upload, X, FileText, Loader2, Check, ArrowRight, Wand2 } from 'lucide-react';
+import { Upload, X, FileText, Loader2, Check, ArrowRight, Wand2, ChevronDown, ChevronUp } from 'lucide-react';
 
-const MOCK_PREDICTIONS = [
+var MOCK_PREDICTIONS = [
   {
     id: 'pred-1',
     label: 'Most Likely',
@@ -27,340 +27,214 @@ const MOCK_PREDICTIONS = [
 ];
 
 export default function StepContext() {
-  const updateContext = useAssessmentStore((s) => s.updateContext);
-  const completeStep = useAssessmentStore((s) => s.completeStep);
-  const context = useAssessmentStore((s) => s.context);
-  const task = useAssessmentStore((s) => s.task);
+  var updateContext = useAssessmentStore(function (s) { return s.updateContext; });
+  var completeStep = useAssessmentStore(function (s) { return s.completeStep; });
+  var context = useAssessmentStore(function (s) { return s.context; });
 
-  const [description, setDescription] = useState(context.description || '');
-  const [files, setFiles] = useState(context.files || []);
-  const [fileDescriptions, setFileDescriptions] = useState(context.fileDescriptions || []);
-  const [predicting, setPredicting] = useState(false);
-  const [predictions, setPredictions] = useState(null);
-  const [selectedPrediction, setSelectedPrediction] = useState(null);
+  var [description, setDescription] = useState(context.description || '');
+  var [files, setFiles] = useState(context.files || []);
+  var [fileDescriptions, setFileDescriptions] = useState(context.fileDescriptions || []);
+  var [predicting, setPredicting] = useState(false);
+  var [predictions, setPredictions] = useState(null);
+  var [selectedPrediction, setSelectedPrediction] = useState(null);
+  var [expandedPred, setExpandedPred] = useState(null);
 
-  const handleFileAdd = (e) => {
-    const newFiles = Array.from(e.target.files || []);
-    setFiles((prev) => [...prev, ...newFiles]);
-    setFileDescriptions((prev) => [...prev, ...newFiles.map(() => '')]);
+  var handleFileAdd = function (e) {
+    var newFiles = Array.from(e.target.files || []);
+    setFiles(function (prev) { return prev.concat(newFiles); });
+    setFileDescriptions(function (prev) { return prev.concat(newFiles.map(function () { return ''; })); });
+  };
+  var handleFileRemove = function (idx) {
+    setFiles(function (prev) { return prev.filter(function (_, i) { return i !== idx; }); });
+    setFileDescriptions(function (prev) { return prev.filter(function (_, i) { return i !== idx; }); });
+  };
+  var handleFileDescChange = function (idx, val) {
+    setFileDescriptions(function (prev) { return prev.map(function (d, i) { return i === idx ? val : d; }); });
   };
 
-  const handleFileRemove = (idx) => {
-    setFiles((prev) => prev.filter((_, i) => i !== idx));
-    setFileDescriptions((prev) => prev.filter((_, i) => i !== idx));
-  };
-
-  const handleFileDescChange = (idx, val) => {
-    setFileDescriptions((prev) => prev.map((d, i) => (i === idx ? val : d)));
-  };
-
-  const handlePredict = useCallback(() => {
+  var handlePredict = useCallback(function () {
     setPredicting(true);
-    setTimeout(() => {
+    setTimeout(function () {
       setPredicting(false);
       setPredictions(MOCK_PREDICTIONS);
-      // Fill the first prediction into the textarea
       setSelectedPrediction(MOCK_PREDICTIONS[0].id);
       setDescription(MOCK_PREDICTIONS[0].description);
     }, 2500);
   }, []);
 
-  const handleSelectPrediction = (pred) => {
+  var handleSelectPrediction = function (pred) {
     setSelectedPrediction(pred.id);
     setDescription(pred.description);
   };
 
-  const handleContinue = () => {
+  var handleContinue = function () {
     updateContext({
-      description,
-      files: files.map((f) => f.name || f),
-      fileDescriptions,
+      description: description,
+      files: files.map(function (f) { return f.name || f; }),
+      fileDescriptions: fileDescriptions,
       prediction: selectedPrediction,
       predictionSource: selectedPrediction ? 'ai' : 'manual',
     });
     completeStep(2);
   };
 
-  const canContinue = description.trim().length > 10;
+  var canContinue = description.trim().length > 10;
 
   return (
     <div>
-      {/* Title + subtitle */}
-      <div style={{ marginBottom: 20 }}>
-        <h2 style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 16,
-          fontWeight: 600,
-          color: 'var(--brown)',
-          margin: '0 0 6px 0',
-        }}>
-          Define the Problem
-        </h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <p style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: 12,
-            color: 'var(--brown-soft)',
-            lineHeight: 1.5,
-            margin: 0,
-            flex: 1,
-          }}>
+      {/* Title row */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 20 }}>
+        <div>
+          <h2 style={{ fontFamily: 'var(--font-body)', fontSize: 16, fontWeight: 600, color: 'var(--brown)', margin: '0 0 4px 0' }}>
+            Define the Problem
+          </h2>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', margin: 0 }}>
             Describe the business problem candidates should solve.
           </p>
-          {!predictions && (
-            <button
-              onClick={handlePredict}
-              disabled={predicting}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5,
-                padding: '5px 12px',
-                borderRadius: 8,
-                border: '1px solid var(--border-default)',
-                backgroundColor: '#fff',
-                fontFamily: 'var(--font-body)',
-                fontSize: 11,
-                color: 'var(--brown-soft)',
-                cursor: predicting ? 'default' : 'pointer',
-                whiteSpace: 'nowrap',
-                opacity: predicting ? 0.6 : 1,
-                transition: 'border-color 0.15s ease',
-              }}
-            >
-              {predicting ? (
-                <>
-                  <Loader2 size={12} className="animate-spin" />
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Wand2 size={12} style={{ color: 'var(--gold)' }} />
-                  Generate predictions
-                </>
-              )}
+        </div>
+        {!predictions && (
+          <button onClick={handlePredict} disabled={predicting} style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            padding: '6px 14px', borderRadius: 8,
+            border: '1px solid var(--border-default)', backgroundColor: '#fff',
+            fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)',
+            cursor: predicting ? 'default' : 'pointer', whiteSpace: 'nowrap',
+            opacity: predicting ? 0.6 : 1, flexShrink: 0,
+          }}>
+            {predicting ? <><Loader2 size={12} className="animate-spin" /> Analyzing...</> : <><Wand2 size={12} style={{ color: 'var(--gold)' }} /> Generate predictions</>}
+          </button>
+        )}
+      </div>
+
+      {/* Left-Right split: input on left, predictions on right */}
+      <div style={{ display: 'grid', gridTemplateColumns: predictions ? '2fr 3fr' : '1fr', gap: 20 }}>
+        {/* Left: textarea + upload */}
+        <div>
+          <textarea
+            value={description}
+            onChange={function (e) { setDescription(e.target.value); }}
+            placeholder="What's the key challenge your team faces? What should this hire solve?"
+            style={{
+              width: '100%', padding: '14px 16px', borderRadius: 12,
+              border: '1px solid var(--border-default)', backgroundColor: '#fff',
+              fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown)',
+              lineHeight: 1.6, resize: 'vertical', minHeight: 120, marginBottom: 14,
+              outline: 'none', boxSizing: 'border-box',
+            }}
+            onFocus={function (e) { e.target.style.borderColor = 'var(--gold)'; }}
+            onBlur={function (e) { e.target.style.borderColor = 'var(--border-default)'; }}
+          />
+
+          {/* File upload */}
+          <label style={{
+            display: 'flex', flexDirection: 'column', alignItems: 'center',
+            border: '1.5px dashed var(--border-default)', borderRadius: 12,
+            padding: '20px 16px', textAlign: 'center', cursor: 'pointer',
+            backgroundColor: '#fff', marginBottom: 12,
+          }}>
+            <input type="file" multiple style={{ display: 'none' }} onChange={handleFileAdd} />
+            <Upload size={16} style={{ color: 'var(--brown-light)' }} />
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)', marginTop: 4 }}>
+              Upload reference files
+            </span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--brown-light)', marginTop: 2 }}>
+              PDF, DOC, CSV, TXT, MD
+            </span>
+          </label>
+
+          {/* Uploaded files */}
+          {files.map(function (f, idx) {
+            return (
+              <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '6px 10px', borderRadius: 8, backgroundColor: 'var(--cream)', marginBottom: 4 }}>
+                <FileText size={11} style={{ color: 'var(--gold)' }} />
+                <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown)', flex: 1 }}>{f.name || f}</span>
+                <button onClick={function () { handleFileRemove(idx); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 2 }}>
+                  <X size={10} style={{ color: 'var(--brown-light)' }} />
+                </button>
+              </div>
+            );
+          })}
+
+          {/* Continue */}
+          {canContinue && (
+            <button onClick={handleContinue} className="btn-primary" style={{ marginTop: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+              Continue <ArrowRight size={14} />
             </button>
           )}
         </div>
-      </div>
 
-      {/* Textarea */}
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        placeholder="What's the key challenge your team faces? What should this hire solve?"
-        style={{
-          width: '100%',
-          padding: '14px 16px',
-          borderRadius: 14,
-          border: '1px solid var(--border-default)',
-          backgroundColor: '#fff',
-          fontFamily: 'var(--font-body)',
-          fontSize: 13,
-          color: 'var(--brown)',
-          lineHeight: 1.6,
-          resize: 'vertical',
-          minHeight: 100,
-          marginBottom: 16,
-          outline: 'none',
-          boxSizing: 'border-box',
-        }}
-        onFocus={(e) => { e.target.style.borderColor = 'var(--gold)'; }}
-        onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; }}
-      />
-
-      {/* Prediction cards — below textarea */}
-      {predictions && (
-        <div style={{ marginBottom: 20 }}>
-          {predictions.map((pred, i) => {
-            const isChosen = selectedPrediction === pred.id;
-            return (
-              <button
-                key={pred.id}
-                onClick={() => handleSelectPrediction(pred)}
-                onMouseEnter={() => setDescription(pred.description)}
-                style={{
-                  display: 'block',
-                  width: '100%',
-                  textAlign: 'left',
-                  padding: '18px 20px',
-                  borderRadius: 14,
-                  border: isChosen
-                    ? '1.5px solid rgba(39,130,91,0.33)'
-                    : '1.5px solid var(--border-default)',
-                  backgroundColor: isChosen ? 'rgba(39,130,91,0.04)' : '#fff',
-                  cursor: 'pointer',
-                  marginBottom: 10,
-                  animation: `fsu .2s ease ${i * 0.06}s both`,
-                  transition: 'border-color 0.15s ease, background-color 0.15s ease',
-                }}
-              >
-                {/* Label for first */}
-                {pred.label && (
-                  <div style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 9,
-                    color: 'var(--gold)',
-                    marginBottom: 6,
-                  }}>
-                    {pred.label}
-                  </div>
-                )}
-
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 13,
-                  color: 'var(--brown)',
-                  fontWeight: 700,
-                  marginBottom: 6,
-                }}>
-                  {pred.title}
-                </div>
-
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 12,
-                  color: 'var(--brown-muted)',
-                  lineHeight: 1.5,
-                  marginBottom: 10,
-                }}>
-                  {pred.description}
-                </div>
-
-                <div style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 11,
-                  color: 'var(--accent-green)',
-                  lineHeight: 1.4,
-                }}>
-                  <strong>Why this fits:</strong> {pred.whyFits}
-                </div>
-
-                {isChosen && (
-                  <div style={{ marginTop: 8, textAlign: 'right' }}>
-                    <Check size={14} style={{ color: 'var(--accent-green)' }} />
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      )}
-
-      {/* File upload — below predictions */}
-      <label style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        border: '2px dashed var(--border-default)',
-        borderRadius: 14,
-        padding: '28px 16px',
-        textAlign: 'center',
-        cursor: 'pointer',
-        backgroundColor: '#fff',
-        marginBottom: 16,
-        transition: 'border-color 0.15s ease',
-      }}>
-        <input
-          type="file"
-          multiple
-          style={{ display: 'none' }}
-          onChange={handleFileAdd}
-        />
-        <Upload size={20} style={{ color: 'var(--brown-light)' }} />
-        <span style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 12,
-          color: 'var(--brown-muted)',
-          marginTop: 6,
-        }}>
-          Upload reference files
-        </span>
-        <span style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 11,
-          color: 'var(--brown-soft)',
-          marginTop: 4,
-        }}>
-          Add context files and notes for the candidate
-        </span>
-        <span style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: 9,
-          color: 'var(--brown-light)',
-          marginTop: 4,
-        }}>
-          PDF, DOC, CSV, TXT, MD, Images
-        </span>
-      </label>
-
-      {/* Uploaded files list */}
-      {files.length > 0 && (
-        <div style={{ marginBottom: 16 }}>
-          {files.map((f, idx) => (
-            <div key={idx} style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 4,
-              padding: '8px 12px',
-              borderRadius: 10,
-              backgroundColor: 'var(--cream-card)',
-              marginBottom: 5,
-            }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <FileText size={12} style={{ color: 'var(--gold)' }} />
-                <span style={{
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 11,
-                  color: 'var(--brown)',
-                  flex: 1,
-                }}>
-                  {f.name || f}
-                </span>
-                <button
-                  onClick={() => handleFileRemove(idx)}
-                  style={{
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    padding: 2,
-                  }}
-                >
-                  <X size={11} style={{ color: 'var(--brown-light)' }} />
-                </button>
-              </div>
-              <input
-                type="text"
-                value={fileDescriptions[idx] || ''}
-                onChange={(e) => handleFileDescChange(idx, e.target.value)}
-                placeholder="Add notes about this file..."
-                style={{
-                  width: '100%',
-                  padding: '6px 10px',
-                  borderRadius: 8,
-                  border: '1px solid var(--border-default)',
-                  backgroundColor: '#fff',
-                  fontFamily: 'var(--font-body)',
-                  fontSize: 10,
-                  color: 'var(--brown)',
-                  outline: 'none',
-                  boxSizing: 'border-box',
-                }}
-              />
+        {/* Right: AI predictions (only shown after generation) */}
+        {predictions && (
+          <div>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
+              AI Predictions
             </div>
-          ))}
-        </div>
-      )}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {predictions.map(function (pred) {
+                var isChosen = selectedPrediction === pred.id;
+                var isExpanded = expandedPred === pred.id;
+                return (
+                  <div
+                    key={pred.id}
+                    style={{
+                      borderRadius: 12,
+                      border: isChosen ? '1.5px solid var(--gold)' : '1px solid var(--border-default)',
+                      backgroundColor: isChosen ? 'rgba(139,105,20,0.03)' : '#fff',
+                      overflow: 'hidden', transition: 'all 0.15s ease',
+                    }}
+                  >
+                    {/* Header — clickable to select */}
+                    <button
+                      onClick={function () { handleSelectPrediction(pred); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 10, width: '100%',
+                        padding: '14px 16px', border: 'none', background: 'transparent',
+                        cursor: 'pointer', textAlign: 'left',
+                      }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        {pred.label && (
+                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--gold)', marginBottom: 4 }}>{pred.label}</div>
+                        )}
+                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
+                          {pred.title}
+                        </div>
+                      </div>
+                      {isChosen && <Check size={14} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />}
+                    </button>
 
-      {/* Continue button */}
-      {canContinue && (
-        <div style={{ animation: 'fsu .2s ease' }}>
-          <button onClick={handleContinue} className="btn-primary">
-            Continue
-            <ArrowRight size={14} />
-          </button>
-        </div>
-      )}
+                    {/* Expand toggle */}
+                    <button
+                      onClick={function () { setExpandedPred(isExpanded ? null : pred.id); }}
+                      style={{
+                        display: 'flex', alignItems: 'center', gap: 4, width: '100%',
+                        padding: '0 16px 10px', border: 'none', background: 'transparent',
+                        cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 10,
+                        color: 'var(--brown-soft)',
+                      }}
+                    >
+                      {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
+                      {isExpanded ? 'Collapse' : 'Read more'}
+                    </button>
+
+                    {/* Expanded content */}
+                    {isExpanded && (
+                      <div style={{ padding: '0 16px 14px', animation: 'fsd .15s ease' }}>
+                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.6, marginBottom: 10 }}>
+                          {pred.description}
+                        </div>
+                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--accent-green)', lineHeight: 1.4 }}>
+                          <strong>Why this fits:</strong> {pred.whyFits}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

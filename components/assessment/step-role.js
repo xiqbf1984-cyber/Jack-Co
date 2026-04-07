@@ -74,7 +74,7 @@ export default function StepRole() {
             Your Roles
           </div>
         )}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 10 }}>
           {filtered.map(function (r) {
             var isSelected = selectedId === r.id;
             var statusColor = r.status === 'active' ? 'var(--accent-green)' : 'var(--brown-soft)';
