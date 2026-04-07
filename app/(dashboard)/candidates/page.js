@@ -413,22 +413,6 @@ export default function CandidatesPage() {
             onBlur={(e) => { e.target.style.borderColor = 'var(--border-default)'; }}
           />
         </div>
-        <StatusFilterDropdown selectedStatuses={statusFilter} onChange={setStatusFilter} />
-        {statusFilter.length > 0 && (
-          <button
-            onClick={() => setStatusFilter([])}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 4,
-              padding: '6px 10px', borderRadius: 6,
-              border: 'none', background: 'var(--cream)',
-              fontFamily: 'var(--font-body)', fontSize: 11,
-              color: 'var(--brown-soft)', cursor: 'pointer',
-            }}
-          >
-            <X size={10} />
-            Clear filters
-          </button>
-        )}
         <div style={{ marginLeft: 'auto' }}>
           <button onClick={openModal} className="btn-primary" style={{ padding: '8px 16px', fontSize: 12 }}>
             Add Candidate

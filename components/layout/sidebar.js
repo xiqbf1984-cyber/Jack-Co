@@ -87,38 +87,18 @@ export default function Sidebar({ onOpenCommandPalette, onOpenNotifications, onO
             alignItems: 'center',
             padding: collapsed ? '20px 0' : '20px 16px',
             justifyContent: collapsed ? 'center' : 'flex-start',
-            gap: 10,
+            gap: 0,
             borderBottom: '1px solid #e8e5e0',
             textDecoration: 'none',
             cursor: 'pointer',
           }}
         >
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-              flexShrink: 0,
-            }}
-          >
-            <span style={{ color: 'var(--btn-text)', fontSize: 12, fontWeight: 700, fontFamily: 'var(--font-body)' }}>N</span>
-          </div>
-          {!collapsed && (
-            <span style={{
-              flex: 1,
-              fontSize: 13,
-              fontWeight: 600,
-              fontFamily: 'var(--font-body)',
-              color: 'var(--brown)',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-            }}>
-              NeoHuman
+          {collapsed ? (
+            <span style={{ fontSize: 15, fontWeight: 700, fontFamily: 'var(--font-body)', color: 'var(--brown)' }}>N</span>
+          ) : (
+            <span style={{ fontSize: 16, fontWeight: 700, fontFamily: 'var(--font-body)' }}>
+              <span style={{ color: 'var(--brown)' }}>Neo</span>
+              <span style={{ color: 'var(--gold)' }}>Human</span>
             </span>
           )}
         </Link>
@@ -201,18 +181,17 @@ export default function Sidebar({ onOpenCommandPalette, onOpenNotifications, onO
                 gap: 10,
                 padding: collapsed ? '9px 0' : '8px 10px',
                 justifyContent: collapsed ? 'center' : 'flex-start',
-                borderRadius: 0,
-                borderLeft: isActive ? '3px solid var(--gold)' : '3px solid transparent',
+                borderRadius: 8,
                 textDecoration: 'none',
                 fontSize: 13,
                 fontFamily: 'var(--font-body)',
                 fontWeight: isActive ? 600 : 400,
-                color: isActive ? 'var(--gold)' : 'var(--brown)',
-                backgroundColor: isActive ? 'rgba(139,105,20,0.06)' : 'transparent',
+                color: isActive ? 'var(--brown)' : 'var(--brown-soft)',
+                backgroundColor: isActive ? 'var(--cream)' : 'transparent',
                 transition: 'all 0.15s ease',
               }}
               onMouseEnter={(e) => {
-                if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.03)';
+                if (!isActive) e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.025)';
               }}
               onMouseLeave={(e) => {
                 if (!isActive) e.currentTarget.style.backgroundColor = 'transparent';

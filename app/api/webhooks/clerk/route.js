@@ -1,6 +1,7 @@
-import { supabase } from '@/lib/supabase';
+import { getServiceClient } from '@/lib/supabase';
 
 export async function POST(req) {
+  var supabase = getServiceClient();
   if (!supabase) {
     return new Response('Supabase not configured', { status: 500 });
   }

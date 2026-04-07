@@ -9,7 +9,7 @@ import StatCards from '@/components/dashboard/stat-cards';
 import CompanyProfileCard from '@/components/dashboard/company-profile-card';
 import ExploreSampleModal from '@/components/dashboard/explore-sample-modal';
 import {
-  FileText, Plus, Briefcase, Users, Compass, Eye,
+  FileText, Plus,
 } from 'lucide-react';
 
 function formatTimeAgo(isoString) {
@@ -65,14 +65,6 @@ export default function DashboardPage() {
           justifyContent: 'center', minHeight: '75vh', gap: 32,
         }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: 56, height: 56, borderRadius: 14,
-              background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              margin: '0 auto 16px',
-            }}>
-              <Briefcase size={24} style={{ color: '#fff' }} />
-            </div>
             <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 22, fontWeight: 600, color: 'var(--brown)', marginBottom: 6 }}>
               Get Started
             </h1>
@@ -81,27 +73,24 @@ export default function DashboardPage() {
             </p>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, width: '100%', maxWidth: 600 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, width: '100%', maxWidth: 620 }}>
             {/* Recommended: Explore Sample */}
             <div style={{
-              borderRadius: 14, border: '1px solid var(--border-default)',
-              background: '#fff', padding: '28px 24px',
+              borderRadius: 16, border: '1px solid var(--border-default)',
+              background: 'linear-gradient(145deg, #fff 0%, #faf6ef 100%)',
+              padding: '28px 24px',
               display: 'flex', flexDirection: 'column', gap: 14,
               position: 'relative', animation: 'fsu .25s ease both',
+              boxShadow: '0 2px 12px rgba(139,105,20,0.06)',
             }}>
               <span style={{
                 position: 'absolute', top: -10, left: 16,
-                padding: '2px 10px', borderRadius: 6,
-                background: 'var(--gold)', color: '#fff',
-                fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600,
+                padding: '3px 12px', borderRadius: 6,
+                background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
+                color: '#fff',
+                fontFamily: 'var(--font-mono)', fontSize: 9, fontWeight: 600,
+                letterSpacing: '0.03em',
               }}>Recommended</span>
-              <div style={{
-                width: 36, height: 36, borderRadius: 9,
-                backgroundColor: 'rgba(139,105,20,0.08)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Compass size={16} style={{ color: 'var(--gold)' }} />
-              </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
                   Explore Sample Case
@@ -112,41 +101,30 @@ export default function DashboardPage() {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
                 {[
-                  { icon: Briefcase, text: 'Pre-built roles & JDs' },
-                  { icon: Users, text: 'Sample candidates' },
-                  { icon: Eye, text: 'See the full pipeline' },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <div key={item.text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <Icon size={12} style={{ color: 'var(--brown-light)', flexShrink: 0 }} />
-                      <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>{item.text}</span>
-                    </div>
-                  );
-                })}
+                  'Pre-built roles & JDs',
+                  'Sample candidates',
+                  'See the full pipeline',
+                ].map((text) => (
+                  <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <span style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--brown-soft)' }}>{text}</span>
+                  </div>
+                ))}
               </div>
               <button onClick={() => setSampleModalOpen(true)} className="btn-primary" style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 padding: '9px 20px', fontSize: 12, width: '100%', marginTop: 'auto',
               }}>
-                <Compass size={13} /> Explore Sample
+                Explore Sample
               </button>
             </div>
 
             {/* Create a Role */}
             <div style={{
-              borderRadius: 14, border: '1px solid var(--border-default)',
+              borderRadius: 16, border: '1px solid var(--border-default)',
               background: '#fff', padding: '28px 24px',
               display: 'flex', flexDirection: 'column', gap: 14,
               animation: 'fsu .25s ease 0.05s both',
             }}>
-              <div style={{
-                width: 36, height: 36, borderRadius: 9,
-                backgroundColor: 'rgba(139,105,20,0.08)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <Plus size={16} style={{ color: 'var(--brown-soft)' }} />
-              </div>
               <div>
                 <div style={{ fontFamily: 'var(--font-body)', fontSize: 14, fontWeight: 600, color: 'var(--brown)', marginBottom: 4 }}>
                   Create a Role

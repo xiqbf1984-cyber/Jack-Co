@@ -530,7 +530,7 @@ export default function StepCandidates() {
         className="btn-primary"
         style={{ width: '100%', justifyContent: 'center', opacity: canContinue ? 1 : 0.5 }}
         disabled={!canContinue}
-        onClick={() => completeStep(6)}
+        onClick={() => completeStep(5)}
       >
         <Send size={12} />
         Submit

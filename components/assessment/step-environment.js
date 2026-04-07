@@ -173,7 +173,7 @@ export default function StepEnvironment() {
       resources: doc.resources.map((r) => r.name),
       chatHistory: chatMessages,
     });
-    completeStep(5);
+    completeStep(3);
   };
 
   if (loading) {
