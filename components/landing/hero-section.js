@@ -151,7 +151,7 @@ export default function HeroSection({ tab }) {
             gap: 10, marginTop: 12,
           }}>
             {isHuman ? (
-              <Link href="/signup" className="btn-primary" style={{
+              <Link href="/login" className="btn-primary" style={{
                 display: 'inline-flex', alignItems: 'center', gap: 6,
                 padding: '10px 24px', fontSize: 13, textDecoration: 'none',
               }}>

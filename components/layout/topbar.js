@@ -61,8 +61,8 @@ export default function Topbar({ tab, onTabChange }) {
         <Link href="/login" style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 600, color: 'var(--brown)', textDecoration: 'none' }}>
           Log in
         </Link>
-        <Link href="/signup" className="btn-primary" style={{ textDecoration: 'none' }}>
-          Sign up
+        <Link href="/login" className="btn-primary" style={{ textDecoration: 'none' }}>
+          Get Started
         </Link>
       </div>
     </header>
