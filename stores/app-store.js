@@ -78,11 +78,12 @@ export const useAppStore = create((set, get) => ({
 
     // Fetch org info
     if (orgId) {
-      const { data: org } = await supabase
+      const { data: org, error: orgError } = await supabase
         .from('organizations')
         .select('*')
         .eq('id', orgId)
         .single();
+      if (orgError) console.error('fetchOrg error:', orgError);
       if (org) {
         set({
           company: {

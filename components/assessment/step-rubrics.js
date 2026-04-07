@@ -56,7 +56,6 @@ var cardStyle = {
 
 export default function StepRubrics() {
   var completeStep = useAssessmentStore(function (s) { return s.completeStep; });
-  var goToStep = useAssessmentStore(function (s) { return s.goToStep; });
   var updateRubrics = useAssessmentStore(function (s) { return s.updateRubrics; });
   var [dimensions, setDimensions] = useState(MOCK_RUBRICS);
   var [search, setSearch] = useState('');
@@ -104,7 +103,6 @@ export default function StepRubrics() {
   function handleContinue() {
     updateRubrics({ dimensions: dimensions });
     completeStep(4);
-    goToStep(5);
   }
 
   var q = search.toLowerCase();
