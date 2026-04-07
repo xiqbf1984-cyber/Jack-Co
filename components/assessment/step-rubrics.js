@@ -41,10 +41,12 @@ var MOCK_RUBRICS = [
 export default function StepRubrics() {
   var completeStep = useAssessmentStore(function (s) { return s.completeStep; });
   var goToStep = useAssessmentStore(function (s) { return s.goToStep; });
+  var updateRubrics = useAssessmentStore(function (s) { return s.updateRubrics; });
   var [dimensions, setDimensions] = useState(MOCK_RUBRICS);
   var [expandedId, setExpandedId] = useState(MOCK_RUBRICS[0]?.id || null);
 
   function handleContinue() {
+    updateRubrics({ dimensions: dimensions });
     completeStep(4);
     goToStep(5);
   }

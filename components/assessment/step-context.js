@@ -9,20 +9,17 @@ var MOCK_PREDICTIONS = [
     id: 'pred-1',
     label: 'Most Likely',
     title: 'AI Autonomous Remediation Governance Failure',
-    description: 'As your team scales AI-driven device management from pilot to 750+ locations, the current human oversight model will likely fail to prevent autonomous actions in SOX-regulated systems during high-traffic periods.',
-    whyFits: 'This candidate would design the human-AI handoff protocols and confidence routing that prevent unsupervised actions in critical systems.',
+    whyFits: 'Design human-AI handoff protocols and confidence routing that prevent unsupervised actions in critical systems.',
   },
   {
     id: 'pred-2',
     title: 'Scaling Knowledge Management Across Distributed Teams',
-    description: 'As the team grows, institutional knowledge is siloed. New hires take 3-4 months to become productive because documentation is scattered and outdated.',
-    whyFits: 'Tests the candidate\'s ability to design systems that capture and distribute organizational knowledge using AI tools.',
+    whyFits: 'Design systems that capture and distribute organizational knowledge using AI tools.',
   },
   {
     id: 'pred-3',
     title: 'Cross-functional Decision Latency at Scale',
-    description: 'Strategic decisions are delayed because data analysis takes too long and stakeholders lack real-time visibility into key metrics across departments.',
-    whyFits: 'Evaluates whether the candidate can build AI-augmented decision support systems that serve multiple stakeholder groups.',
+    whyFits: 'Build AI-augmented decision support systems that serve multiple stakeholder groups.',
   },
 ];
 
@@ -48,9 +45,6 @@ export default function StepContext() {
     setFiles(function (prev) { return prev.filter(function (_, i) { return i !== idx; }); });
     setFileDescriptions(function (prev) { return prev.filter(function (_, i) { return i !== idx; }); });
   };
-  var handleFileDescChange = function (idx, val) {
-    setFileDescriptions(function (prev) { return prev.map(function (d, i) { return i === idx ? val : d; }); });
-  };
 
   var handlePredict = useCallback(function () {
     setPredicting(true);
@@ -58,13 +52,13 @@ export default function StepContext() {
       setPredicting(false);
       setPredictions(MOCK_PREDICTIONS);
       setSelectedPrediction(MOCK_PREDICTIONS[0].id);
-      setDescription(MOCK_PREDICTIONS[0].description);
+      setDescription(MOCK_PREDICTIONS[0].title);
     }, 2500);
   }, []);
 
   var handleSelectPrediction = function (pred) {
     setSelectedPrediction(pred.id);
-    setDescription(pred.description);
+    setDescription(pred.title);
   };
 
   var handleContinue = function () {
@@ -158,13 +152,13 @@ export default function StepContext() {
         </div>
 
         {/* Right: AI predictions */}
-        <div style={{ minHeight: 200 }}>
+        <div>
           {predictions ? (
             <div>
-            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 10 }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, fontWeight: 600, color: 'var(--gold)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 6 }}>
               AI Predictions
             </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {predictions.map(function (pred) {
                 var isChosen = selectedPrediction === pred.id;
                 var isExpanded = expandedPred === pred.id;
@@ -172,54 +166,47 @@ export default function StepContext() {
                   <div
                     key={pred.id}
                     style={{
-                      borderRadius: 12,
+                      borderRadius: 10,
                       border: isChosen ? '1.5px solid var(--gold)' : '1px solid var(--border-default)',
                       backgroundColor: isChosen ? 'rgba(139,105,20,0.03)' : '#fff',
                       overflow: 'hidden', transition: 'all 0.15s ease',
                     }}
                   >
-                    {/* Header — clickable to select */}
+                    {/* Header — clickable to select, with inline expand toggle */}
                     <button
                       onClick={function () { handleSelectPrediction(pred); }}
                       style={{
-                        display: 'flex', alignItems: 'center', gap: 10, width: '100%',
-                        padding: '14px 16px', border: 'none', background: 'transparent',
+                        display: 'flex', alignItems: 'center', gap: 8, width: '100%',
+                        padding: '10px 14px', border: 'none', background: 'transparent',
                         cursor: 'pointer', textAlign: 'left',
                       }}
                     >
-                      <div style={{ flex: 1 }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
                         {pred.label && (
-                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--gold)', marginBottom: 4 }}>{pred.label}</div>
+                          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9, color: 'var(--gold)', marginBottom: 2 }}>{pred.label}</div>
                         )}
                         <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)' }}>
                           {pred.title}
                         </div>
                       </div>
                       {isChosen && <Check size={14} style={{ color: 'var(--accent-green)', flexShrink: 0 }} />}
+                      <button
+                        onClick={function (e) { e.stopPropagation(); setExpandedPred(isExpanded ? null : pred.id); }}
+                        style={{
+                          display: 'flex', alignItems: 'center', background: 'none',
+                          border: 'none', cursor: 'pointer', padding: 2, flexShrink: 0,
+                          color: 'var(--brown-soft)',
+                        }}
+                      >
+                        {isExpanded ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
+                      </button>
                     </button>
 
-                    {/* Expand toggle */}
-                    <button
-                      onClick={function () { setExpandedPred(isExpanded ? null : pred.id); }}
-                      style={{
-                        display: 'flex', alignItems: 'center', gap: 4, width: '100%',
-                        padding: '0 16px 10px', border: 'none', background: 'transparent',
-                        cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 10,
-                        color: 'var(--brown-soft)',
-                      }}
-                    >
-                      {isExpanded ? <ChevronUp size={10} /> : <ChevronDown size={10} />}
-                      {isExpanded ? 'Collapse' : 'Read more'}
-                    </button>
-
-                    {/* Expanded content */}
+                    {/* Expanded content — just whyFits */}
                     {isExpanded && (
-                      <div style={{ padding: '0 16px 14px', animation: 'fsd .15s ease' }}>
-                        <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', lineHeight: 1.6, marginBottom: 10 }}>
-                          {pred.description}
-                        </div>
+                      <div style={{ padding: '0 14px 10px', animation: 'fsd .15s ease' }}>
                         <div style={{ fontFamily: 'var(--font-body)', fontSize: 11, color: 'var(--accent-green)', lineHeight: 1.4 }}>
-                          <strong>Why this fits:</strong> {pred.whyFits}
+                          {pred.whyFits}
                         </div>
                       </div>
                     )}
@@ -230,7 +217,7 @@ export default function StepContext() {
           </div>
           ) : (
           <div style={{
-            borderRadius: 12, border: '1px dashed var(--border-default)',
+            borderRadius: 10, border: '1px dashed var(--border-default)',
             padding: '32px 20px', textAlign: 'center',
             display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8,
           }}>
@@ -246,14 +233,25 @@ export default function StepContext() {
         </div>
       </div>
 
-      {/* Continue — below grid, always visible when enough text */}
-      {canContinue && (
-        <div style={{ marginTop: 20 }}>
-          <button onClick={handleContinue} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            Continue <ArrowRight size={14} />
-          </button>
-        </div>
-      )}
+      {/* Continue — always visible, sticky at bottom */}
+      <div style={{
+        position: 'sticky', bottom: 0,
+        padding: '16px 0', marginTop: 20,
+        backgroundColor: 'var(--cream)',
+      }}>
+        <button
+          onClick={handleContinue}
+          disabled={!canContinue}
+          className="btn-primary"
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            opacity: canContinue ? 1 : 0.4,
+            cursor: canContinue ? 'pointer' : 'not-allowed',
+          }}
+        >
+          Continue <ArrowRight size={14} />
+        </button>
+      </div>
     </div>
   );
 }
