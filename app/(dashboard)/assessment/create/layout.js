@@ -16,7 +16,7 @@ export default function CreateAssessmentLayout({ children }) {
       <div id="assessment-header-area" />
 
       {/* Full-width content area */}
-      <div style={{ flex: 1, overflow: 'hidden', minHeight: 0 }}>
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {children}
       </div>
     </div>

@@ -129,10 +129,13 @@ export default function StepTask() {
       {/* Hover detail panel */}
       {hoveredTask && (
         <div style={{
-          position: 'fixed', top: tooltipPos.y + 10, left: tooltipPos.x + 10,
-          width: 300, backgroundColor: '#fff', borderRadius: 12,
-          border: '1px solid var(--border-default)', boxShadow: 'var(--shadow-dropdown)',
-          padding: '16px', zIndex: 50, animation: 'fsu .15s ease both',
+          position: 'fixed',
+          top: Math.min(tooltipPos.y + 12, typeof window !== 'undefined' ? window.innerHeight - 220 : 400),
+          left: Math.min(tooltipPos.x + 12, typeof window !== 'undefined' ? window.innerWidth - 320 : 600),
+          width: 280, backgroundColor: '#fff', borderRadius: 10,
+          border: '1px solid var(--border-default)',
+          boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+          padding: '14px', zIndex: 50,
         }}>
           <div style={{ fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600, color: 'var(--brown)', marginBottom: 10 }}>
             {stripCodePrefix(hoveredTask.name)}

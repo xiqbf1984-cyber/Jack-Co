@@ -24,9 +24,8 @@ export default function StepRole() {
       department: r.dept || '',
       parsedFrom: 'existing-role',
     });
-    // Step 0 complete → go to step 1 (Task)
+    // Step 0 complete → auto-advances to step 1 (Task)
     completeStep(0);
-    goToStep(1);
   };
 
   var q = search.toLowerCase();

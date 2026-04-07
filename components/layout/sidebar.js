@@ -289,16 +289,11 @@ export default function Sidebar({ onOpenCommandPalette, onOpenNotifications, onO
           {unreadCount > 0 && (
             <span style={{
               position: 'absolute',
-              top: collapsed ? 6 : 5,
-              left: collapsed ? 'calc(50% + 6px)' : 22,
-              minWidth: 14, height: 14, borderRadius: 7,
-              backgroundColor: 'var(--red)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontSize: 8, fontWeight: 700, color: '#fff',
-              padding: '0 3px',
-            }}>
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </span>
+              top: collapsed ? 7 : 6,
+              left: collapsed ? 'calc(50% + 5px)' : 20,
+              width: 6, height: 6, borderRadius: '50%',
+              backgroundColor: 'var(--gold)',
+            }} />
           )}
         </button>
 
