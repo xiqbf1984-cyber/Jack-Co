@@ -458,7 +458,7 @@ export default function RoleCreatePage() {
       overflow: 'hidden',
     }}>
       {/* Header */}
-      <div style={{ flexShrink: 0, backgroundColor: 'var(--cream)' }}>
+      <div id="role-create-header" style={{ flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 5 }}>
         <div style={{ padding: '14px 24px 0' }}>
           <button
             onClick={handleBack}

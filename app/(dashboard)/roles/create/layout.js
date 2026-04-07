@@ -8,7 +8,6 @@ export default function RoleCreateLayout({ children }) {
   var [headerHeight, setHeaderHeight] = useState(0);
   var isDragging = useRef(false);
   var containerRef = useRef(null);
-  var leftPanelRef = useRef(null);
 
   var handleMouseDown = useCallback(function (e) {
     e.preventDefault();
@@ -51,33 +50,20 @@ export default function RoleCreateLayout({ children }) {
     return function () { window.removeEventListener('jd-panel-toggle', handleToggle); };
   }, []);
 
-  // Measure the header height inside the left panel so the right panel can align below it
+  // Measure header height from the page's header element
   useEffect(function () {
-    if (!rightPanelVisible || !leftPanelRef.current) return;
     function measure() {
-      var panel = leftPanelRef.current;
-      if (!panel) return;
-      // The header is the first child (flexShrink: 0) inside the page's column flex
-      var pageRoot = panel.firstElementChild;
-      if (!pageRoot) return;
-      var header = pageRoot.firstElementChild;
-      if (header) {
-        setHeaderHeight(header.offsetHeight);
-      }
+      var header = document.getElementById('role-create-header');
+      if (header) setHeaderHeight(header.offsetHeight);
     }
     measure();
-    // Re-measure on resize
+    var timer = setInterval(measure, 300);
+    var timeoutId = setTimeout(function () { clearInterval(timer); }, 3000);
     window.addEventListener('resize', measure);
-    // Use a short interval initially to catch late renders
-    var attempts = 0;
-    var timer = setInterval(function () {
-      measure();
-      attempts++;
-      if (attempts > 10) clearInterval(timer);
-    }, 200);
     return function () {
-      window.removeEventListener('resize', measure);
       clearInterval(timer);
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', measure);
     };
   }, [rightPanelVisible]);
 
@@ -85,74 +71,62 @@ export default function RoleCreateLayout({ children }) {
     <div
       ref={containerRef}
       style={{
-        /* Counter the dashboard layout's padding so we fill edge-to-edge */
         margin: '-32px -32px -64px -32px',
         height: '100vh',
         display: 'flex',
+        flexDirection: 'column',
         backgroundColor: 'var(--cream)',
         overflow: 'hidden',
       }}
     >
-      {/* Left panel – chat */}
-      <div
-        ref={leftPanelRef}
-        style={{
-          flex: rightPanelVisible ? 'none' : '1',
-          width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
-          minWidth: rightPanelVisible ? 320 : undefined,
-          transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
-          display: 'flex',
-          flexDirection: 'column',
-          overflow: 'hidden',
-          position: 'relative',
-        }}
-      >
-        {typeof children === 'object' && children}
-      </div>
-
-      {/* Divider with handle */}
-      {rightPanelVisible && (
+      {/* Split panels */}
+      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        {/* Left panel */}
         <div
-          onMouseDown={handleMouseDown}
           style={{
-            width: 6,
-            cursor: 'col-resize',
-            backgroundColor: 'var(--border-light)',
-            flexShrink: 0,
+            flex: rightPanelVisible ? 'none' : '1',
+            width: rightPanelVisible ? (splitRatio * 100) + '%' : '100%',
+            minWidth: rightPanelVisible ? 320 : undefined,
+            transition: rightPanelVisible ? 'none' : 'width 0.35s ease',
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            transition: 'background-color 0.15s ease',
-            zIndex: 2,
+            flexDirection: 'column',
+            overflow: 'hidden',
           }}
-          onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
-          onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
         >
+          {typeof children === 'object' && children}
+        </div>
+
+        {/* Divider */}
+        {rightPanelVisible && (
           <div
+            onMouseDown={handleMouseDown}
             style={{
-              width: 3,
-              height: 40,
-              borderRadius: 2,
-              backgroundColor: 'var(--border-default)',
+              width: 6, cursor: 'col-resize',
+              backgroundColor: 'var(--border-light)', flexShrink: 0,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transition: 'background-color 0.15s ease', zIndex: 2,
+            }}
+            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
+            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
+          >
+            <div style={{ width: 3, height: 40, borderRadius: 2, backgroundColor: 'var(--border-default)' }} />
+          </div>
+        )}
+
+        {/* Right panel – JD canvas, with top padding matching header height */}
+        {rightPanelVisible && (
+          <div
+            id="jd-canvas-panel"
+            style={{
+              flex: 1, minWidth: 380,
+              overflow: 'hidden',
+              animation: 'canvasIn 0.35s ease-out',
+              display: 'flex', flexDirection: 'column',
+              paddingTop: headerHeight > 0 ? headerHeight : 0,
             }}
           />
-        </div>
-      )}
-
-      {/* Right panel – JD canvas */}
-      {rightPanelVisible && (
-        <div
-          id="jd-canvas-panel"
-          className="flex flex-col"
-          style={{
-            flex: 1,
-            minWidth: 380,
-            overflow: 'hidden',
-            animation: 'canvasIn 0.35s ease-out',
-            paddingTop: headerHeight > 0 ? headerHeight : undefined,
-          }}
-        />
-      )}
+        )}
+      </div>
     </div>
   );
 }
