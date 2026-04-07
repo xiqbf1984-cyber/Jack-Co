@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useRef, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Search, Users, MoreHorizontal, CirclePlus, X } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { STATUS_MAP } from '@/lib/constants';
@@ -173,6 +174,7 @@ function StatusFilterDropdown({ selectedStatuses, onChange }) {
 function CandidateActions({ candId, candName }) {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
+  const router = useRouter();
   const removeCandidate = useAppStore((s) => s.removeCandidate);
   const addNotification = useAppStore((s) => s.addNotification);
   const assessments = useAppStore((s) => s.assessments);
@@ -217,7 +219,7 @@ function CandidateActions({ candId, candName }) {
         }}>
           <button
             onClick={() => {
-              addNotification({ type: 'candidate', title: 'Profile viewed', message: (candName || 'Candidate') + ' profile opened' });
+              router.push('/candidates/' + candId);
               setOpen(false);
             }}
             style={{

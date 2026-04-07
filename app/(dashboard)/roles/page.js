@@ -328,7 +328,7 @@ export default function RolesPage() {
 
       {/* Table */}
       {roles.length > 0 && filtered.length > 0 && (
-        <div style={{ borderRadius: 12, border: '1px solid var(--border-default)', overflow: 'hidden', background: '#fff' }}>
+        <div style={{ borderRadius: 12, border: '1px solid var(--border-default)', overflow: 'visible', background: '#fff' }}>
           {filtered.map(function (role, i) {
             var statusInfo = STATUS_MAP[role.status] || STATUS_MAP.draft;
             var statusColor = 'var(--' + statusInfo.color + ')';
@@ -352,20 +352,14 @@ export default function RolesPage() {
                   )}
                 </div>
 
-                {/* Owner badge */}
-                <div style={{
-                  padding: '3px 10px', borderRadius: 6, border: '1px solid var(--border-default)',
-                  fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)',
-                  marginRight: 16, flexShrink: 0,
-                }}>Owner</div>
-
-                {/* Creator initials */}
-                <div style={{
-                  width: 24, height: 24, borderRadius: '50%', background: 'linear-gradient(135deg, #8b6914, #c4a332)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12, flexShrink: 0,
-                }}>
-                  <span style={{ fontFamily: 'var(--font-body)', fontSize: 8, fontWeight: 700, color: '#fff' }}>KH</span>
-                </div>
+                {/* Department */}
+                {role.dept && (
+                  <span style={{
+                    fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)',
+                    padding: '2px 8px', borderRadius: 4, backgroundColor: 'var(--cream)',
+                    marginRight: 12, flexShrink: 0,
+                  }}>{role.dept}</span>
+                )}
 
                 {/* Status */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginRight: 16, flexShrink: 0, minWidth: 70 }}>
