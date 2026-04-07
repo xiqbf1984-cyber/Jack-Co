@@ -7,7 +7,9 @@ import { STATUS_MAP } from '@/lib/constants';
 export default function RecentCandidatesList() {
   const candidates = useAppStore((s) => s.candidates);
   const display = candidates.slice(0, 4);
-  const showFade = candidates.length >= 4;
+  const showFade = candidates.length > 4;
+
+  if (candidates.length === 0) return null;
 
   return (
     <div>

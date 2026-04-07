@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppStore } from '@/stores/app-store';
-import { Briefcase, Users, Trophy, FileText, TrendingUp } from 'lucide-react';
+import { Briefcase, Users, Trophy, FileText } from 'lucide-react';
 
 const STAT_CONFIG = {
   roles: { icon: Briefcase, color: 'var(--gold)', bg: 'rgba(139,105,20,0.08)' },
@@ -71,15 +71,6 @@ export default function StatCards() {
               }}>
                 <Icon size={16} style={{ color: config.color }} />
               </div>
-              {stat.value > 0 && (
-                <div style={{
-                  display: 'flex', alignItems: 'center', gap: 2,
-                  fontFamily: 'var(--font-mono)', fontSize: 10,
-                  color: 'var(--accent-green)',
-                }}>
-                  <TrendingUp size={10} />
-                </div>
-              )}
             </div>
 
             <div style={{

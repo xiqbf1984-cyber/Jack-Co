@@ -8,7 +8,9 @@ import { STATUS_MAP } from '@/lib/constants';
 export default function HiringRolesList() {
   const roles = useAppStore((s) => s.roles);
   const display = roles.slice(0, 4);
-  const showFade = roles.length >= 4;
+  const showFade = roles.length > 4;
+
+  if (roles.length === 0) return null;
 
   return (
     <div>
