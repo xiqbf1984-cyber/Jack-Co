@@ -38,18 +38,6 @@ export default function StepCluster() {
         </p>
       </div>
 
-      {/* Recommendation */}
-      {hasJD && (
-        <div style={{
-          backgroundColor: 'rgba(39,130,91,0.05)', border: '1px solid rgba(39,130,91,0.15)',
-          borderRadius: 10, padding: '10px 14px', marginBottom: 16,
-        }}>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--accent-green)', margin: 0 }}>
-            Based on your JD, we recommend <strong>Digital Technology</strong>
-          </p>
-        </div>
-      )}
-
       {/* Search */}
       <div style={{ position: 'relative', marginBottom: 20 }}>
         <Search size={13} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--brown-soft)' }} />

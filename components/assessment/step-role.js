@@ -13,6 +13,8 @@ export default function StepRole() {
   var roles = useAppStore(function (s) { return s.roles; });
   var [selectedId, setSelectedId] = useState(role.selectedRoleId || null);
 
+  var goToStep = useAssessmentStore(function (s) { return s.goToStep; });
+
   var handleSelectRole = function (r) {
     setSelectedId(r.id);
     updateRole({
@@ -22,7 +24,11 @@ export default function StepRole() {
       department: r.dept || '',
       parsedFrom: 'existing-role',
     });
+    // Skip Industry/Roles steps — jump directly to Task (step 3)
     completeStep(0);
+    completeStep(1);
+    completeStep(2);
+    goToStep(3);
   };
 
   return (
