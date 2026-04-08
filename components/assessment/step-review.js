@@ -153,7 +153,9 @@ export default function StepReview() {
       if (envContextRef.current) envUpdates.contextText = envContextRef.current.innerText;
       if (envRoleRef.current) envUpdates.yourRoleText = envRoleRef.current.innerText;
       var updatedDeliverables = deliverableRefs.current.map(function (ref, i) {
-        return ref ? ref.innerText : deliverables[i];
+        if (ref) return ref.innerText;
+        var d = deliverables[i];
+        return typeof d === 'string' ? d : (d && d.text ? d.text : String(d));
       });
       if (updatedDeliverables.length > 0) envUpdates.deliverables = updatedDeliverables;
       updateEnvironment(envUpdates);
@@ -166,7 +168,7 @@ export default function StepReview() {
       status: 'published',
       skill: task.categoryName,
       task: task.name,
-      candIds: candidates.map(function (c) { return c.id; }),
+      candIds: candidates.map(function (c) { return c.poolId || c.id; }),
       results: [],
     });
     setSent(true);

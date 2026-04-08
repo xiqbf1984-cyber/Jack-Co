@@ -308,7 +308,7 @@ export default function StepEnvironment() {
                       {r.description}
                     </div>
                   </div>
-                  <button style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, color: 'var(--brown-light)' }}>
+                  <button onClick={function () { setDoc(function (prev) { return { ...prev, resources: prev.resources.filter(function (x) { return x.id !== r.id; }) }; }); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0, color: 'var(--brown-light)' }}>
                     <Trash2 size={12} />
                   </button>
                 </div>
