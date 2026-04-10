@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Save, Download, Link2, Plus, Play } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
@@ -236,20 +236,40 @@ function inferDepartment(extracted, allText) {
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div style={{ display: 'flex', gap: 6 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0 }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
         var isDone = i < currentStage;
-        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
-        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
+        var numColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--brown-light)';
+        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--brown)' : 'var(--brown-light)';
+        var numBg = isDone ? 'rgba(39,130,91,0.1)' : isCurrent ? 'rgba(139,105,20,0.1)' : 'transparent';
+        var numBorder = isDone ? 'rgba(39,130,91,0.3)' : isCurrent ? 'rgba(139,105,20,0.3)' : 'var(--border-default)';
         return (
-          <div key={stage.key} style={{ flex: 1 }}>
-            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
-            <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: 9,
-              marginTop: 5, textAlign: 'center', color: labelColor,
-              userSelect: 'none', transition: 'color 0.2s ease',
-            }}>{stage.label}</div>
+          <div key={stage.key} style={{ display: 'flex', alignItems: 'center' }}>
+            {i > 0 && (
+              <div style={{
+                width: 32, height: 1,
+                backgroundColor: isDone ? 'var(--accent-green)' : 'var(--border-default)',
+                margin: '0 8px',
+                transition: 'background-color 0.2s ease',
+              }} />
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{
+                width: 20, height: 20, borderRadius: '50%',
+                border: '1.5px solid ' + numBorder,
+                backgroundColor: numBg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 600,
+                color: numColor,
+                transition: 'all 0.2s ease',
+              }}>{i + 1}</div>
+              <span style={{
+                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: isCurrent ? 600 : 400,
+                color: labelColor, userSelect: 'none', transition: 'color 0.2s ease',
+                whiteSpace: 'nowrap',
+              }}>{stage.label}</span>
+            </div>
           </div>
         );
       })}
@@ -278,6 +298,7 @@ export default function RoleCreatePage() {
   var [extractedData, setExtractedData] = useState(null);
   var [followUpRound, setFollowUpRound] = useState(0);
   var [jdGenerated, setJdGenerated] = useState(false);
+  var [saveVersion, setSaveVersion] = useState(0);
   var [sharableLink] = useState(function () {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
@@ -388,6 +409,8 @@ export default function RoleCreatePage() {
   function handleSaveRole() {
     if (!jdContent.trim()) return;
     var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
+    var newVersion = saveVersion + 1;
+    setSaveVersion(newVersion);
     addRole({
       title: title,
       dept: inferDepartment(extractedData || {}, allText),
@@ -397,7 +420,7 @@ export default function RoleCreatePage() {
       jd: jdContent,
       sharableLink: sharableLink,
     });
-    addNotification({ type: 'role', title: 'Role created', message: title + ' is now active' });
+    addNotification({ type: 'role', title: 'Role saved', message: title + ' v' + newVersion });
     setSavedRoleTitle(title);
     setShowSuccessModal(true);
   }
@@ -423,6 +446,25 @@ export default function RoleCreatePage() {
 
   function handleStay() {
     setShowSuccessModal(false);
+  }
+
+  function handleDownloadJD() {
+    if (!jdContent.trim()) return;
+    var name = extractedData?.title || (matchedRole ? matchedRole.title : 'job-description');
+    var blob = new Blob([jdContent], { type: 'text/markdown;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = name.replace(/\s+/g, '-').toLowerCase() + '.md';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  var [showShareModal, setShowShareModal] = useState(false);
+  function handleShareJD() {
+    setShowShareModal(true);
   }
 
   var isCompact = stage >= 2;
@@ -471,22 +513,92 @@ export default function RoleCreatePage() {
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
       }}>
-        <div style={{ padding: '14px 24px 0' }}>
+        {/* Top bar: back + actions */}
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '12px 20px',
+        }}>
           <button
             onClick={handleBack}
             style={{
               display: 'flex', alignItems: 'center', gap: 5,
               fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 10,
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
             }}
           >
             <ArrowLeft size={13} />
             Back to Roles
           </button>
-          <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>Create a Role</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Describe your role and we'll generate a professional job description</p>
+
+          {/* Right: version + save group + primary action */}
+          {isCompact && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              {/* Version indicator */}
+              {saveVersion > 0 && (
+                <span style={{
+                  fontFamily: 'var(--font-body)', fontSize: 11,
+                  color: 'var(--brown-light)',
+                }}>v{saveVersion}</span>
+              )}
+
+              {/* Save button group */}
+              <div style={{
+                display: 'flex', alignItems: 'center',
+                border: '1px solid var(--border-default)',
+                borderRadius: 7, overflow: 'hidden',
+              }}>
+                <button
+                  type="button" onClick={handleSaveRole} disabled={!jdContent.trim()}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 5,
+                    padding: '5px 10px', border: 'none', background: 'transparent',
+                    fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
+                    color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
+                    cursor: !jdContent.trim() ? 'default' : 'pointer',
+                  }}
+                >
+                  Save
+                </button>
+                <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
+                <button type="button" onClick={handleDownloadJD} disabled={!jdContent.trim()}
+                  title="Download" style={{
+                    display: 'flex', alignItems: 'center', padding: '5px 7px',
+                    border: 'none', background: 'transparent', cursor: !jdContent.trim() ? 'default' : 'pointer',
+                    color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
+                  }}>
+                  <Download size={12} />
+                </button>
+                <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
+                <button type="button" onClick={function () { handleShareJD(); }} disabled={!sharableLink}
+                  title="Share" style={{
+                    display: 'flex', alignItems: 'center', padding: '5px 7px',
+                    border: 'none', background: 'transparent', cursor: 'pointer',
+                    color: 'var(--brown-soft)',
+                  }}>
+                  <Link2 size={12} />
+                </button>
+              </div>
+
+              {/* Create Assessment — primary */}
+              <button
+                type="button" onClick={handleGoToAssessment} disabled={!jdContent.trim()}
+                className="btn-primary"
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 5,
+                  padding: '5px 12px', fontSize: 11,
+                  opacity: !jdContent.trim() ? 0.5 : 1,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                <Play size={10} fill="currentColor" />
+                Create an Assessment
+              </button>
+            </div>
+          )}
         </div>
-        <div style={{ padding: '0 24px 8px', borderBottom: '1px solid var(--border-default)' }}>
+
+        {/* Progress bar — centered, no border */}
+        <div style={{ padding: '0 24px 12px' }}>
           <ProgressIndicator currentStage={stage} />
         </div>
       </div>
@@ -514,20 +626,45 @@ export default function RoleCreatePage() {
       {stage >= 2 &&
         jdPortalTarget &&
         createPortal(
-          <div className="h-full p-4">
-            <JDCanvas
-              content={jdContent}
-              onChange={setJDContent}
-              onSave={handleSaveRole}
-              onCreateAssessment={handleGoToAssessment}
-              hiringBrief={hiringBrief}
-              matchedRoleName={matchedRole ? matchedRole.title : null}
-              matchScore={matchScore}
-              sharableLink={sharableLink}
-              portalTarget={bodyEl}
-            />
-          </div>,
+          <JDCanvas
+            content={jdContent}
+            onChange={setJDContent}
+            hiringBrief={hiringBrief}
+            matchedRoleName={matchedRole ? matchedRole.title : null}
+            matchScore={matchScore}
+          />,
           jdPortalTarget
+        )}
+
+      {/* Share modal */}
+      {showShareModal && bodyEl &&
+        createPortal(
+          <div style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            backgroundColor: 'rgba(26,22,18,0.35)',
+            backdropFilter: 'blur(8px)',
+          }} onClick={function () { setShowShareModal(false); }}>
+            <div style={{
+              background: '#fff', borderRadius: 16, padding: '24px', width: '100%', maxWidth: 420,
+              boxShadow: 'var(--shadow-modal)', animation: 'fadeScale 0.2s ease both',
+            }} onClick={function (e) { e.stopPropagation(); }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                <h3 style={{ fontFamily: 'var(--font-body)', fontSize: 15, fontWeight: 700, color: 'var(--brown)' }}>Share this JD</h3>
+                <button onClick={function () { setShowShareModal(false); }} style={{ border: 'none', background: 'none', cursor: 'pointer', color: 'var(--brown-soft)', padding: 4 }}>×</button>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <input readOnly value={sharableLink}
+                  style={{ flex: 1, padding: '10px 14px', borderRadius: 10, border: '1.5px solid var(--border-default)', fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)', background: 'var(--cream)', outline: 'none' }}
+                  onFocus={function (e) { e.target.select(); }}
+                />
+                <button onClick={function () { navigator.clipboard.writeText(sharableLink); }} className="btn-primary" style={{ padding: '10px 18px', fontSize: 12, flexShrink: 0 }}>
+                  Copy
+                </button>
+              </div>
+            </div>
+          </div>,
+          bodyEl
         )}
 
       {/* Success modal */}

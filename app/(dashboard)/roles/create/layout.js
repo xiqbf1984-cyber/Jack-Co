@@ -102,19 +102,34 @@ export default function RoleCreateLayout({ children }) {
           {typeof children === 'object' && children}
         </div>
 
-        {/* Divider — starts below header */}
+        {/* Divider — starts below header, with centered drag handle */}
         {rightPanelVisible && (
           <div
             onMouseDown={handleMouseDown}
             style={{
-              width: 5, cursor: 'col-resize',
-              backgroundColor: 'var(--border-light)', flexShrink: 0,
+              width: 9, cursor: 'col-resize',
+              flexShrink: 0,
               marginTop: headerHeight,
+              position: 'relative',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            {/* Thin line */}
+            <div style={{
+              position: 'absolute', top: 0, bottom: 0,
+              width: 1, backgroundColor: 'var(--border-light)',
+            }} />
+            {/* Drag handle pill */}
+            <div style={{
+              width: 4, height: 32, borderRadius: 3,
+              backgroundColor: 'var(--border-default)',
+              position: 'relative', zIndex: 1,
               transition: 'background-color 0.15s ease',
             }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
-          />
+              onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
+              onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-default)'; }}
+            />
+          </div>
         )}
 
         {/* Right panel — starts below header */}
@@ -127,6 +142,7 @@ export default function RoleCreateLayout({ children }) {
               animation: 'canvasIn 0.35s ease-out',
               display: 'flex', flexDirection: 'column',
               marginTop: headerHeight,
+              backgroundColor: 'var(--cream-card)',
             }}
           />
         )}
