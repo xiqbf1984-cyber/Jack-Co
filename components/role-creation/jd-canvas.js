@@ -60,27 +60,16 @@ const markdownComponents = {
   h1: ({ children }) => (
     <h1 style={{
       fontFamily: 'var(--font-body)',
-      fontSize: 26,
+      fontSize: 22,
       fontWeight: 700,
       color: 'var(--brown)',
-      lineHeight: 1.25,
-      marginBottom: 6,
+      lineHeight: 1.3,
+      marginBottom: 4,
       marginTop: 0,
     }}>{children}</h1>
   ),
   h2: ({ children }) => (
     <h2 style={{
-      fontFamily: 'var(--font-body)',
-      fontSize: 20,
-      fontWeight: 700,
-      color: 'var(--brown)',
-      lineHeight: 1.3,
-      marginTop: 28,
-      marginBottom: 10,
-    }}>{children}</h2>
-  ),
-  h3: ({ children }) => (
-    <h3 style={{
       fontFamily: 'var(--font-body)',
       fontSize: 16,
       fontWeight: 700,
@@ -88,10 +77,10 @@ const markdownComponents = {
       lineHeight: 1.35,
       marginTop: 22,
       marginBottom: 8,
-    }}>{children}</h3>
+    }}>{children}</h2>
   ),
-  h4: ({ children }) => (
-    <h4 style={{
+  h3: ({ children }) => (
+    <h3 style={{
       fontFamily: 'var(--font-body)',
       fontSize: 14,
       fontWeight: 700,
@@ -99,43 +88,54 @@ const markdownComponents = {
       lineHeight: 1.4,
       marginTop: 18,
       marginBottom: 6,
+    }}>{children}</h3>
+  ),
+  h4: ({ children }) => (
+    <h4 style={{
+      fontFamily: 'var(--font-body)',
+      fontSize: 13,
+      fontWeight: 700,
+      color: 'var(--brown)',
+      lineHeight: 1.4,
+      marginTop: 14,
+      marginBottom: 4,
     }}>{children}</h4>
   ),
   p: ({ children }) => (
     <p style={{
       fontFamily: 'var(--font-body)',
-      fontSize: 14,
+      fontSize: 13,
       color: 'var(--brown)',
       lineHeight: 1.7,
       marginTop: 0,
-      marginBottom: 14,
+      marginBottom: 12,
     }}>{children}</p>
   ),
   ul: ({ children }) => (
     <ul style={{
       fontFamily: 'var(--font-body)',
-      fontSize: 14,
+      fontSize: 13,
       color: 'var(--brown)',
       lineHeight: 1.7,
-      paddingLeft: 22,
+      paddingLeft: 20,
       marginTop: 0,
-      marginBottom: 14,
+      marginBottom: 12,
     }}>{children}</ul>
   ),
   ol: ({ children }) => (
     <ol style={{
       fontFamily: 'var(--font-body)',
-      fontSize: 14,
+      fontSize: 13,
       color: 'var(--brown)',
       lineHeight: 1.7,
-      paddingLeft: 22,
+      paddingLeft: 20,
       marginTop: 0,
-      marginBottom: 14,
+      marginBottom: 12,
     }}>{children}</ol>
   ),
   li: ({ children }) => (
     <li style={{
-      marginBottom: 4,
+      marginBottom: 3,
     }}>{children}</li>
   ),
   strong: ({ children }) => (
@@ -148,7 +148,7 @@ const markdownComponents = {
     <hr style={{
       border: 'none',
       borderTop: '1px solid var(--border-light)',
-      margin: '20px 0',
+      margin: '16px 0',
     }} />
   ),
   a: ({ children, href }) => (
@@ -157,13 +157,29 @@ const markdownComponents = {
   blockquote: ({ children }) => (
     <blockquote style={{
       borderLeft: '3px solid var(--gold)',
-      paddingLeft: 16,
-      margin: '14px 0',
+      paddingLeft: 14,
+      margin: '12px 0',
       color: 'var(--brown-muted)',
       fontStyle: 'italic',
     }}>{children}</blockquote>
   ),
 };
+
+/* ── Shared button style helper ── */
+function actionBtnStyle(disabled) {
+  return {
+    display: 'flex', alignItems: 'center', gap: 5,
+    padding: '5px 12px', borderRadius: 7,
+    border: '1px solid var(--border-default)',
+    background: 'transparent',
+    color: disabled ? 'var(--brown-light)' : 'var(--brown-soft)',
+    fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
+    cursor: disabled ? 'default' : 'pointer',
+    transition: 'all 0.15s ease',
+    opacity: disabled ? 0.5 : 1,
+    whiteSpace: 'nowrap',
+  };
+}
 
 export default function JDCanvas({
   content = '',
@@ -171,6 +187,7 @@ export default function JDCanvas({
   onSave,
   onCreateAssessment,
   hiringBrief,
+  onHiringBriefChange,
   matchedRoleName,
   matchScore,
   sharableLink,
@@ -188,7 +205,6 @@ export default function JDCanvas({
 
   var isEmpty = !content.trim();
 
-  // Focus textarea when entering edit mode
   useEffect(function () {
     if (editing && textareaRef.current) {
       textareaRef.current.focus();
@@ -200,9 +216,7 @@ export default function JDCanvas({
   function insertMarkdown(prefix, suffix) {
     if (!editing) {
       setEditing(true);
-      setTimeout(function () {
-        doInsert(prefix, suffix);
-      }, 50);
+      setTimeout(function () { doInsert(prefix, suffix); }, 50);
       return;
     }
     doInsert(prefix, suffix);
@@ -239,32 +253,23 @@ export default function JDCanvas({
   }
 
   var TABS = [
-    { key: 'jd', label: 'JD' },
+    { key: 'jd', label: 'Job Description' },
     { key: 'brief', label: 'Hiring Brief' },
   ];
 
   return (
     <div
       className="flex flex-col h-full overflow-hidden animate-canvas-in"
-      style={{
-        border: '1.5px solid var(--border-default)',
-        backgroundColor: 'var(--cream-card)',
-        boxShadow: 'var(--shadow-card)',
-        borderRadius: 12,
-      }}
+      style={{ backgroundColor: 'var(--cream-card)' }}
     >
-      {/* Tab header */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '0 16px',
-          borderBottom: '1px solid var(--border-light)',
-          backgroundColor: 'var(--cream)',
-          minHeight: 44,
-        }}
-      >
+      {/* Tab header bar */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0 16px',
+        borderBottom: '1px solid var(--border-light)',
+        backgroundColor: 'var(--cream)',
+        minHeight: 42, flexShrink: 0,
+      }}>
         {/* Left: Tabs */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 0 }}>
           {TABS.map(function (tab) {
@@ -274,9 +279,9 @@ export default function JDCanvas({
                 key={tab.key}
                 onClick={function () { setActiveTab(tab.key); }}
                 style={{
-                  padding: '12px 16px',
+                  padding: '11px 14px',
                   fontFamily: 'var(--font-body)',
-                  fontSize: 13,
+                  fontSize: 12,
                   fontWeight: isActive ? 600 : 400,
                   color: isActive ? 'var(--brown)' : 'var(--brown-soft)',
                   marginBottom: -1,
@@ -293,26 +298,23 @@ export default function JDCanvas({
           })}
         </div>
 
-        {/* Right: Action buttons */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        {/* Right: All action buttons in one row */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          {/* Download */}
+          <button type="button" onClick={handleDownload} disabled={isEmpty} title="Download" style={actionBtnStyle(isEmpty)}>
+            <Download size={12} />
+          </button>
+
+          {/* Share */}
+          {sharableLink && (
+            <button type="button" onClick={function () { setShowLinkModal(true); }} title="Share" style={actionBtnStyle(false)}>
+              <Link2 size={12} />
+            </button>
+          )}
+
           {/* Save */}
           {onSave && (
-            <button
-              type="button"
-              onClick={onSave}
-              disabled={isEmpty}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 5,
-                padding: '6px 14px', borderRadius: 7,
-                border: '1px solid var(--border-default)',
-                background: 'transparent',
-                color: isEmpty ? 'var(--brown-light)' : 'var(--brown-soft)',
-                fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-                cursor: isEmpty ? 'default' : 'pointer',
-                transition: 'all 0.15s ease',
-                opacity: isEmpty ? 0.5 : 1,
-              }}
-            >
+            <button type="button" onClick={onSave} disabled={isEmpty} style={actionBtnStyle(isEmpty)}>
               <Save size={12} />
               Save
             </button>
@@ -327,8 +329,9 @@ export default function JDCanvas({
               className="btn-primary"
               style={{
                 display: 'flex', alignItems: 'center', gap: 5,
-                padding: '6px 14px', fontSize: 11,
+                padding: '5px 12px', fontSize: 11,
                 opacity: isEmpty ? 0.5 : 1,
+                whiteSpace: 'nowrap',
               }}
             >
               <Plus size={12} />
@@ -341,75 +344,75 @@ export default function JDCanvas({
       {/* JD Tab Content */}
       {activeTab === 'jd' && (
         <>
-          {/* Sub-header: Edit/Preview toggle + matched role */}
+          {/* Sub-header: Edit/Preview toggle + matched role + word count */}
           <div style={{
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '6px 16px',
+            padding: '4px 16px',
             borderBottom: '1px solid var(--border-light)',
-            minHeight: 36,
+            minHeight: 32, flexShrink: 0,
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               {matchedRoleName && matchScore > 0 && (
                 <div className="flex items-center gap-1" style={{
                   fontFamily: 'var(--font-body)', fontSize: 10,
                   color: 'var(--accent-green)',
                 }}>
-                  <Check size={10} strokeWidth={2.5} />
-                  Matched: {matchedRoleName}
+                  <Check size={9} strokeWidth={2.5} />
+                  {matchedRoleName}
                 </div>
               )}
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)' }}>
+                {wordCount} words
+                {editing && <span style={{ marginLeft: 6 }}>· Editing</span>}
+              </span>
             </div>
 
-            <button
-              onClick={function () { setEditing(!editing); }}
-              title={editing ? 'Preview' : 'Edit markdown'}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 4,
-                padding: '4px 10px', borderRadius: 6,
-                border: '1px solid var(--border-default)',
-                background: editing ? 'rgba(139,105,20,0.06)' : 'transparent',
-                color: editing ? 'var(--gold)' : 'var(--brown-soft)',
-                fontFamily: 'var(--font-body)', fontSize: 10,
-                cursor: 'pointer', transition: 'all 0.15s ease',
-              }}
-            >
-              {editing ? <><Eye size={11} /> Preview</> : <><Pencil size={11} /> Edit</>}
-            </button>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+              {/* Formatting tools — inline when editing */}
+              {editing && (
+                <>
+                  {[
+                    { icon: Heading, action: function () { insertMarkdown('## ', ''); }, title: 'Heading' },
+                    { icon: Bold, action: function () { insertMarkdown('**', '**'); }, title: 'Bold' },
+                    { icon: Italic, action: function () { insertMarkdown('*', '*'); }, title: 'Italic' },
+                    { icon: List, action: function () { insertMarkdown('- ', ''); }, title: 'List' },
+                  ].map(function (tool) {
+                    var Icon = tool.icon;
+                    return (
+                      <button key={tool.title} type="button" onClick={tool.action} title={tool.title}
+                        style={{
+                          width: 24, height: 24, borderRadius: 5, border: 'none', background: 'transparent',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          cursor: 'pointer', color: 'var(--brown-light)', transition: 'all 0.1s ease',
+                        }}
+                        onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; e.currentTarget.style.color = 'var(--brown)'; }}
+                        onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brown-light)'; }}
+                      >
+                        <Icon size={12} />
+                      </button>
+                    );
+                  })}
+                  <div style={{ width: 1, height: 14, backgroundColor: 'var(--border-light)', margin: '0 4px' }} />
+                </>
+              )}
+
+              <button
+                onClick={function () { setEditing(!editing); }}
+                title={editing ? 'Preview' : 'Edit markdown'}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 4,
+                  padding: '3px 8px', borderRadius: 5,
+                  border: '1px solid var(--border-default)',
+                  background: editing ? 'rgba(139,105,20,0.06)' : 'transparent',
+                  color: editing ? 'var(--gold)' : 'var(--brown-soft)',
+                  fontFamily: 'var(--font-body)', fontSize: 10,
+                  cursor: 'pointer', transition: 'all 0.15s ease',
+                }}
+              >
+                {editing ? <><Eye size={10} /> Preview</> : <><Pencil size={10} /> Edit</>}
+              </button>
+            </div>
           </div>
-
-          {/* Formatting toolbar – visible when editing */}
-          {editing && (
-            <div style={{
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-              padding: '6px 16px',
-              borderBottom: '1px solid var(--border-light)',
-              animation: 'fsd .1s ease',
-            }}>
-              <div style={{ display: 'flex', gap: 2 }}>
-                {[
-                  { icon: Heading, action: function () { insertMarkdown('## ', ''); }, title: 'Heading' },
-                  { icon: Bold, action: function () { insertMarkdown('**', '**'); }, title: 'Bold' },
-                  { icon: Italic, action: function () { insertMarkdown('*', '*'); }, title: 'Italic' },
-                  { icon: List, action: function () { insertMarkdown('- ', ''); }, title: 'List' },
-                ].map(function (tool) {
-                  var Icon = tool.icon;
-                  return (
-                    <button key={tool.title} type="button" onClick={tool.action} title={tool.title}
-                      style={{
-                        width: 28, height: 28, borderRadius: 6, border: 'none', background: 'transparent',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer', color: 'var(--brown-soft)', transition: 'all 0.1s ease',
-                      }}
-                      onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--cream)'; e.currentTarget.style.color = 'var(--brown)'; }}
-                      onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--brown-soft)'; }}
-                    >
-                      <Icon size={14} />
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
 
           {/* Body – rendered markdown or edit textarea */}
           <div className="flex-1 overflow-auto" style={{ minHeight: 0 }}>
@@ -421,7 +424,7 @@ export default function JDCanvas({
                 className="w-full h-full resize-none bg-transparent focus:outline-none"
                 style={{
                   fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.7, color: 'var(--brown)',
-                  padding: '20px 28px', border: 'none', backgroundColor: 'var(--cream-card)',
+                  padding: '16px 24px', border: 'none', backgroundColor: 'var(--cream-card)',
                   minHeight: '100%', boxSizing: 'border-box',
                 }}
                 placeholder="Write your job description here..."
@@ -429,16 +432,16 @@ export default function JDCanvas({
             ) : (
               <div
                 style={{
-                  padding: '28px 32px 40px',
+                  padding: '20px 24px 32px',
                   cursor: isEmpty ? 'default' : 'text',
                 }}
                 onDoubleClick={function () { setEditing(true); }}
               >
                 {isEmpty ? (
-                  <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+                  <div style={{ textAlign: 'center', padding: '48px 20px' }}>
                     <p style={{
                       fontFamily: 'var(--font-body)', fontSize: 13,
-                      color: 'var(--brown-soft)', marginBottom: 8,
+                      color: 'var(--brown-soft)', marginBottom: 6,
                     }}>
                       Your job description will appear here
                     </p>
@@ -460,69 +463,13 @@ export default function JDCanvas({
               </div>
             )}
           </div>
-
-          {/* Footer with word count + secondary actions */}
-          <div style={{
-            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-            padding: '10px 16px 12px',
-            borderTop: '1px solid var(--border-light)',
-            backgroundColor: 'var(--cream)',
-            gap: 8, flexShrink: 0,
-          }}>
-            <div className="text-body-xs" style={{ color: 'var(--brown-soft)' }}>
-              {wordCount} words
-              {editing && <span style={{ marginLeft: 8, color: 'var(--brown-light)' }}>· Editing</span>}
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {/* Download */}
-              <button
-                type="button" onClick={handleDownload} disabled={isEmpty}
-                title="Download as Markdown"
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 5,
-                  padding: '7px 12px', borderRadius: 8,
-                  border: '1px solid var(--border-default)',
-                  background: 'transparent',
-                  color: isEmpty ? 'var(--brown-light)' : 'var(--brown-soft)',
-                  fontFamily: 'var(--font-body)', fontSize: 11,
-                  cursor: isEmpty ? 'default' : 'pointer',
-                  transition: 'all 0.15s ease',
-                  opacity: isEmpty ? 0.5 : 1,
-                }}
-              >
-                <Download size={13} />
-                Download
-              </button>
-
-              {/* Copy link */}
-              {sharableLink && (
-                <button
-                  type="button"
-                  onClick={function () { setShowLinkModal(true); }}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    padding: '7px 12px', borderRadius: 8,
-                    border: '1px solid var(--border-default)',
-                    background: 'transparent',
-                    color: 'var(--brown-soft)',
-                    fontFamily: 'var(--font-body)', fontSize: 11,
-                    cursor: 'pointer', transition: 'all 0.15s ease',
-                  }}
-                >
-                  <Link2 size={13} />
-                  Share
-                </button>
-              )}
-            </div>
-          </div>
         </>
       )}
 
       {/* Hiring Brief Tab Content */}
       {activeTab === 'brief' && (
         <div className="flex-1 overflow-auto" style={{ minHeight: 0 }}>
-          <HiringBriefView hiringBrief={hiringBrief} />
+          <HiringBriefView hiringBrief={hiringBrief} onChange={onHiringBriefChange} />
         </div>
       )}
 

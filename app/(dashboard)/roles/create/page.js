@@ -236,20 +236,40 @@ function inferDepartment(extracted, allText) {
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div style={{ display: 'flex', gap: 6 }}>
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0 }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
         var isDone = i < currentStage;
-        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
-        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
+        var numColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--brown-light)';
+        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--brown)' : 'var(--brown-light)';
+        var numBg = isDone ? 'rgba(39,130,91,0.1)' : isCurrent ? 'rgba(139,105,20,0.1)' : 'transparent';
+        var numBorder = isDone ? 'rgba(39,130,91,0.3)' : isCurrent ? 'rgba(139,105,20,0.3)' : 'var(--border-default)';
         return (
-          <div key={stage.key} style={{ flex: 1 }}>
-            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
-            <div style={{
-              fontFamily: 'var(--font-mono)', fontSize: 9,
-              marginTop: 5, textAlign: 'center', color: labelColor,
-              userSelect: 'none', transition: 'color 0.2s ease',
-            }}>{stage.label}</div>
+          <div key={stage.key} style={{ display: 'flex', alignItems: 'center' }}>
+            {i > 0 && (
+              <div style={{
+                width: 32, height: 1,
+                backgroundColor: isDone ? 'var(--accent-green)' : 'var(--border-default)',
+                margin: '0 8px',
+                transition: 'background-color 0.2s ease',
+              }} />
+            )}
+            <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+              <div style={{
+                width: 20, height: 20, borderRadius: '50%',
+                border: '1.5px solid ' + numBorder,
+                backgroundColor: numBg,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 600,
+                color: numColor,
+                transition: 'all 0.2s ease',
+              }}>{i + 1}</div>
+              <span style={{
+                fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: isCurrent ? 600 : 400,
+                color: labelColor, userSelect: 'none', transition: 'color 0.2s ease',
+                whiteSpace: 'nowrap',
+              }}>{stage.label}</span>
+            </div>
           </div>
         );
       })}
@@ -477,16 +497,16 @@ export default function RoleCreatePage() {
             style={{
               display: 'flex', alignItems: 'center', gap: 5,
               fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 10,
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0, marginBottom: 8,
             }}
           >
             <ArrowLeft size={13} />
             Back to Roles
           </button>
           <h1 style={{ fontFamily: 'var(--font-body)', fontSize: 18, fontWeight: 600, color: 'var(--brown)', marginBottom: 2 }}>Create a Role</h1>
-          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 12 }}>Describe your role and we'll generate a professional job description</p>
+          <p style={{ fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)', marginBottom: 10 }}>Describe your role and we'll generate a professional job description</p>
         </div>
-        <div style={{ padding: '0 24px 8px', borderBottom: '1px solid var(--border-default)' }}>
+        <div style={{ padding: '0 24px 10px', borderBottom: '1px solid var(--border-default)' }}>
           <ProgressIndicator currentStage={stage} />
         </div>
       </div>
@@ -514,19 +534,17 @@ export default function RoleCreatePage() {
       {stage >= 2 &&
         jdPortalTarget &&
         createPortal(
-          <div className="h-full p-4">
-            <JDCanvas
-              content={jdContent}
-              onChange={setJDContent}
-              onSave={handleSaveRole}
-              onCreateAssessment={handleGoToAssessment}
-              hiringBrief={hiringBrief}
-              matchedRoleName={matchedRole ? matchedRole.title : null}
-              matchScore={matchScore}
-              sharableLink={sharableLink}
-              portalTarget={bodyEl}
-            />
-          </div>,
+          <JDCanvas
+            content={jdContent}
+            onChange={setJDContent}
+            onSave={handleSaveRole}
+            onCreateAssessment={handleGoToAssessment}
+            hiringBrief={hiringBrief}
+            matchedRoleName={matchedRole ? matchedRole.title : null}
+            matchScore={matchScore}
+            sharableLink={sharableLink}
+            portalTarget={bodyEl}
+          />,
           jdPortalTarget
         )}
 

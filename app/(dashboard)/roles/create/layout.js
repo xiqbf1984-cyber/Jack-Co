@@ -107,13 +107,14 @@ export default function RoleCreateLayout({ children }) {
           <div
             onMouseDown={handleMouseDown}
             style={{
-              width: 5, cursor: 'col-resize',
+              width: 1, cursor: 'col-resize',
               backgroundColor: 'var(--border-light)', flexShrink: 0,
               marginTop: headerHeight,
               transition: 'background-color 0.15s ease',
+              position: 'relative',
             }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; }}
+            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; e.currentTarget.style.width = '3px'; }}
+            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; e.currentTarget.style.width = '1px'; }}
           />
         )}
 
@@ -127,6 +128,7 @@ export default function RoleCreateLayout({ children }) {
               animation: 'canvasIn 0.35s ease-out',
               display: 'flex', flexDirection: 'column',
               marginTop: headerHeight,
+              backgroundColor: 'var(--cream-card)',
             }}
           />
         )}
