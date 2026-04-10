@@ -102,20 +102,34 @@ export default function RoleCreateLayout({ children }) {
           {typeof children === 'object' && children}
         </div>
 
-        {/* Divider — starts below header */}
+        {/* Divider — starts below header, with centered drag handle */}
         {rightPanelVisible && (
           <div
             onMouseDown={handleMouseDown}
             style={{
-              width: 1, cursor: 'col-resize',
-              backgroundColor: 'var(--border-light)', flexShrink: 0,
+              width: 9, cursor: 'col-resize',
+              flexShrink: 0,
               marginTop: headerHeight,
-              transition: 'background-color 0.15s ease',
               position: 'relative',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
-            onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; e.currentTarget.style.width = '3px'; }}
-            onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-light)'; e.currentTarget.style.width = '1px'; }}
-          />
+          >
+            {/* Thin line */}
+            <div style={{
+              position: 'absolute', top: 0, bottom: 0,
+              width: 1, backgroundColor: 'var(--border-light)',
+            }} />
+            {/* Drag handle pill */}
+            <div style={{
+              width: 4, height: 32, borderRadius: 3,
+              backgroundColor: 'var(--border-default)',
+              position: 'relative', zIndex: 1,
+              transition: 'background-color 0.15s ease',
+            }}
+              onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-hover)'; }}
+              onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'var(--border-default)'; }}
+            />
+          </div>
         )}
 
         {/* Right panel — starts below header */}
