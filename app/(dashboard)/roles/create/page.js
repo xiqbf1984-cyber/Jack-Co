@@ -521,14 +521,13 @@ export default function RoleCreatePage() {
           <button
             onClick={handleBack}
             style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              fontFamily: 'var(--font-body)', fontSize: 13, color: 'var(--brown)',
+              display: 'flex', alignItems: 'center', gap: 5,
+              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
               background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              fontWeight: 500,
             }}
           >
-            <ArrowLeft size={14} />
-            Neo – JD Generator
+            <ArrowLeft size={13} />
+            Back to Roles
           </button>
 
           {/* Right: version + save group + primary action */}
