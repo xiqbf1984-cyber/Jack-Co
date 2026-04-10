@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -236,21 +236,19 @@ function inferDepartment(extracted, allText) {
 
 function ProgressIndicator({ currentStage }) {
   return (
-    <div style={{ display: 'flex', gap: 4, alignItems: 'center' }}>
+    <div style={{ display: 'flex', gap: 6 }}>
       {STAGES.map(function (stage, i) {
         var isCurrent = i === currentStage;
         var isDone = i < currentStage;
-        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-light)';
-        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--brown)' : 'var(--brown-light)';
-        var labelWeight = isCurrent ? 600 : 400;
+        var barColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
+        var labelColor = isDone ? 'var(--accent-green)' : isCurrent ? 'var(--gold)' : 'var(--border-default)';
         return (
           <div key={stage.key} style={{ flex: 1 }}>
-            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.3s ease' }} />
+            <div style={{ height: 3, borderRadius: 2, backgroundColor: barColor, transition: 'background-color 0.2s ease' }} />
             <div style={{
-              fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: labelWeight,
-              marginTop: 6, textAlign: 'center', color: labelColor,
+              fontFamily: 'var(--font-mono)', fontSize: 9,
+              marginTop: 5, textAlign: 'center', color: labelColor,
               userSelect: 'none', transition: 'color 0.2s ease',
-              letterSpacing: '0.01em',
             }}>{stage.label}</div>
           </div>
         );
@@ -429,6 +427,24 @@ export default function RoleCreatePage() {
 
   var isCompact = stage >= 2;
 
+  var hiringBrief = useMemo(function () {
+    if (!extractedData) return null;
+    return {
+      title: extractedData.title || (matchedRole ? matchedRole.title : ''),
+      department: inferDepartment(extractedData, allText),
+      experience: extractedData.experience || '',
+      workMode: extractedData.workMode || '',
+      location: extractedData.location || '',
+      salary: extractedData.salary || '',
+      skills: extractedData.skills || [],
+      responsibilities: extractedData.responsibilities || [],
+      companyName: company?.name && company.name !== 'Your Company' ? company.name : '',
+      companyIndustry: company?.industry || '',
+      matchedRoleName: matchedRole ? matchedRole.title : '',
+      matchScore: matchScore,
+    };
+  }, [extractedData, matchedRole, matchScore, allText, company]);
+
   function handleBack() {
     if (stage === 0) {
       router.push('/roles');
@@ -503,6 +519,8 @@ export default function RoleCreatePage() {
               content={jdContent}
               onChange={setJDContent}
               onSave={handleSaveRole}
+              onCreateAssessment={handleGoToAssessment}
+              hiringBrief={hiringBrief}
               matchedRoleName={matchedRole ? matchedRole.title : null}
               matchScore={matchScore}
               sharableLink={sharableLink}
