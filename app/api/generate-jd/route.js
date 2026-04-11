@@ -1,4 +1,4 @@
-import { getAnthropicClient, AGENT_ID, ENVIRONMENT_ID } from '@/lib/anthropic';
+import { getAnthropicClient, AGENT_ID, getEnvironmentId } from '@/lib/anthropic';
 
 export var runtime = 'nodejs';
 
@@ -8,8 +8,8 @@ export var runtime = 'nodejs';
  *
  * Returns SSE stream with events:
  *   type=session   → { sessionId }           (first event, on new session)
- *   type=chat      → { text }                (agent's conversational reply)
- *   type=done      → {}                      (stream finished)
+ *   type=chat      → { text, delta }         (agent's conversational reply chunk)
+ *   type=done      → { fullText }            (stream finished, full response)
  *   type=error     → { text }                (error message)
  */
 export async function POST(req) {
@@ -27,7 +27,15 @@ export async function POST(req) {
     return new Response(JSON.stringify({ error: 'message is required' }), { status: 400 });
   }
 
-  var client = getAnthropicClient();
+  var client;
+  var environmentId;
+  try {
+    client = getAnthropicClient();
+    environmentId = getEnvironmentId();
+  } catch (e) {
+    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+  }
+
   var encoder = new TextEncoder();
 
   var stream = new ReadableStream({
@@ -41,7 +49,7 @@ export async function POST(req) {
         if (!sessionId) {
           var session = await client.beta.sessions.create({
             agent: AGENT_ID,
-            environment_id: ENVIRONMENT_ID,
+            environment_id: environmentId,
           });
           sessionId = session.id;
           send('session', { sessionId: sessionId });
@@ -73,9 +81,9 @@ export async function POST(req) {
           // Session finished this turn
           if (event.type === 'session.status_idle') {
             if (event.stop_reason && event.stop_reason.type === 'requires_action') {
-              continue; // waiting on tool confirmation — keep listening
+              continue;
             }
-            break; // end_turn or retries_exhausted — done
+            break; // end_turn or retries_exhausted
           }
 
           if (event.type === 'session.status_terminated') {
@@ -83,7 +91,13 @@ export async function POST(req) {
           }
 
           if (event.type === 'session.error') {
-            send('error', { text: event.error || 'Agent error' });
+            var errMsg = 'Agent error';
+            if (event.error && typeof event.error === 'object') {
+              errMsg = event.error.message || event.error.type || errMsg;
+            } else if (typeof event.error === 'string') {
+              errMsg = event.error;
+            }
+            send('error', { text: errMsg });
             break;
           }
         }
@@ -101,7 +115,6 @@ export async function POST(req) {
     headers: {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive',
     },
   });
 }

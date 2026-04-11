@@ -355,30 +355,38 @@ export default function RoleCreatePage() {
     var decoder = new TextDecoder();
     var fullText = '';
     var newSessionId = sessionId;
+    var buffer = '';
 
     while (true) {
       var result = await reader.read();
       if (result.done) break;
-      var chunk = decoder.decode(result.value, { stream: true });
-      var lines = chunk.split('\n');
-      for (var k = 0; k < lines.length; k++) {
-        var line = lines[k].trim();
-        if (!line.startsWith('data: ')) continue;
-        try {
-          var evt = JSON.parse(line.slice(6));
-          if (evt.type === 'session') newSessionId = evt.sessionId;
-          if (evt.type === 'chat' && evt.text) fullText += evt.text;
-          if (evt.type === 'done' && evt.fullText) fullText = evt.fullText;
-        } catch (e) { /* skip malformed */ }
+      buffer += decoder.decode(result.value, { stream: true });
+      // SSE events are separated by double newlines
+      var parts = buffer.split('\n\n');
+      buffer = parts.pop(); // keep incomplete tail
+      for (var p = 0; p < parts.length; p++) {
+        var eventLines = parts[p].split('\n');
+        for (var k = 0; k < eventLines.length; k++) {
+          var line = eventLines[k].trim();
+          if (!line.startsWith('data: ')) continue;
+          try {
+            var evt = JSON.parse(line.slice(6));
+            if (evt.type === 'session') newSessionId = evt.sessionId;
+            if (evt.type === 'chat' && evt.text) fullText += evt.text;
+            if (evt.type === 'done' && evt.fullText) fullText = evt.fullText;
+            if (evt.type === 'error') console.error('Agent stream error:', evt.text);
+          } catch (e) { /* skip malformed */ }
+        }
       }
     }
     return { sessionId: newSessionId, text: fullText };
   }
 
-  // Check if agent response contains a JD (has markdown headers + long enough)
+  // Check if agent response looks like a JD
   function looksLikeJD(text) {
     var headerCount = (text.match(/^#{1,3}\s+/gm) || []).length;
-    return headerCount >= 2 && text.length > 300;
+    var hasRoleKeywords = /about the role|what you.ll do|looking for|responsibilities|requirements/i.test(text);
+    return headerCount >= 3 && text.length > 400 && hasRoleKeywords;
   }
 
   function handleSearchSubmit(text) {
