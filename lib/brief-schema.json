@@ -1,0 +1,54 @@
+{
+  "role": {
+    "title": "",
+    "level": "",
+    "title_mapped": "",
+    "mapping_status": "pending",
+    "department": "",
+    "reports_to": "",
+    "employment_type": "full-time"
+  },
+  "location": {
+    "primary": "",
+    "remote_policy": "",
+    "constraint_type": "preference"
+  },
+  "compensation": {
+    "base_range": { "min": null, "max": null, "currency": "USD" },
+    "equity": "",
+    "benefits_notes": ""
+  },
+  "context": {
+    "why_hiring": "",
+    "team_size": null,
+    "team_stage": "",
+    "urgency": "",
+    "90_day_outcomes": [],
+    "backfill_or_new": ""
+  },
+  "ideal_profile": {
+    "must_haves": [],
+    "nice_to_haves": [],
+    "anti_patterns": [],
+    "mindset_traits": []
+  },
+  "ai_impact_framing": {
+    "tasks": [],
+    "displacement_risk": "",
+    "narrative": ""
+  },
+  "jd_variants": {
+    "selected": null,
+    "a_mission": "",
+    "b_outcome": "",
+    "c_reframing": ""
+  },
+  "meta": {
+    "version": 0,
+    "created_at": "",
+    "updated_at": "",
+    "field_states": {},
+    "risks_accepted": [],
+    "conversation_turn": 0
+  }
+}
