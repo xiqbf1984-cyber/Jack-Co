@@ -299,7 +299,6 @@ export default function RoleCreatePage() {
   var [followUpRound, setFollowUpRound] = useState(0);
   var [jdGenerated, setJdGenerated] = useState(false);
   var [saveVersion, setSaveVersion] = useState(0);
-  var [agentSessionId, setAgentSessionId] = useState(null);
   var [sharableLink] = useState(function () {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
@@ -342,99 +341,32 @@ export default function RoleCreatePage() {
     }, delay);
   }, []);
 
-  // ─── Send message to managed agent ───
-  async function sendToAgent(text, sessionId) {
-    var res = await fetch('/api/generate-jd', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text, sessionId: sessionId }),
-    });
-    if (!res.ok) throw new Error('Agent API error: ' + res.status);
-
-    var reader = res.body.getReader();
-    var decoder = new TextDecoder();
-    var fullText = '';
-    var newSessionId = sessionId;
-    var buffer = '';
-
-    while (true) {
-      var result = await reader.read();
-      if (result.done) break;
-      buffer += decoder.decode(result.value, { stream: true });
-      // SSE events are separated by double newlines
-      var parts = buffer.split('\n\n');
-      buffer = parts.pop(); // keep incomplete tail
-      for (var p = 0; p < parts.length; p++) {
-        var eventLines = parts[p].split('\n');
-        for (var k = 0; k < eventLines.length; k++) {
-          var line = eventLines[k].trim();
-          if (!line.startsWith('data: ')) continue;
-          try {
-            var evt = JSON.parse(line.slice(6));
-            if (evt.type === 'session') newSessionId = evt.sessionId;
-            if (evt.type === 'chat' && evt.text) fullText += evt.text;
-            if (evt.type === 'done' && evt.fullText) fullText = evt.fullText;
-            if (evt.type === 'error') console.error('Agent stream error:', evt.text);
-          } catch (e) { /* skip malformed */ }
-        }
-      }
-    }
-    return { sessionId: newSessionId, text: fullText };
-  }
-
-  // Check if agent response looks like a JD
-  function looksLikeJD(text) {
-    var headerCount = (text.match(/^#{1,3}\s+/gm) || []).length;
-    var hasRoleKeywords = /about the role|what you.ll do|looking for|responsibilities|requirements/i.test(text);
-    return headerCount >= 3 && text.length > 400 && hasRoleKeywords;
-  }
-
   function handleSearchSubmit(text) {
     setDescription(text);
     setAllText(text);
 
-    // Local analysis for hiring brief metadata + role matching
     var analysis = analyzeInput(text);
     setExtractedData(analysis.extracted);
+    setStage(1);
     var matchResult = doMatch(text);
+    setMessages([{ role: 'user', content: text }]);
+
     if (matchResult.role) {
       analysis.extracted.title = analysis.extracted.title || matchResult.role.title;
     }
 
-    setStage(1);
-    setMessages([{ role: 'user', content: text }]);
-    setIsTyping(true);
+    // Ask ONE question at a time
+    var nextQ = getNextQuestion(analysis.coverage, analysis.extracted);
 
-    // Send to managed agent
-    sendToAgent(text, null).then(function (result) {
-      setAgentSessionId(result.sessionId);
-      setIsTyping(false);
-
-      if (looksLikeJD(result.text)) {
-        // Agent produced a full JD
-        setJDContent(result.text);
-        setJdGenerated(true);
-        setStage(2);
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: 'Your JD is ready! Edit it on the right, or tell me what to change.' }]); });
-      } else {
-        // Agent is asking a follow-up question
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: result.text }]); });
-      }
-    }).catch(function (err) {
-      console.error('Agent error, falling back to local:', err);
-      setIsTyping(false);
-      // Fallback to local generation
-      var nextQ = getNextQuestion(analysis.coverage, analysis.extracted);
-      if (!nextQ) {
-        var jd = generateJD(analysis.extracted, matchResult.role, company, text);
-        setJDContent(jd);
-        setJdGenerated(true);
-        setStage(2);
-        addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
-      } else {
-        addAIMessage('Got it — I can already picture this role. ' + nextQ);
-      }
-    });
+    if (!nextQ) {
+      var jd = generateJD(analysis.extracted, matchResult.role, company, text);
+      setJDContent(jd);
+      setJdGenerated(true);
+      setStage(2);
+      addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
+    } else {
+      addAIMessage('Got it — I can already picture this role. ' + nextQ);
+    }
   }
 
   function handleChatSend(text) {
@@ -443,9 +375,10 @@ export default function RoleCreatePage() {
     var newAllText = allText + ' ' + text;
     setAllText(newAllText);
 
-    // Update local analysis for hiring brief
+    // Re-analyze with new info
     var analysis = analyzeInput(newAllText);
     setExtractedData(analysis.extracted);
+
     var matchResult = doMatch(newAllText);
     if (matchResult.role) {
       analysis.extracted.title = analysis.extracted.title || matchResult.role.title;
@@ -453,40 +386,24 @@ export default function RoleCreatePage() {
 
     var round = followUpRound + 1;
     setFollowUpRound(round);
-    setIsTyping(true);
 
-    // Send to managed agent (reuse existing session)
-    sendToAgent(text, agentSessionId).then(function (result) {
-      setAgentSessionId(result.sessionId);
-      setIsTyping(false);
+    // Ask next single question, or generate JD if all covered (max 5 rounds)
+    var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
 
-      if (looksLikeJD(result.text)) {
-        setJDContent(result.text);
-        setJdGenerated(true);
-        if (stage < 2) setStage(2);
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: 'Your JD is ready! Edit it on the right, or tell me what to change.' }]); });
-      } else {
-        // Agent's conversational reply
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: result.text }]); });
-        // If we're already in stage 2 and the response updates the JD, refresh it
-        if (stage >= 2 && result.text.length > 300) {
-          setJDContent(result.text);
-        }
+    if (!nextQ || round >= 3) {
+      var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+      setJDContent(jd);
+      setJdGenerated(true);
+      if (stage < 2) setStage(2);
+      addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
+    } else {
+      // Update JD preview if we're already in stage 2
+      if (stage >= 2) {
+        var updatedJd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+        setJDContent(updatedJd);
       }
-    }).catch(function (err) {
-      console.error('Agent error, falling back to local:', err);
-      setIsTyping(false);
-      var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
-      if (!nextQ || round >= 3) {
-        var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
-        setJDContent(jd);
-        setJdGenerated(true);
-        if (stage < 2) setStage(2);
-        addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
-      } else {
-        addAIMessage('Thanks! ' + nextQ);
-      }
-    });
+      addAIMessage('Thanks! ' + nextQ);
+    }
   }
 
   function handleSaveRole() {
@@ -521,7 +438,6 @@ export default function RoleCreatePage() {
     setExtractedData(null);
     setFollowUpRound(0);
     setJdGenerated(false);
-    setAgentSessionId(null);
   }
 
   function handleGoToAssessment() {
