@@ -1,22 +1,49 @@
-import { getAnthropicClient, AGENT_ID, getEnvironmentId } from '@/lib/anthropic';
+import { execSync, spawn } from 'child_process';
 
 export var runtime = 'nodejs';
+
+var API_BASE = process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com';
+var API_KEY = process.env.ANTHROPIC_API_KEY;
+var AGENT_ID = process.env.ANTHROPIC_AGENT_ID || 'agent_011CZvk5yQ9pXKdgKvdSDN1v';
+var ENVIRONMENT_ID = process.env.ANTHROPIC_ENVIRONMENT_ID;
+
+function curlPost(path, body) {
+  var result = execSync(
+    'curl -s --max-time 60 -X POST ' + JSON.stringify(API_BASE + path) +
+    ' -H "x-api-key: ' + API_KEY + '"' +
+    ' -H "anthropic-version: 2023-06-01"' +
+    ' -H "anthropic-beta: managed-agents-2026-04-01"' +
+    ' -H "Content-Type: application/json"' +
+    ' -d ' + JSON.stringify(JSON.stringify(body)),
+    { encoding: 'utf-8', timeout: 65000 }
+  );
+  return JSON.parse(result);
+}
+
+function curlSSE(path) {
+  return spawn('curl', [
+    '-s', '-N', '--max-time', '120',
+    API_BASE + path,
+    '-H', 'x-api-key: ' + API_KEY,
+    '-H', 'anthropic-version: 2023-06-01',
+    '-H', 'anthropic-beta: managed-agents-2026-04-01',
+    '-H', 'Accept: text/event-stream',
+  ]);
+}
 
 /**
  * POST /api/generate-jd
  * Body: { message: string, sessionId?: string }
- *
- * Returns SSE stream with events:
- *   type=session   → { sessionId }           (first event, on new session)
- *   type=chat      → { text, delta }         (agent's conversational reply chunk)
- *   type=done      → { fullText }            (stream finished, full response)
- *   type=error     → { text }                (error message)
  */
 export async function POST(req) {
+  if (!API_KEY || !ENVIRONMENT_ID) {
+    return new Response(JSON.stringify({
+      error: 'Missing ANTHROPIC_API_KEY or ANTHROPIC_ENVIRONMENT_ID',
+    }), { status: 500 });
+  }
+
   var body;
-  try {
-    body = await req.json();
-  } catch (e) {
+  try { body = await req.json(); } catch (e) {
     return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400 });
   }
 
@@ -27,86 +54,112 @@ export async function POST(req) {
     return new Response(JSON.stringify({ error: 'message is required' }), { status: 400 });
   }
 
-  var client;
-  var environmentId;
-  try {
-    client = getAnthropicClient();
-    environmentId = getEnvironmentId();
-  } catch (e) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
-  }
-
   var encoder = new TextEncoder();
 
   var stream = new ReadableStream({
     async start(controller) {
       function send(type, data) {
-        controller.enqueue(encoder.encode('data: ' + JSON.stringify({ type: type, ...data }) + '\n\n'));
+        try {
+          controller.enqueue(encoder.encode('data: ' + JSON.stringify({ type: type, ...data }) + '\n\n'));
+        } catch (e) { /* controller already closed */ }
       }
 
       try {
-        // Create session if we don't have one
+        // 1. Create session if needed
         if (!sessionId) {
-          var session = await client.beta.sessions.create({
+          var session = curlPost('/v1/sessions', {
             agent: AGENT_ID,
-            environment_id: environmentId,
+            environment_id: ENVIRONMENT_ID,
           });
+          if (session.error) throw new Error(session.error.message || JSON.stringify(session.error));
           sessionId = session.id;
           send('session', { sessionId: sessionId });
         }
 
-        // Open stream FIRST, then send the message (stream-first pattern)
-        var eventStream = await client.beta.sessions.events.stream(sessionId);
+        // 2. Open SSE stream via curl (stream-first)
+        var sseProc = curlSSE('/v1/sessions/' + sessionId + '/events/stream');
 
-        await client.beta.sessions.events.send(sessionId, {
+        // 3. Send user message
+        curlPost('/v1/sessions/' + sessionId + '/events', {
           events: [{
             type: 'user.message',
             content: [{ type: 'text', text: message }],
           }],
         });
 
-        // Collect agent messages from the stream
+        // 4. Read SSE events from curl stdout
         var agentText = '';
+        var sseBuffer = '';
 
-        for await (var event of eventStream) {
-          if (event.type === 'agent.message') {
-            for (var block of (event.content || [])) {
-              if (block.type === 'text' && block.text) {
-                agentText += block.text;
-                send('chat', { text: block.text, delta: true });
+        await new Promise(function (resolve, reject) {
+          sseProc.stdout.on('data', function (chunk) {
+            sseBuffer += chunk.toString();
+            var parts = sseBuffer.split('\n\n');
+            sseBuffer = parts.pop();
+
+            for (var p = 0; p < parts.length; p++) {
+              var lines = parts[p].split('\n');
+              for (var k = 0; k < lines.length; k++) {
+                var line = lines[k].trim();
+                if (!line.startsWith('data: ')) continue;
+                var evt;
+                try { evt = JSON.parse(line.slice(6)); } catch (e) { continue; }
+
+                if (evt.type === 'agent.message') {
+                  for (var b = 0; b < (evt.content || []).length; b++) {
+                    var block = evt.content[b];
+                    if (block.type === 'text' && block.text) {
+                      agentText += block.text;
+                      send('chat', { text: block.text, delta: true });
+                    }
+                  }
+                }
+
+                if (evt.type === 'session.status_idle') {
+                  if (evt.stop_reason && evt.stop_reason.type === 'requires_action') continue;
+                  send('done', { fullText: agentText });
+                  sseProc.kill();
+                  resolve();
+                  return;
+                }
+
+                if (evt.type === 'session.status_terminated') {
+                  send('done', { fullText: agentText });
+                  sseProc.kill();
+                  resolve();
+                  return;
+                }
+
+                if (evt.type === 'session.error') {
+                  var errMsg = (evt.error && evt.error.message) || 'Agent error';
+                  send('error', { text: errMsg });
+                  send('done', { fullText: agentText });
+                  sseProc.kill();
+                  resolve();
+                  return;
+                }
               }
             }
-          }
+          });
 
-          // Session finished this turn
-          if (event.type === 'session.status_idle') {
-            if (event.stop_reason && event.stop_reason.type === 'requires_action') {
-              continue;
-            }
-            break; // end_turn or retries_exhausted
-          }
+          sseProc.stderr.on('data', function () { /* ignore curl progress */ });
 
-          if (event.type === 'session.status_terminated') {
-            break;
-          }
+          sseProc.on('close', function (code) {
+            if (agentText) send('done', { fullText: agentText });
+            else send('error', { text: 'SSE stream closed unexpectedly (code ' + code + ')' });
+            resolve();
+          });
 
-          if (event.type === 'session.error') {
-            var errMsg = 'Agent error';
-            if (event.error && typeof event.error === 'object') {
-              errMsg = event.error.message || event.error.type || errMsg;
-            } else if (typeof event.error === 'string') {
-              errMsg = event.error;
-            }
-            send('error', { text: errMsg });
-            break;
-          }
-        }
+          sseProc.on('error', function (err) {
+            send('error', { text: 'SSE process error: ' + err.message });
+            resolve();
+          });
+        });
 
-        send('done', { fullText: agentText });
       } catch (err) {
         send('error', { text: err.message || 'Unknown error' });
       } finally {
-        controller.close();
+        try { controller.close(); } catch (e) { /* already closed */ }
       }
     },
   });
