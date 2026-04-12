@@ -1,7 +1,5 @@
 'use client';
 
-import { cn } from '@/lib/utils';
-
 function parseContent(text) {
   if (!text || typeof text !== 'string') return [{ type: 'text', value: text || '' }];
 
@@ -17,21 +15,22 @@ function parseContent(text) {
     } catch (e) { /* malformed */ }
 
     var parts = [];
-    if (before) parts.push({ type: 'text', value: before });
-    if (items.length > 0) parts.push({ type: 'options', items: items });
-    if (after) parts.push({ type: 'text', value: after });
+    if (before) parts.push({ type: 'text', value: cleanMarkdown(before) });
+    if (items.length > 0) parts.push({ type: 'options', items: items.map(cleanMarkdown) });
+    if (after) parts.push({ type: 'text', value: cleanMarkdown(after) });
     return parts;
   }
 
-  // Clean up any stray markdown formatting
-  var clean = text
-    .replace(/\*\*(.*?)\*\*/g, '$1')  // remove **bold**
-    .replace(/\*(.*?)\*/g, '$1')       // remove *italic*
-    .replace(/^#{1,4}\s+/gm, '')       // remove ## headers
-    .replace(/^[-*]\s+/gm, '')         // remove - bullet points
-    .trim();
+  return [{ type: 'text', value: cleanMarkdown(text) }];
+}
 
-  return [{ type: 'text', value: clean }];
+function cleanMarkdown(text) {
+  return text
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/^#{1,4}\s+/gm, '')
+    .replace(/^[-*]\s+/gm, '')
+    .trim();
 }
 
 export default function ChatBubble({ role, content, animate = false, compact = false, onOptionSelect }) {
@@ -40,34 +39,22 @@ export default function ChatBubble({ role, content, animate = false, compact = f
 
   return (
     <div
-      className={cn(
-        'flex items-start gap-3',
-        isAI ? 'self-start' : 'self-end flex-row-reverse',
-        animate && 'animate-slide-up'
-      )}
-      style={{ maxWidth: compact ? '88%' : '76%', minWidth: 0, overflow: 'hidden' }}
+      style={{
+        display: 'flex',
+        justifyContent: isAI ? 'flex-start' : 'flex-end',
+        animation: animate ? 'fsu 0.2s ease both' : 'none',
+      }}
     >
-      {isAI && (
-        <div
-          className="rounded-full flex items-center justify-center font-bold shrink-0"
-          style={{
-            width: compact ? 24 : 28,
-            height: compact ? 24 : 28,
-            fontSize: compact ? 9 : 11,
-            background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-            color: 'var(--btn-text)',
-          }}
-        >
-          AI
-        </div>
-      )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 8, minWidth: 0 }}>
+      <div style={{
+        display: 'flex', flexDirection: 'column', gap: 8,
+        maxWidth: '92%', minWidth: 0,
+      }}>
         {parts.map(function (part, idx) {
           if (part.type === 'options') {
             return (
               <div key={idx} style={{
                 display: 'flex', flexDirection: 'column', gap: 6,
+                paddingLeft: 2,
               }}>
                 {part.items.map(function (item, oidx) {
                   return (
@@ -109,22 +96,21 @@ export default function ChatBubble({ role, content, animate = false, compact = f
           return (
             <div
               key={idx}
-              className="leading-relaxed rounded-xl"
               style={{
-                padding: compact ? '8px 14px' : '12px 16px',
+                padding: compact ? '8px 14px' : '10px 16px',
+                fontFamily: 'var(--font-body)',
                 fontSize: compact ? 12 : 13,
+                lineHeight: 1.6,
                 wordBreak: 'break-word',
-                overflow: 'hidden',
+                borderRadius: isAI ? '4px 14px 14px 14px' : '14px 4px 14px 14px',
                 ...(isAI
                   ? {
                       backgroundColor: 'var(--cream-sidebar)',
                       color: 'var(--brown)',
-                      borderTopLeftRadius: 4,
                     }
                   : {
                       background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
                       color: 'var(--cream)',
-                      borderTopRightRadius: 4,
                     }),
               }}
             >

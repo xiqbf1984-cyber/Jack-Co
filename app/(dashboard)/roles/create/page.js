@@ -581,37 +581,38 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: isCompact ? 'visible' : 'hidden',
     }}>
-      {/* Header — single row: back | progress | actions */}
+      {/* Header — back + actions on top row */}
       <div id="role-create-header" style={{
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '6px 16px',
-        borderBottom: '1px solid var(--border-light)',
       }}>
-        {/* Left: back */}
-        <button
-          onClick={handleBack}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 5,
-            fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            flexShrink: 0,
-          }}
-        >
-          <ArrowLeft size={13} />
-          Back to Roles
-        </button>
+        <div style={{
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '8px 16px',
+        }}>
+          {/* Left: back */}
+          <button
+            onClick={handleBack}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5,
+              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
+              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+              flexShrink: 0,
+            }}
+          >
+            <ArrowLeft size={13} />
+            Back to Roles
+          </button>
 
-        {/* Center: progress bar */}
-        <div style={{ flex: 1, maxWidth: 360, margin: '0 16px' }}>
-          <ProgressIndicator currentStage={stage} />
-        </div>
+          {/* Center: progress bar */}
+          <div style={{ flex: 1, maxWidth: 340, margin: '0 16px' }}>
+            <ProgressIndicator currentStage={stage} />
+          </div>
 
-        {/* Right: version + save group + primary action */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-          {isCompact && (
-            <>
+          {/* Right: version + save group + primary action */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            {isCompact && (
+              <>
               {saveVersion > 0 && (
                 <span style={{
                   fontFamily: 'var(--font-body)', fontSize: 11,
@@ -671,6 +672,7 @@ export default function RoleCreatePage() {
               </button>
             </>
           )}
+          </div>
         </div>
       </div>
 
