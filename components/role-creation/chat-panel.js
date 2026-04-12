@@ -23,9 +23,18 @@ export default function ChatPanel({
 
   var ghostText = externalGhost || localGhost;
 
+  // Scroll to bottom when messages change (including streaming content updates)
+  var lastContentLen = useRef(0);
+  useEffect(function () {
+    var totalLen = messages.reduce(function (sum, m) { return sum + (m.content || '').length; }, 0);
+    if (totalLen !== lastContentLen.current) {
+      lastContentLen.current = totalLen;
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  });
   useEffect(function () {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+  }, [isTyping]);
 
   useEffect(function () {
     if (input) {
