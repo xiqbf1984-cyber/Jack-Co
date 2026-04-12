@@ -466,8 +466,9 @@ export default function RoleCreatePage() {
                 });
               }
             } else {
-              // Normal chat — update the AI message bubble
-              var snap = fullText;
+              // Normal chat — strip any trailing partial markers before displaying
+              var chatDisplay = fullText.replace(/\[(?:JD_?S?T?A?R?T?|U?I?|\/U?I?)?$/g, '').replace(/\[$/g, '');
+              var snap = chatDisplay;
               setMessages(function (prev) {
                 var copy = prev.slice();
                 copy[copy.length - 1] = { role: 'ai', content: snap };
