@@ -299,7 +299,6 @@ export default function RoleCreatePage() {
   var [followUpRound, setFollowUpRound] = useState(0);
   var [jdGenerated, setJdGenerated] = useState(false);
   var [saveVersion, setSaveVersion] = useState(0);
-  var [agentSessionId, setAgentSessionId] = useState(null);
   var [sharableLink] = useState(function () {
     return 'https://assess.jack-co.com/jd/' + Math.random().toString(36).slice(2, 10);
   });
@@ -342,55 +341,17 @@ export default function RoleCreatePage() {
     }, delay);
   }, []);
 
-  // ─── Send message to Neo agent ───
-  async function sendToAgent(text, sessionId, isFirst) {
-    var payload = { message: text, sessionId: sessionId };
-    // On first message, inject company context
-    if (isFirst && company) {
-      payload.companyContext = {
-        name: company.name || '',
-        industry: company.industry || '',
-        size: company.size || '',
-        location: company.location || '',
-        description: company.description || '',
-      };
-    }
-
+  // ─── Call Neo via Messages API ───
+  async function callNeo(text, chatHistory) {
     var res = await fetch('/api/generate-jd', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({ message: text, history: chatHistory }),
     });
-    if (!res.ok) throw new Error('Agent API error: ' + res.status);
-
-    var reader = res.body.getReader();
-    var decoder = new TextDecoder();
-    var fullText = '';
-    var newSessionId = sessionId;
-    var buffer = '';
-
-    while (true) {
-      var result = await reader.read();
-      if (result.done) break;
-      buffer += decoder.decode(result.value, { stream: true });
-      var parts = buffer.split('\n\n');
-      buffer = parts.pop();
-      for (var p = 0; p < parts.length; p++) {
-        var eventLines = parts[p].split('\n');
-        for (var k = 0; k < eventLines.length; k++) {
-          var line = eventLines[k].trim();
-          if (!line.startsWith('data: ')) continue;
-          try {
-            var evt = JSON.parse(line.slice(6));
-            if (evt.type === 'session') newSessionId = evt.sessionId;
-            if (evt.type === 'chat' && evt.text) fullText += evt.text;
-            if (evt.type === 'done' && evt.fullText) fullText = evt.fullText;
-            if (evt.type === 'error') console.error('Agent error:', evt.text);
-          } catch (e) { /* skip */ }
-        }
-      }
-    }
-    return { sessionId: newSessionId, text: fullText };
+    if (!res.ok) throw new Error('API error: ' + res.status);
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return data.reply;
   }
 
   // Check if response contains JD content
@@ -413,23 +374,22 @@ export default function RoleCreatePage() {
     }
 
     setStage(1);
-    setMessages([{ role: 'user', content: text }]);
+    var newMessages = [{ role: 'user', content: text }];
+    setMessages(newMessages);
     setIsTyping(true);
 
-    sendToAgent(text, null, true).then(function (result) {
-      setAgentSessionId(result.sessionId);
+    callNeo(text, []).then(function (reply) {
       setIsTyping(false);
-
-      if (looksLikeJD(result.text)) {
-        setJDContent(result.text);
+      if (looksLikeJD(reply)) {
+        setJDContent(reply);
         setJdGenerated(true);
         setStage(2);
         setMessages(function (prev) { return prev.concat([{ role: 'ai', content: 'Your JD is ready! Edit it on the right, or tell me what to change.' }]); });
       } else {
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: result.text }]); });
+        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: reply }]); });
       }
     }).catch(function (err) {
-      console.error('Agent error, falling back to local:', err);
+      console.error('Neo API error, falling back to local:', err);
       setIsTyping(false);
       var nextQ = getNextQuestion(analysis.coverage, analysis.extracted);
       if (!nextQ) {
@@ -445,7 +405,8 @@ export default function RoleCreatePage() {
   }
 
   function handleChatSend(text) {
-    setMessages(function (prev) { return prev.concat([{ role: 'user', content: text }]); });
+    var prevMessages = messages.concat([{ role: 'user', content: text }]);
+    setMessages(prevMessages);
 
     var newAllText = allText + ' ' + text;
     setAllText(newAllText);
@@ -462,23 +423,19 @@ export default function RoleCreatePage() {
     setFollowUpRound(round);
     setIsTyping(true);
 
-    sendToAgent(text, agentSessionId, false).then(function (result) {
-      setAgentSessionId(result.sessionId);
+    // Pass full conversation history to maintain context
+    callNeo(text, messages).then(function (reply) {
       setIsTyping(false);
-
-      if (looksLikeJD(result.text)) {
-        setJDContent(result.text);
+      if (looksLikeJD(reply)) {
+        setJDContent(reply);
         setJdGenerated(true);
         if (stage < 2) setStage(2);
         setMessages(function (prev) { return prev.concat([{ role: 'ai', content: 'Your JD is ready! Edit it on the right, or tell me what to change.' }]); });
       } else {
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: result.text }]); });
-        if (stage >= 2 && result.text.length > 400) {
-          setJDContent(result.text);
-        }
+        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: reply }]); });
       }
     }).catch(function (err) {
-      console.error('Agent error, falling back to local:', err);
+      console.error('Neo API error, falling back to local:', err);
       setIsTyping(false);
       var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
       if (!nextQ || round >= 3) {
@@ -525,7 +482,6 @@ export default function RoleCreatePage() {
     setExtractedData(null);
     setFollowUpRound(0);
     setJdGenerated(false);
-    setAgentSessionId(null);
   }
 
   function handleGoToAssessment() {
@@ -596,32 +552,36 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: isCompact ? 'visible' : 'hidden',
     }}>
-      {/* Header — sticky, spans full layout width in split mode */}
+      {/* Header — single row: back | progress | actions */}
       <div id="role-create-header" style={{
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '10px 20px',
       }}>
-        {/* Top bar: back + actions */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '12px 20px',
-        }}>
-          <button
-            onClick={handleBack}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 5,
-              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-            }}
-          >
-            <ArrowLeft size={13} />
-            Back to Roles
-          </button>
+        {/* Left: back */}
+        <button
+          onClick={handleBack}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={13} />
+          Back to Roles
+        </button>
 
-          {/* Right: version + save group + primary action */}
+        {/* Center: progress bar */}
+        <div style={{ flex: 1, maxWidth: 360, margin: '0 16px' }}>
+          <ProgressIndicator currentStage={stage} />
+        </div>
+
+        {/* Right: version + save group + primary action */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {isCompact && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-              {/* Version indicator */}
+            <>
               {saveVersion > 0 && (
                 <span style={{
                   fontFamily: 'var(--font-body)', fontSize: 11,
@@ -629,7 +589,6 @@ export default function RoleCreatePage() {
                 }}>v{saveVersion}</span>
               )}
 
-              {/* Save button group */}
               <div style={{
                 display: 'flex', alignItems: 'center',
                 border: '1px solid var(--border-default)',
@@ -667,7 +626,6 @@ export default function RoleCreatePage() {
                 </button>
               </div>
 
-              {/* Create Assessment — primary */}
               <button
                 type="button" onClick={handleGoToAssessment} disabled={!jdContent.trim()}
                 className="btn-primary"
@@ -681,13 +639,8 @@ export default function RoleCreatePage() {
                 <Play size={10} fill="currentColor" />
                 Create an Assessment
               </button>
-            </div>
+            </>
           )}
-        </div>
-
-        {/* Progress bar — centered, no border */}
-        <div style={{ padding: '0 24px 12px' }}>
-          <ProgressIndicator currentStage={stage} />
         </div>
       </div>
 
