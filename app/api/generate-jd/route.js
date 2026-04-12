@@ -114,7 +114,7 @@ export async function POST(req) {
   messages.push({ role: 'user', content: message });
 
   var requestBody = {
-    model: 'claude-sonnet-4-6',
+    model: 'claude-haiku-4-5',
     max_tokens: 4096,
     system: SYSTEM_PROMPT,
     messages: messages,
