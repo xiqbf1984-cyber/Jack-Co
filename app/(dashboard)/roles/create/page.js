@@ -397,10 +397,20 @@ export default function RoleCreatePage() {
     return fullText;
   }
 
-  // Check if response contains JD content
+  // Check if response contains JD content (strip [UI] blocks before checking)
   function looksLikeJD(text) {
-    var hasRoleKeywords = /about the role|what you.ll do|responsibilities|requirements|key responsibilities/i.test(text);
-    return text.length > 400 && hasRoleKeywords;
+    var clean = text.replace(/\[UI\][\s\S]*?\[\/UI\]/g, '').trim();
+    var hasRoleKeywords = /about the role|what you.ll do|responsibilities|requirements|key responsibilities|role overview|compensation/i.test(clean);
+    return clean.length > 300 && hasRoleKeywords;
+  }
+
+  // Extract JD text from a response (strip [UI] blocks and markdown)
+  function extractJDContent(text) {
+    return text
+      .replace(/\[UI\][\s\S]*?\[\/UI\]/g, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .trim();
   }
 
   function handleSearchSubmit(text) {
@@ -421,7 +431,7 @@ export default function RoleCreatePage() {
     // callNeo streams the reply — it adds the AI message and updates it token by token
     callNeo(text, []).then(function (reply) {
       if (looksLikeJD(reply)) {
-        setJDContent(reply);
+        setJDContent(extractJDContent(reply));
         setJdGenerated(true);
         setStage(2);
       }
@@ -460,7 +470,7 @@ export default function RoleCreatePage() {
     // callNeo streams the reply — adds AI message and updates it token by token
     callNeo(text, currentHistory.concat([{ role: 'user', content: text }])).then(function (reply) {
       if (looksLikeJD(reply)) {
-        setJDContent(reply);
+        setJDContent(extractJDContent(reply));
         setJdGenerated(true);
         if (stage < 2) setStage(2);
       }
@@ -586,11 +596,11 @@ export default function RoleCreatePage() {
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
       }}>
+        {/* Top row: back button */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '8px 16px',
+          padding: '10px 20px 0',
         }}>
-          {/* Left: back */}
           <button
             onClick={handleBack}
             style={{
@@ -604,15 +614,9 @@ export default function RoleCreatePage() {
             Back to Roles
           </button>
 
-          {/* Center: progress bar */}
-          <div style={{ flex: 1, maxWidth: 340, margin: '0 16px' }}>
-            <ProgressIndicator currentStage={stage} />
-          </div>
-
           {/* Right: version + save group + primary action */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            {isCompact && (
-              <>
+          {isCompact && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
               {saveVersion > 0 && (
                 <span style={{
                   fontFamily: 'var(--font-body)', fontSize: 11,
@@ -634,27 +638,21 @@ export default function RoleCreatePage() {
                     color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
                     cursor: !jdContent.trim() ? 'default' : 'pointer',
                   }}
-                >
-                  Save
-                </button>
+                >Save</button>
                 <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
                 <button type="button" onClick={handleDownloadJD} disabled={!jdContent.trim()}
                   title="Download" style={{
                     display: 'flex', alignItems: 'center', padding: '5px 7px',
                     border: 'none', background: 'transparent', cursor: !jdContent.trim() ? 'default' : 'pointer',
                     color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
-                  }}>
-                  <Download size={12} />
-                </button>
+                  }}><Download size={12} /></button>
                 <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
                 <button type="button" onClick={function () { handleShareJD(); }} disabled={!sharableLink}
                   title="Share" style={{
                     display: 'flex', alignItems: 'center', padding: '5px 7px',
                     border: 'none', background: 'transparent', cursor: 'pointer',
                     color: 'var(--brown-soft)',
-                  }}>
-                  <Link2 size={12} />
-                </button>
+                  }}><Link2 size={12} /></button>
               </div>
 
               <button
@@ -670,8 +668,14 @@ export default function RoleCreatePage() {
                 <Play size={10} fill="currentColor" />
                 Create an Assessment
               </button>
-            </>
+            </div>
           )}
+        </div>
+
+        {/* Progress bar — below back button, with breathing room */}
+        <div style={{ padding: '8px 0 14px', display: 'flex', justifyContent: 'center' }}>
+          <div style={{ maxWidth: 340, width: '100%' }}>
+            <ProgressIndicator currentStage={stage} />
           </div>
         </div>
       </div>
