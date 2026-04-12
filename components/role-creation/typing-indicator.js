@@ -2,35 +2,28 @@
 
 export default function TypingIndicator() {
   return (
-    <div className="flex items-start gap-2.5 animate-fi">
+    <div style={{ display: 'flex', justifyContent: 'flex-start', animation: 'fi 0.2s ease both' }}>
       <div
-        className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0"
         style={{
-          background: 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))',
-          color: 'var(--btn-text)',
-        }}
-      >
-        AI
-      </div>
-      <div
-        className="flex items-center gap-1 px-4 py-3 rounded-xl"
-        style={{
+          display: 'flex', alignItems: 'center', gap: 4,
+          padding: '10px 16px',
+          borderRadius: '4px 14px 14px 14px',
           backgroundColor: 'var(--cream-sidebar)',
-          borderTopLeftRadius: '4px',
         }}
       >
-        {[0, 0.16, 0.32].map((delay, i) => (
-          <span
-            key={i}
-            className="inline-block rounded-full"
-            style={{
-              width: 6,
-              height: 6,
-              backgroundColor: 'var(--brown-muted)',
-              animation: `dotBounce 1s ${delay}s infinite`,
-            }}
-          />
-        ))}
+        {[0, 0.16, 0.32].map(function (delay, i) {
+          return (
+            <span
+              key={i}
+              style={{
+                display: 'inline-block',
+                width: 5, height: 5, borderRadius: '50%',
+                backgroundColor: 'var(--brown-muted)',
+                animation: 'dotBounce 1s ' + delay + 's infinite',
+              }}
+            />
+          );
+        })}
       </div>
     </div>
   );
