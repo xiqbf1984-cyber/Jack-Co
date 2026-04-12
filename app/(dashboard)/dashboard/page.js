@@ -198,7 +198,7 @@ export default function DashboardPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 0.8fr', gap: 16, alignItems: 'start' }}>
         <DashboardPanel title="Roles" count={roles.length} addLabel="Create" addHref="/roles/create" viewAllHref="/roles">
           {roles.length > 0 ? roles.slice(0, 3).map((role) => (
-            <PanelRow key={role.id} label={role.title} sublabel={role.dept} status={role.status} href={'/roles/' + role.id} />
+            <PanelRow key={role.id} label={role.title} sublabel={role.dept} status={role.status} href={'/roles/' + role.id} chips={role.hiringProfile ? (role.hiringProfile.skills || []).slice(0, 2) : []} />
           )) : <PanelEmpty message="No roles yet" />}
         </DashboardPanel>
 
@@ -377,23 +377,39 @@ const STATUS_COLORS = {
   idle: 'var(--brown-light)', published: 'var(--accent-green)', expired: 'var(--red)', archived: 'var(--brown-light)',
 };
 
-function PanelRow({ label, sublabel, status, href }) {
+function PanelRow({ label, sublabel, status, href, chips }) {
   const color = STATUS_COLORS[status] || 'var(--brown-light)';
   const Tag = href ? Link : 'div';
   const linkProps = href ? { href, style: { textDecoration: 'none', color: 'inherit' } } : {};
   return (
     <Tag {...linkProps}>
-      <div style={{ display: 'flex', alignItems: 'center', padding: '10px 16px', borderBottom: '1px solid var(--border-light)', transition: 'background-color 0.1s ease', cursor: href ? 'pointer' : 'default' }}
+      <div style={{ padding: '10px 16px', borderBottom: '1px solid var(--border-light)', transition: 'background-color 0.1s ease', cursor: href ? 'pointer' : 'default' }}
         onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.01)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</div>
-          {sublabel && <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sublabel}</div>}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: 'var(--brown)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{label}</div>
+            {sublabel && <div style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-light)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{sublabel}</div>}
+          </div>
+          {status && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+              <span style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: color }} />
+              <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
+            </div>
+          )}
         </div>
-        {status && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
-            <span style={{ width: 5, height: 5, borderRadius: '50%', backgroundColor: color }} />
-            <span style={{ fontFamily: 'var(--font-body)', fontSize: 10, color: 'var(--brown-soft)' }}>{status.charAt(0).toUpperCase() + status.slice(1)}</span>
+        {chips && chips.length > 0 && (
+          <div style={{ display: 'flex', gap: 4, marginTop: 5, flexWrap: 'wrap' }}>
+            {chips.map(function (c, i) {
+              return (
+                <span key={i} style={{
+                  padding: '1px 6px', borderRadius: 8, fontSize: 9,
+                  fontFamily: 'var(--font-body)',
+                  backgroundColor: 'var(--cream)', color: 'var(--brown-soft)',
+                  border: '1px solid var(--border-light)',
+                }}>{c}</span>
+              );
+            })}
           </div>
         )}
       </div>

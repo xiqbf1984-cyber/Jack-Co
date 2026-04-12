@@ -325,7 +325,7 @@ export default function RolesPage() {
 
             return (
               <div key={role.id} style={{
-                display: 'flex', alignItems: 'center', padding: '14px 20px',
+                display: 'flex', flexDirection: 'column',
                 borderBottom: i < filtered.length - 1 ? '1px solid var(--border-light)' : 'none',
                 transition: 'background-color 0.15s ease',
                 cursor: 'pointer',
@@ -333,6 +333,8 @@ export default function RolesPage() {
                 onClick={function () { pageRouter.push('/roles/' + role.id); }}
                 onMouseEnter={function (e) { e.currentTarget.style.backgroundColor = 'rgba(0,0,0,0.015)'; }}
                 onMouseLeave={function (e) { e.currentTarget.style.backgroundColor = 'transparent'; }}>
+                {/* Main row */}
+                <div style={{ display: 'flex', alignItems: 'center', padding: '14px 20px 6px' }}>
                 {/* Icon */}
                 <Briefcase size={14} style={{ color: 'var(--brown-light)', flexShrink: 0, marginRight: 14 }} />
 
@@ -366,6 +368,44 @@ export default function RolesPage() {
 
                 {/* Actions */}
                 <RoleActions role={role} />
+                </div>
+
+                {/* Profile summary row */}
+                {(role.hiringProfile || (role.salary && role.salary !== 'TBD')) && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 20px 10px 48px', flexWrap: 'wrap' }}>
+                    {role.salary && role.salary !== 'TBD' && (
+                      <span style={{
+                        padding: '2px 7px', borderRadius: 10, fontSize: 9,
+                        fontFamily: 'var(--font-body)',
+                        backgroundColor: 'rgba(139,105,20,0.06)', color: 'var(--gold)',
+                        border: '1px solid rgba(139,105,20,0.1)',
+                      }}>{role.salary}</span>
+                    )}
+                    {role.hiringProfile && role.hiringProfile.workMode && (
+                      <span style={{
+                        padding: '2px 7px', borderRadius: 10, fontSize: 9,
+                        fontFamily: 'var(--font-body)',
+                        backgroundColor: 'rgba(39,130,91,0.06)', color: 'var(--accent-green)',
+                        border: '1px solid rgba(39,130,91,0.1)',
+                      }}>{role.hiringProfile.workMode}</span>
+                    )}
+                    {role.hiringProfile && role.hiringProfile.skills && role.hiringProfile.skills.slice(0, 3).map(function (s, si) {
+                      return (
+                        <span key={si} style={{
+                          padding: '2px 7px', borderRadius: 10, fontSize: 9,
+                          fontFamily: 'var(--font-body)',
+                          backgroundColor: 'var(--cream)', color: 'var(--brown-soft)',
+                          border: '1px solid var(--border-light)',
+                        }}>{s}</span>
+                      );
+                    })}
+                    {role.hiringProfile && role.hiringProfile.skills && role.hiringProfile.skills.length > 3 && (
+                      <span style={{
+                        fontSize: 9, fontFamily: 'var(--font-body)', color: 'var(--brown-light)',
+                      }}>+{role.hiringProfile.skills.length - 3} more</span>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}

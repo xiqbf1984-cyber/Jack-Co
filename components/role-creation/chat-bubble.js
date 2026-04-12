@@ -3,12 +3,21 @@
 function cleanText(text) {
   if (!text) return '';
   return text
+    .replace(/\[JD_START\][\s\S]*?\[JD_END\]/g, '')
+    .replace(/\[JD_START\][\s\S]*$/g, '')
+    .replace(/\[JD_END\]/g, '')
     .replace(/\[UI\][\s\S]*?\[\/UI\]/g, '')
     .replace(/\[UI\][\s\S]*$/g, '')
+    .replace(/\[\/UI\]/g, '')
     .replace(/\*\*(.*?)\*\*/g, '$1')
     .replace(/\*(.*?)\*/g, '$1')
     .replace(/^#{1,4}\s+/gm, '')
     .replace(/^[-*]\s+/gm, '')
+    // Strip partial markers that show during streaming
+    .replace(/\[JD_?S?T?A?R?T?\]?$/g, '')
+    .replace(/\[U?I?\]?$/g, '')
+    .replace(/\[\/U?I?\]?$/g, '')
+    .replace(/\[$/g, '')
     .trim();
 }
 
