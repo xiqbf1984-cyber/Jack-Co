@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, Download, Link2, Play } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
@@ -280,6 +280,8 @@ function ProgressIndicator({ currentStage }) {
 export default function RoleCreatePage() {
   var router = useRouter();
   var addRole = useAppStore(function (s) { return s.addRole; });
+  var updateRole = useAppStore(function (s) { return s.updateRole; });
+  var roles = useAppStore(function (s) { return s.roles; });
   var company = useAppStore(function (s) { return s.company; });
   var addNotification = useAppStore(function (s) { return s.addNotification; });
 
@@ -305,6 +307,30 @@ export default function RoleCreatePage() {
 
   useEffect(function () { setBodyEl(document.body); }, []);
 
+  // Restore from saved role if ?id= is in URL
+  var searchParams = useSearchParams();
+  useEffect(function () {
+    var roleId = searchParams.get('id');
+    if (!roleId) return;
+    var role = roles.find(function (r) { return String(r.id) === String(roleId); });
+    if (!role) return;
+    savedRoleId.current = role.id;
+    if (role.jd) setJDContent(role.jd);
+    if (role.chatHistory && role.chatHistory.length > 0) {
+      setMessages(role.chatHistory);
+      setStage(role.jd ? 2 : 1);
+    } else if (role.jd) {
+      setStage(2);
+    }
+    if (role.title) setDescription(role.title);
+    if (role.title) {
+      var analysis = analyzeInput(role.title + ' ' + (role.salary || '') + ' ' + (role.dept || ''));
+      setExtractedData(analysis.extracted);
+    }
+    doMatch(role.title || '');
+    setJdGenerated(!!role.jd);
+  }, []);
+
   useEffect(function () {
     if (stage < 1) return;
     var check = function () {
@@ -325,26 +351,39 @@ export default function RoleCreatePage() {
     };
   }, [stage]);
 
-  // Auto-save: when JD content changes, save the role
+  // Auto-save: debounced save when JD or messages change
   var autoSaveTimer = useRef(null);
+  var savedRoleId = useRef(null);
   useEffect(function () {
-    if (!jdContent.trim() || !extractedData) return;
+    if (!jdContent.trim() && messages.length < 2) return;
     clearTimeout(autoSaveTimer.current);
     autoSaveTimer.current = setTimeout(function () {
       var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
       if (!title) return;
-      addRole({
+      var roleData = {
         title: title,
         dept: inferDepartment(extractedData || {}, allText),
         salary: extractedData?.salary || 'TBD',
-        status: 'draft',
+        status: jdContent.trim() ? 'draft' : 'intake',
         roleRef: matchedRole,
         jd: jdContent,
         sharableLink: sharableLink,
-      });
+        chatHistory: messages,
+        hiringProfile: hiringBrief,
+      };
+      if (savedRoleId.current) {
+        updateRole(savedRoleId.current, roleData);
+      } else {
+        addRole(roleData);
+        // Find the temp ID so we can update instead of add next time
+        var roles = useAppStore.getState().roles;
+        if (roles.length > 0 && roles[0].title === title) {
+          savedRoleId.current = roles[0].id;
+        }
+      }
     }, 3000);
     return function () { clearTimeout(autoSaveTimer.current); };
-  }, [jdContent]);
+  }, [jdContent, messages.length]);
 
   var doMatch = useCallback(function (text) {
     var result = matchRole(text);

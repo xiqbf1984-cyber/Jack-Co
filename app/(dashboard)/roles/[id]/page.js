@@ -104,7 +104,7 @@ export default function RoleDetailPage() {
             </div>
           </div>
         </div>
-        <Link href="/roles/create" style={{
+        <Link href={'/roles/create?id=' + role.id} style={{
           display: 'inline-flex', alignItems: 'center', gap: 5,
           padding: '8px 16px', borderRadius: 8,
           backgroundColor: 'var(--gold)', color: '#fff',
