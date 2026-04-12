@@ -5,9 +5,9 @@ import { ArrowUp } from 'lucide-react';
 import ChatBubble, { parseUIBlock } from './chat-bubble';
 import TypingIndicator from './typing-indicator';
 
-/* ── Bottom Dock UI Components ── */
+/* ── Dock Components ── */
 
-function DockOptionCard({ label, desc, onClick }) {
+function DockOptionCard({ label, desc, onClick, isLast }) {
   return (
     <button
       type="button"
@@ -15,37 +15,35 @@ function DockOptionCard({ label, desc, onClick }) {
       style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         width: '100%', textAlign: 'left',
-        padding: '10px 14px', borderRadius: 10,
+        padding: '10px 14px',
         border: '1px solid var(--border-default)',
+        borderTop: 'none',
+        borderRadius: 0,
         backgroundColor: '#fff', cursor: 'pointer',
-        transition: 'all 0.15s ease', gap: 12,
+        transition: 'all 0.12s ease', gap: 12,
       }}
       onMouseEnter={function (e) {
-        e.currentTarget.style.borderColor = 'var(--gold)';
-        e.currentTarget.style.backgroundColor = 'rgba(139,105,20,0.02)';
+        e.currentTarget.style.backgroundColor = 'rgba(139,105,20,0.03)';
       }}
       onMouseLeave={function (e) {
-        e.currentTarget.style.borderColor = 'var(--border-default)';
         e.currentTarget.style.backgroundColor = '#fff';
       }}
     >
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{
-          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
-          color: 'var(--brown)', marginBottom: desc ? 2 : 0,
+          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 500,
+          color: 'var(--brown)',
         }}>{label}</div>
         {desc && (
           <div style={{
             fontFamily: 'var(--font-body)', fontSize: 11,
-            color: 'var(--brown-soft)', lineHeight: 1.4,
+            color: 'var(--brown-soft)', lineHeight: 1.4, marginTop: 1,
           }}>{desc}</div>
         )}
       </div>
       <div style={{
-        flexShrink: 0, padding: '4px 10px', borderRadius: 6,
-        border: '1px solid var(--border-default)',
-        fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 500,
-        color: 'var(--brown-soft)',
+        flexShrink: 0, fontFamily: 'var(--font-body)', fontSize: 10,
+        color: 'var(--brown-light)',
       }}>Select</div>
     </button>
   );
@@ -54,7 +52,7 @@ function DockOptionCard({ label, desc, onClick }) {
 function DockChips({ title, items }) {
   if (!items || !items.length) return null;
   return (
-    <div style={{ padding: '0 2px' }}>
+    <div style={{ padding: '4px 0' }}>
       {title && (
         <div style={{
           fontFamily: 'var(--font-body)', fontSize: 10,
@@ -62,13 +60,13 @@ function DockChips({ title, items }) {
           textTransform: 'uppercase', letterSpacing: '0.04em',
         }}>{title}</div>
       )}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
         {items.map(function (item, i) {
           return (
             <span key={i} style={{
-              padding: '4px 10px', borderRadius: 14,
+              padding: '3px 9px', borderRadius: 12,
               backgroundColor: 'rgba(39,130,91,0.06)',
-              border: '1px solid rgba(39,130,91,0.15)',
+              border: '1px solid rgba(39,130,91,0.12)',
               fontFamily: 'var(--font-body)', fontSize: 11,
               color: 'var(--accent-green)',
             }}>{item}</span>
@@ -82,12 +80,13 @@ function DockChips({ title, items }) {
 function DockConfirm({ text, onSelect }) {
   return (
     <div style={{
-      padding: '10px 14px', borderRadius: 10,
-      border: '1px solid var(--border-default)', backgroundColor: '#fff',
+      padding: '10px 14px',
+      border: '1px solid var(--border-default)',
+      borderRadius: 10, backgroundColor: '#fff',
     }}>
       <div style={{
         fontFamily: 'var(--font-body)', fontSize: 13,
-        color: 'var(--brown)', marginBottom: 10, lineHeight: 1.5,
+        color: 'var(--brown)', marginBottom: 8, lineHeight: 1.5,
       }}>{text}</div>
       <div style={{ display: 'flex', gap: 8 }}>
         <button type="button" onClick={function () { onSelect?.('Yes, that\'s right'); }}
@@ -114,14 +113,14 @@ function DockPasteArea({ placeholder, onSubmit }) {
   var [val, setVal] = useState('');
   return (
     <div style={{
-      border: '1px solid var(--border-default)', borderRadius: 10,
-      backgroundColor: '#fff', overflow: 'hidden',
+      border: '1px solid var(--border-default)',
+      borderRadius: 10, backgroundColor: '#fff', overflow: 'hidden',
     }}>
       <textarea
         value={val}
         onChange={function (e) { setVal(e.target.value); }}
-        placeholder={placeholder || 'Paste your content here...'}
-        rows={3}
+        placeholder={placeholder || 'Paste here...'}
+        rows={4}
         style={{
           width: '100%', padding: '10px 14px', border: 'none', outline: 'none',
           fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)',
@@ -142,49 +141,11 @@ function DockPasteArea({ placeholder, onSubmit }) {
   );
 }
 
-/* ── Render the bottom dock from [UI] components ── */
-
-function BottomDock({ ui, onSelect, compact }) {
-  if (!ui || !ui.components || !ui.components.length) return null;
-
-  return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', gap: 8,
-      animation: 'fsu 0.2s ease both',
-    }}>
-      {ui.components.map(function (comp, idx) {
-        if (comp.type === 'options') {
-          return (
-            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-              {comp.title && (
-                <div style={{
-                  fontFamily: 'var(--font-body)', fontSize: 10,
-                  color: 'var(--brown-soft)',
-                  textTransform: 'uppercase', letterSpacing: '0.04em',
-                }}>{comp.title}</div>
-              )}
-              {(comp.items || []).map(function (item, oidx) {
-                return <DockOptionCard key={oidx} label={item.label} desc={item.desc} onClick={onSelect} />;
-              })}
-            </div>
-          );
-        }
-        if (comp.type === 'chips') return <DockChips key={idx} title={comp.title} items={comp.items} />;
-        if (comp.type === 'confirm') return <DockConfirm key={idx} text={comp.text} onSelect={onSelect} />;
-        if (comp.type === 'paste') return <DockPasteArea key={idx} placeholder={comp.placeholder} onSubmit={onSelect} />;
-        // 'input' type is handled by the main text input below
-        return null;
-      })}
-    </div>
-  );
-}
-
 /* ── Main ChatPanel ── */
 
 export default function ChatPanel({
   messages = [],
   onSend,
-  currentQuestion,
   isTyping,
   compact = false,
 }) {
@@ -225,14 +186,15 @@ export default function ChatPanel({
     }
   }
 
-  // Find placeholder from UI input component
-  var inputPlaceholder = 'Type your answer...';
+  // Check if there are options in the UI
+  var hasOptions = false;
+  var hasPaste = false;
+  var hasConfirm = false;
   if (latestUI && latestUI.components) {
     for (var c = 0; c < latestUI.components.length; c++) {
-      if (latestUI.components[c].type === 'input' && latestUI.components[c].placeholder) {
-        inputPlaceholder = latestUI.components[c].placeholder;
-        break;
-      }
+      if (latestUI.components[c].type === 'options') hasOptions = true;
+      if (latestUI.components[c].type === 'paste') hasPaste = true;
+      if (latestUI.components[c].type === 'confirm') hasConfirm = true;
     }
   }
 
@@ -258,73 +220,150 @@ export default function ChatPanel({
             />
           );
         })}
-
         {isTyping && <TypingIndicator />}
         <div ref={bottomRef} />
       </div>
 
-      {/* Bottom dock — dynamic UI zone */}
+      {/* Bottom dock — unified input zone */}
       <div style={{
         flexShrink: 0,
         borderTop: '1px solid var(--border-light)',
         backgroundColor: 'var(--cream)',
         padding: compact ? '10px 16px 12px' : '12px 20px 16px',
-        display: 'flex', flexDirection: 'column', gap: 10,
-        maxHeight: '50vh', overflowY: 'auto',
+        maxHeight: '55vh', overflowY: 'auto',
       }}>
-        {/* Generative UI components from latest AI message */}
-        {latestUI && (
-          <BottomDock ui={latestUI} onSelect={handleDockSelect} compact={compact} />
+        {/* Chips (confirmed facts) — above the card stack */}
+        {latestUI && latestUI.components && latestUI.components.map(function (comp, idx) {
+          if (comp.type === 'chips') return <DockChips key={idx} title={comp.title} items={comp.items} />;
+          if (comp.type === 'confirm') return <DockConfirm key={idx} text={comp.text} onSelect={handleDockSelect} />;
+          return null;
+        })}
+
+        {/* Paste area */}
+        {latestUI && latestUI.components && latestUI.components.map(function (comp, idx) {
+          if (comp.type === 'paste') return <DockPasteArea key={idx} placeholder={comp.placeholder} onSubmit={handleDockSelect} />;
+          return null;
+        })}
+
+        {/* Option cards + text input as one connected card stack */}
+        {!hasPaste && (
+          <div style={{
+            borderRadius: 12, overflow: 'hidden',
+            border: '1px solid var(--border-default)',
+            backgroundColor: '#fff',
+          }}>
+            {/* Option title */}
+            {hasOptions && latestUI.components.map(function (comp, idx) {
+              if (comp.type !== 'options') return null;
+              return (
+                <div key={idx}>
+                  {comp.title && (
+                    <div style={{
+                      padding: '8px 14px 4px',
+                      fontFamily: 'var(--font-body)', fontSize: 10,
+                      color: 'var(--brown-soft)',
+                      textTransform: 'uppercase', letterSpacing: '0.04em',
+                    }}>{comp.title}</div>
+                  )}
+                  {(comp.items || []).map(function (item, oidx) {
+                    return <DockOptionCard key={oidx} label={item.label} desc={item.desc} onClick={handleDockSelect} />;
+                  })}
+                </div>
+              );
+            })}
+
+            {/* Divider between options and input */}
+            {hasOptions && (
+              <div style={{
+                borderTop: '1px solid var(--border-light)',
+              }} />
+            )}
+
+            {/* Text input — connected to the bottom of the card stack */}
+            <form
+              onSubmit={handleSubmit}
+              style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                padding: '8px 12px',
+              }}
+            >
+              <input
+                ref={inputRef}
+                type="text"
+                value={input}
+                onChange={function (e) { setInput(e.target.value); }}
+                placeholder={hasOptions ? 'Or type something else...' : 'Type your answer...'}
+                disabled={isTyping}
+                style={{
+                  flex: 1, border: 'none', outline: 'none',
+                  fontFamily: 'var(--font-body)', fontSize: 13,
+                  color: 'var(--brown)', backgroundColor: 'transparent',
+                  padding: '4px 0',
+                  opacity: isTyping ? 0.5 : 1,
+                }}
+              />
+              <button
+                type="submit"
+                disabled={!hasContent || isTyping}
+                style={{
+                  width: 28, height: 28, borderRadius: '50%',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  border: 'none', flexShrink: 0,
+                  background: hasContent
+                    ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
+                    : 'var(--cream)',
+                  color: hasContent ? '#fff' : 'var(--brown-light)',
+                  cursor: hasContent ? 'pointer' : 'default',
+                  opacity: isTyping ? 0.4 : 1,
+                  transition: 'all 0.2s ease',
+                }}
+              >
+                <ArrowUp size={13} />
+              </button>
+            </form>
+          </div>
         )}
 
-        {/* Text input — always present */}
-        <form
-          onSubmit={handleSubmit}
-          style={{
-            display: 'flex', alignItems: 'flex-end', gap: 10,
-            padding: compact ? '8px 8px 8px 14px' : '8px 8px 8px 14px',
-            borderRadius: 12,
-            border: '1.5px solid var(--border-default)',
-            backgroundColor: '#fff',
-            transition: 'border-color 0.15s ease',
-            minHeight: 44,
-          }}
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            value={input}
-            onChange={function (e) { setInput(e.target.value); }}
-            placeholder={inputPlaceholder}
-            disabled={isTyping}
+        {/* If paste mode, show a separate simple text input below */}
+        {hasPaste && (
+          <form
+            onSubmit={handleSubmit}
             style={{
-              flex: 1, border: 'none', outline: 'none',
-              fontFamily: 'var(--font-body)',
-              fontSize: compact ? 13 : 13,
-              color: 'var(--brown)', backgroundColor: 'transparent',
-              padding: '6px 0',
-              opacity: isTyping ? 0.5 : 1,
-            }}
-          />
-          <button
-            type="submit"
-            disabled={!hasContent || isTyping}
-            style={{
-              width: 32, height: 32, borderRadius: '50%',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              border: 'none', flexShrink: 0,
-              background: hasContent
-                ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
-                : 'var(--cream)',
-              color: hasContent ? '#fff' : 'var(--brown-light)',
-              cursor: hasContent ? 'pointer' : 'default',
-              opacity: isTyping ? 0.4 : 1,
-              transition: 'all 0.2s ease',
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '8px 12px', marginTop: 8,
+              borderRadius: 10, border: '1px solid var(--border-default)',
+              backgroundColor: '#fff',
             }}
           >
-            <ArrowUp size={14} />
-          </button>
-        </form>
+            <input
+              ref={inputRef}
+              type="text"
+              value={input}
+              onChange={function (e) { setInput(e.target.value); }}
+              placeholder="Or describe what's in it..."
+              disabled={isTyping}
+              style={{
+                flex: 1, border: 'none', outline: 'none',
+                fontFamily: 'var(--font-body)', fontSize: 13,
+                color: 'var(--brown)', backgroundColor: 'transparent',
+                padding: '4px 0',
+              }}
+            />
+            <button type="submit" disabled={!hasContent || isTyping}
+              style={{
+                width: 28, height: 28, borderRadius: '50%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                border: 'none', flexShrink: 0,
+                background: hasContent
+                  ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
+                  : 'var(--cream)',
+                color: hasContent ? '#fff' : 'var(--brown-light)',
+                cursor: hasContent ? 'pointer' : 'default',
+                transition: 'all 0.2s ease',
+              }}
+            ><ArrowUp size={13} /></button>
+          </form>
+        )}
       </div>
     </div>
   );
