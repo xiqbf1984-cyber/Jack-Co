@@ -616,32 +616,37 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: isCompact ? 'visible' : 'hidden',
     }}>
-      {/* Header — back + actions on top row */}
+      {/* Header — single row: back | progress | actions */}
       <div id="role-create-header" style={{
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '10px 16px',
+        gap: 12,
       }}>
-        {/* Top row: back button */}
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '10px 20px 0',
-        }}>
-          <button
-            onClick={handleBack}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 5,
-              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              flexShrink: 0,
-            }}
-          >
-            <ArrowLeft size={13} />
-            Back to Roles
-          </button>
+        {/* Left: back */}
+        <button
+          onClick={handleBack}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={13} />
+          Back to Roles
+        </button>
 
-          {/* Right: version + save group + primary action */}
+        {/* Center: progress bar — wider */}
+        <div style={{ flex: 1, maxWidth: 480 }}>
+          <ProgressIndicator currentStage={stage} />
+        </div>
+
+        {/* Right: action buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {isCompact && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+            <>
               {saveVersion > 0 && (
                 <span style={{
                   fontFamily: 'var(--font-body)', fontSize: 11,
@@ -693,15 +698,8 @@ export default function RoleCreatePage() {
                 <Play size={10} fill="currentColor" />
                 Create an Assessment
               </button>
-            </div>
+            </>
           )}
-        </div>
-
-        {/* Progress bar — below back button, with breathing room */}
-        <div style={{ padding: '8px 0 14px', display: 'flex', justifyContent: 'center' }}>
-          <div style={{ maxWidth: 340, width: '100%' }}>
-            <ProgressIndicator currentStage={stage} />
-          </div>
         </div>
       </div>
 
