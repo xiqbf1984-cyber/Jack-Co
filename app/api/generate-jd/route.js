@@ -38,6 +38,9 @@ INPUT \u2014 free-text field (always include as last component):
 CONFIRM \u2014 yes/no on an inference:
 {"type":"confirm","text":"This sounds like a Senior IC role, not a manager. Right?"}
 
+PASTE \u2014 multi-line paste area (for JD text, notes, etc.):
+{"type":"paste","placeholder":"Paste your full JD here..."}
+
 ## EXAMPLES
 
 User: "AI Research Engineer"

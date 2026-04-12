@@ -1,10 +1,185 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ArrowUp, Paperclip, Link2 } from 'lucide-react';
-import ChatBubble from './chat-bubble';
+import { ArrowUp } from 'lucide-react';
+import ChatBubble, { parseUIBlock } from './chat-bubble';
 import TypingIndicator from './typing-indicator';
-import ChipSuggestions from './chip-suggestions';
+
+/* ── Bottom Dock UI Components ── */
+
+function DockOptionCard({ label, desc, onClick }) {
+  return (
+    <button
+      type="button"
+      onClick={function () { onClick?.(label); }}
+      style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        width: '100%', textAlign: 'left',
+        padding: '10px 14px', borderRadius: 10,
+        border: '1px solid var(--border-default)',
+        backgroundColor: '#fff', cursor: 'pointer',
+        transition: 'all 0.15s ease', gap: 12,
+      }}
+      onMouseEnter={function (e) {
+        e.currentTarget.style.borderColor = 'var(--gold)';
+        e.currentTarget.style.backgroundColor = 'rgba(139,105,20,0.02)';
+      }}
+      onMouseLeave={function (e) {
+        e.currentTarget.style.borderColor = 'var(--border-default)';
+        e.currentTarget.style.backgroundColor = '#fff';
+      }}
+    >
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{
+          fontFamily: 'var(--font-body)', fontSize: 13, fontWeight: 600,
+          color: 'var(--brown)', marginBottom: desc ? 2 : 0,
+        }}>{label}</div>
+        {desc && (
+          <div style={{
+            fontFamily: 'var(--font-body)', fontSize: 11,
+            color: 'var(--brown-soft)', lineHeight: 1.4,
+          }}>{desc}</div>
+        )}
+      </div>
+      <div style={{
+        flexShrink: 0, padding: '4px 10px', borderRadius: 6,
+        border: '1px solid var(--border-default)',
+        fontFamily: 'var(--font-body)', fontSize: 10, fontWeight: 500,
+        color: 'var(--brown-soft)',
+      }}>Select</div>
+    </button>
+  );
+}
+
+function DockChips({ title, items }) {
+  if (!items || !items.length) return null;
+  return (
+    <div style={{ padding: '0 2px' }}>
+      {title && (
+        <div style={{
+          fontFamily: 'var(--font-body)', fontSize: 10,
+          color: 'var(--brown-soft)', marginBottom: 6,
+          textTransform: 'uppercase', letterSpacing: '0.04em',
+        }}>{title}</div>
+      )}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+        {items.map(function (item, i) {
+          return (
+            <span key={i} style={{
+              padding: '4px 10px', borderRadius: 14,
+              backgroundColor: 'rgba(39,130,91,0.06)',
+              border: '1px solid rgba(39,130,91,0.15)',
+              fontFamily: 'var(--font-body)', fontSize: 11,
+              color: 'var(--accent-green)',
+            }}>{item}</span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function DockConfirm({ text, onSelect }) {
+  return (
+    <div style={{
+      padding: '10px 14px', borderRadius: 10,
+      border: '1px solid var(--border-default)', backgroundColor: '#fff',
+    }}>
+      <div style={{
+        fontFamily: 'var(--font-body)', fontSize: 13,
+        color: 'var(--brown)', marginBottom: 10, lineHeight: 1.5,
+      }}>{text}</div>
+      <div style={{ display: 'flex', gap: 8 }}>
+        <button type="button" onClick={function () { onSelect?.('Yes, that\'s right'); }}
+          style={{
+            padding: '5px 14px', borderRadius: 7,
+            border: '1px solid var(--accent-green)',
+            backgroundColor: 'rgba(39,130,91,0.06)',
+            fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
+            color: 'var(--accent-green)', cursor: 'pointer',
+          }}>Yes</button>
+        <button type="button" onClick={function () { onSelect?.('No, that\'s not right'); }}
+          style={{
+            padding: '5px 14px', borderRadius: 7,
+            border: '1px solid var(--border-default)', backgroundColor: 'transparent',
+            fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
+            color: 'var(--brown-soft)', cursor: 'pointer',
+          }}>No</button>
+      </div>
+    </div>
+  );
+}
+
+function DockPasteArea({ placeholder, onSubmit }) {
+  var [val, setVal] = useState('');
+  return (
+    <div style={{
+      border: '1px solid var(--border-default)', borderRadius: 10,
+      backgroundColor: '#fff', overflow: 'hidden',
+    }}>
+      <textarea
+        value={val}
+        onChange={function (e) { setVal(e.target.value); }}
+        placeholder={placeholder || 'Paste your content here...'}
+        rows={3}
+        style={{
+          width: '100%', padding: '10px 14px', border: 'none', outline: 'none',
+          fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown)',
+          backgroundColor: 'transparent', resize: 'none', boxSizing: 'border-box',
+        }}
+      />
+      {val.trim() && (
+        <div style={{ padding: '0 10px 10px', display: 'flex', justifyContent: 'flex-end' }}>
+          <button type="button" onClick={function () { onSubmit?.(val.trim()); setVal(''); }}
+            style={{
+              padding: '5px 14px', borderRadius: 7, border: 'none',
+              backgroundColor: 'var(--brown)', color: '#fff',
+              fontFamily: 'var(--font-body)', fontSize: 11, cursor: 'pointer',
+            }}>Submit</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ── Render the bottom dock from [UI] components ── */
+
+function BottomDock({ ui, onSelect, compact }) {
+  if (!ui || !ui.components || !ui.components.length) return null;
+
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', gap: 8,
+      animation: 'fsu 0.2s ease both',
+    }}>
+      {ui.components.map(function (comp, idx) {
+        if (comp.type === 'options') {
+          return (
+            <div key={idx} style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+              {comp.title && (
+                <div style={{
+                  fontFamily: 'var(--font-body)', fontSize: 10,
+                  color: 'var(--brown-soft)',
+                  textTransform: 'uppercase', letterSpacing: '0.04em',
+                }}>{comp.title}</div>
+              )}
+              {(comp.items || []).map(function (item, oidx) {
+                return <DockOptionCard key={oidx} label={item.label} desc={item.desc} onClick={onSelect} />;
+              })}
+            </div>
+          );
+        }
+        if (comp.type === 'chips') return <DockChips key={idx} title={comp.title} items={comp.items} />;
+        if (comp.type === 'confirm') return <DockConfirm key={idx} text={comp.text} onSelect={onSelect} />;
+        if (comp.type === 'paste') return <DockPasteArea key={idx} placeholder={comp.placeholder} onSubmit={onSelect} />;
+        // 'input' type is handled by the main text input below
+        return null;
+      })}
+    </div>
+  );
+}
+
+/* ── Main ChatPanel ── */
 
 export default function ChatPanel({
   messages = [],
@@ -12,18 +187,12 @@ export default function ChatPanel({
   currentQuestion,
   isTyping,
   compact = false,
-  ghostText: externalGhost = '',
-  onGhostChange,
 }) {
   var [input, setInput] = useState('');
-  var [localGhost, setLocalGhost] = useState('');
-  var [dismissedChips, setDismissedChips] = useState(new Set());
   var bottomRef = useRef(null);
   var inputRef = useRef(null);
 
-  var ghostText = externalGhost || localGhost;
-
-  // Scroll to bottom when messages change (including streaming content updates)
+  // Scroll on content changes
   var lastContentLen = useRef(0);
   useEffect(function () {
     var totalLen = messages.reduce(function (sum, m) { return sum + (m.content || '').length; }, 0);
@@ -36,59 +205,46 @@ export default function ChatPanel({
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [isTyping]);
 
-  useEffect(function () {
-    if (input) {
-      setLocalGhost('');
-      onGhostChange?.('');
-    }
-  }, [input, onGhostChange]);
-
   function handleSubmit(e) {
     e?.preventDefault();
     if (!input.trim()) return;
     onSend?.(input.trim());
     setInput('');
-    setLocalGhost('');
   }
 
-  function handleChip(chip) {
-    // Mark this question's chips as dismissed
-    if (currentQuestion?.id) {
-      setDismissedChips(function (prev) {
-        var next = new Set(prev);
-        next.add(currentQuestion.id);
-        return next;
-      });
+  function handleDockSelect(value) {
+    onSend?.(value);
+  }
+
+  // Extract UI block from the latest AI message
+  var latestUI = null;
+  if (!isTyping && messages.length > 0) {
+    var lastMsg = messages[messages.length - 1];
+    if (lastMsg.role === 'ai') {
+      latestUI = parseUIBlock(lastMsg.content);
     }
-    onSend?.(chip);
-    setInput('');
-    setLocalGhost('');
   }
 
-  function handleChipHover(chip) {
-    if (!input) {
-      setLocalGhost(chip || '');
+  // Find placeholder from UI input component
+  var inputPlaceholder = 'Type your answer...';
+  if (latestUI && latestUI.components) {
+    for (var c = 0; c < latestUI.components.length; c++) {
+      if (latestUI.components[c].type === 'input' && latestUI.components[c].placeholder) {
+        inputPlaceholder = latestUI.components[c].placeholder;
+        break;
+      }
     }
   }
 
   var hasContent = input.trim().length > 0;
-  var showChips = !isTyping
-    && currentQuestion?.chips
-    && messages.length > 0
-    && messages[messages.length - 1]?.role === 'ai'
-    && !dismissedChips.has(currentQuestion?.id);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       {/* Messages area */}
       <div style={{
-        flex: 1,
-        overflowY: 'auto',
-        overflowX: 'hidden',
+        flex: 1, overflowY: 'auto', overflowX: 'hidden',
         padding: compact ? '20px 20px' : '28px 24px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 16,
+        display: 'flex', flexDirection: 'column', gap: 14,
         minWidth: 0,
       }}>
         {messages.map(function (msg, i) {
@@ -99,103 +255,64 @@ export default function ChatPanel({
               content={msg.content}
               animate={i === messages.length - 1}
               compact={compact}
-              onOptionSelect={function (option) { onSend?.(option); }}
             />
           );
         })}
 
         {isTyping && <TypingIndicator />}
-
-        {/* Chip suggestions */}
-        {showChips && (
-          <div style={{
-            marginLeft: compact ? 36 : 40,
-            marginTop: 4,
-          }}>
-            <ChipSuggestions
-              chips={currentQuestion.chips}
-              onSelect={handleChip}
-              onHover={handleChipHover}
-              compact={compact}
-            />
-          </div>
-        )}
-
         <div ref={bottomRef} />
       </div>
 
-      {/* Input bar */}
+      {/* Bottom dock — dynamic UI zone */}
       <div style={{
-        padding: compact ? '10px 16px 14px' : '14px 20px 18px',
+        flexShrink: 0,
         borderTop: '1px solid var(--border-light)',
         backgroundColor: 'var(--cream)',
+        padding: compact ? '10px 16px 12px' : '12px 20px 16px',
+        display: 'flex', flexDirection: 'column', gap: 10,
+        maxHeight: '50vh', overflowY: 'auto',
       }}>
+        {/* Generative UI components from latest AI message */}
+        {latestUI && (
+          <BottomDock ui={latestUI} onSelect={handleDockSelect} compact={compact} />
+        )}
+
+        {/* Text input — always present */}
         <form
           onSubmit={handleSubmit}
           style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            gap: 10,
-            padding: compact ? '8px 8px 8px 14px' : '10px 10px 10px 16px',
-            borderRadius: compact ? 14 : 16,
+            display: 'flex', alignItems: 'flex-end', gap: 10,
+            padding: compact ? '8px 8px 8px 14px' : '8px 8px 8px 14px',
+            borderRadius: 12,
             border: '1.5px solid var(--border-default)',
             backgroundColor: '#fff',
             transition: 'border-color 0.15s ease',
-            minHeight: compact ? 46 : 54,
+            minHeight: 44,
           }}
         >
-          <div style={{ position: 'relative', flex: 1 }}>
-            {ghostText && !input && (
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: 0,
-                transform: 'translateY(-50%)',
-                fontFamily: 'var(--font-body)',
-                fontSize: compact ? 13 : 14,
-                color: 'var(--brown-light)',
-                opacity: 0.35,
-                pointerEvents: 'none',
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                width: '100%',
-              }}>
-                {ghostText}
-              </div>
-            )}
-            <input
-              ref={inputRef}
-              type="text"
-              value={input}
-              onChange={function (e) { setInput(e.target.value); }}
-              placeholder={ghostText ? '' : 'Type your answer...'}
-              disabled={isTyping}
-              style={{
-                width: '100%',
-                border: 'none',
-                outline: 'none',
-                fontFamily: 'var(--font-body)',
-                fontSize: compact ? 13 : 14,
-                color: 'var(--brown)',
-                backgroundColor: 'transparent',
-                padding: compact ? '6px 0' : '8px 0',
-                opacity: isTyping ? 0.5 : 1,
-                boxSizing: 'border-box',
-              }}
-            />
-          </div>
+          <input
+            ref={inputRef}
+            type="text"
+            value={input}
+            onChange={function (e) { setInput(e.target.value); }}
+            placeholder={inputPlaceholder}
+            disabled={isTyping}
+            style={{
+              flex: 1, border: 'none', outline: 'none',
+              fontFamily: 'var(--font-body)',
+              fontSize: compact ? 13 : 13,
+              color: 'var(--brown)', backgroundColor: 'transparent',
+              padding: '6px 0',
+              opacity: isTyping ? 0.5 : 1,
+            }}
+          />
           <button
             type="submit"
             disabled={!hasContent || isTyping}
             style={{
-              width: compact ? 36 : 38,
-              height: compact ? 36 : 38,
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              border: 'none',
-              flexShrink: 0,
+              width: 32, height: 32, borderRadius: '50%',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              border: 'none', flexShrink: 0,
               background: hasContent
                 ? 'linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to))'
                 : 'var(--cream)',
@@ -205,7 +322,7 @@ export default function ChatPanel({
               transition: 'all 0.2s ease',
             }}
           >
-            <ArrowUp size={compact ? 14 : 15} />
+            <ArrowUp size={14} />
           </button>
         </form>
       </div>
