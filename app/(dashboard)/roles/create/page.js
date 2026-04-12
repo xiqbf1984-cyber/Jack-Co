@@ -341,7 +341,7 @@ export default function RoleCreatePage() {
     }, delay);
   }, []);
 
-  // ─── Call Neo via Messages API ───
+  // ─── Stream response from Neo ───
   async function callNeo(text, chatHistory) {
     var res = await fetch('/api/generate-jd', {
       method: 'POST',
@@ -349,23 +349,64 @@ export default function RoleCreatePage() {
       body: JSON.stringify({ message: text, history: chatHistory }),
     });
     if (!res.ok) throw new Error('API error: ' + res.status);
-    var data = await res.json();
-    if (data.error) throw new Error(data.error);
-    return data.reply;
+
+    var reader = res.body.getReader();
+    var decoder = new TextDecoder();
+    var fullText = '';
+    var buffer = '';
+
+    // Add a placeholder AI message that we'll update as tokens arrive
+    setMessages(function (prev) { return prev.concat([{ role: 'ai', content: '' }]); });
+    setIsTyping(false);
+
+    while (true) {
+      var result = await reader.read();
+      if (result.done) break;
+      buffer += decoder.decode(result.value, { stream: true });
+      var parts = buffer.split('\n\n');
+      buffer = parts.pop();
+      for (var p = 0; p < parts.length; p++) {
+        var lines = parts[p].split('\n');
+        for (var k = 0; k < lines.length; k++) {
+          var line = lines[k].trim();
+          if (!line.startsWith('data: ')) continue;
+          try {
+            var evt = JSON.parse(line.slice(6));
+            if (evt.type === 'delta' && evt.text) {
+              fullText += evt.text;
+              // Update the last AI message in place
+              var snap = fullText;
+              setMessages(function (prev) {
+                var copy = prev.slice();
+                copy[copy.length - 1] = { role: 'ai', content: snap };
+                return copy;
+              });
+            }
+            if (evt.type === 'done') {
+              fullText = evt.fullText || fullText;
+            }
+            if (evt.type === 'error') {
+              throw new Error(evt.text);
+            }
+          } catch (e) {
+            if (e.message && e.message !== 'Unexpected end of JSON input') throw e;
+          }
+        }
+      }
+    }
+    return fullText;
   }
 
   // Check if response contains JD content
   function looksLikeJD(text) {
-    var headerCount = (text.match(/^#{1,3}\s+/gm) || []).length;
-    var hasRoleKeywords = /about the role|what you.ll do|looking for|responsibilities|requirements|key responsibilities/i.test(text);
-    return headerCount >= 3 && text.length > 400 && hasRoleKeywords;
+    var hasRoleKeywords = /about the role|what you.ll do|responsibilities|requirements|key responsibilities/i.test(text);
+    return text.length > 400 && hasRoleKeywords;
   }
 
   function handleSearchSubmit(text) {
     setDescription(text);
     setAllText(text);
 
-    // Local analysis for hiring brief metadata
     var analysis = analyzeInput(text);
     setExtractedData(analysis.extracted);
     var matchResult = doMatch(text);
@@ -374,44 +415,37 @@ export default function RoleCreatePage() {
     }
 
     setStage(1);
-    var newMessages = [{ role: 'user', content: text }];
-    setMessages(newMessages);
+    setMessages([{ role: 'user', content: text }]);
     setIsTyping(true);
 
+    // callNeo streams the reply — it adds the AI message and updates it token by token
     callNeo(text, []).then(function (reply) {
-      setIsTyping(false);
       if (looksLikeJD(reply)) {
         setJDContent(reply);
         setJdGenerated(true);
         setStage(2);
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: 'Your JD is ready! Edit it on the right, or tell me what to change.' }]); });
-      } else {
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: reply }]); });
       }
     }).catch(function (err) {
-      console.error('Neo API error, falling back to local:', err);
+      console.error('Neo error, falling back to local:', err);
       setIsTyping(false);
       var nextQ = getNextQuestion(analysis.coverage, analysis.extracted);
       if (!nextQ) {
         var jd = generateJD(analysis.extracted, matchResult.role, company, text);
-        setJDContent(jd);
-        setJdGenerated(true);
-        setStage(2);
+        setJDContent(jd); setJdGenerated(true); setStage(2);
         addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
       } else {
-        addAIMessage('Got it — I can already picture this role. ' + nextQ);
+        addAIMessage(nextQ);
       }
     });
   }
 
   function handleChatSend(text) {
-    var prevMessages = messages.concat([{ role: 'user', content: text }]);
-    setMessages(prevMessages);
+    var currentHistory = messages.slice(); // snapshot before adding user msg
+    setMessages(function (prev) { return prev.concat([{ role: 'user', content: text }]); });
 
     var newAllText = allText + ' ' + text;
     setAllText(newAllText);
 
-    // Update local analysis for hiring brief
     var analysis = analyzeInput(newAllText);
     setExtractedData(analysis.extracted);
     var matchResult = doMatch(newAllText);
@@ -423,29 +457,24 @@ export default function RoleCreatePage() {
     setFollowUpRound(round);
     setIsTyping(true);
 
-    // Pass full conversation history to maintain context
-    callNeo(text, messages).then(function (reply) {
-      setIsTyping(false);
+    // callNeo streams the reply — adds AI message and updates it token by token
+    callNeo(text, currentHistory.concat([{ role: 'user', content: text }])).then(function (reply) {
       if (looksLikeJD(reply)) {
         setJDContent(reply);
         setJdGenerated(true);
         if (stage < 2) setStage(2);
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: 'Your JD is ready! Edit it on the right, or tell me what to change.' }]); });
-      } else {
-        setMessages(function (prev) { return prev.concat([{ role: 'ai', content: reply }]); });
       }
     }).catch(function (err) {
-      console.error('Neo API error, falling back to local:', err);
+      console.error('Neo error, falling back to local:', err);
       setIsTyping(false);
       var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
       if (!nextQ || round >= 3) {
         var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
-        setJDContent(jd);
-        setJdGenerated(true);
+        setJDContent(jd); setJdGenerated(true);
         if (stage < 2) setStage(2);
-        addAIMessage('Your JD is ready! Edit it on the right, or tell me what to change.');
+        addAIMessage('Your JD is ready!');
       } else {
-        addAIMessage('Thanks! ' + nextQ);
+        addAIMessage(nextQ);
       }
     });
   }
@@ -557,7 +586,8 @@ export default function RoleCreatePage() {
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 20px',
+        padding: '6px 16px',
+        borderBottom: '1px solid var(--border-light)',
       }}>
         {/* Left: back */}
         <button

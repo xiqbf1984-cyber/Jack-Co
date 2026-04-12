@@ -90,6 +90,7 @@ export default function ChatPanel({
               content={msg.content}
               animate={i === messages.length - 1}
               compact={compact}
+              onOptionSelect={function (option) { onSend?.(option); }}
             />
           );
         })}

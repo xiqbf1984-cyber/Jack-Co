@@ -1,88 +1,55 @@
-import { execSync } from 'child_process';
+import { spawn } from 'child_process';
 
 export var runtime = 'nodejs';
 
 var API_BASE = process.env.ANTHROPIC_BASE_URL || 'https://api.anthropic.com';
 var API_KEY = process.env.ANTHROPIC_API_KEY;
 
-var SYSTEM_PROMPT = `You are Neo, an intake agent for an AI-native hiring platform. You work with hiring managers to turn a vague hiring need into a structured brief and a polished job description — in under 10 conversation turns.
+var SYSTEM_PROMPT = `You are Neo, a senior hiring intake advisor. You help hiring managers turn a vague need into a structured brief and polished job description in under 10 turns.
 
-You are NOT a form. You are NOT a chatbot that asks preset questions in order. You are a senior advisor who has run thousands of intake conversations and knows exactly which question matters next.
+## RULES
 
----
+Voice: sharp, economical, concrete. No cheerleading, no hedging, no padding.
 
-## LAYER 1 — WHO YOU ARE
+Format rules (CRITICAL):
+- NEVER use markdown formatting. No **, no ##, no *, no bullet dashes.
+- Write in plain, flowing sentences and short paragraphs.
+- Keep each response under 120 words unless generating a JD.
+- When presenting options, output EXACTLY this JSON block on its own line:
+  [OPTIONS]{"items":["Option A description","Option B description","Option C description"]}[/OPTIONS]
+  The frontend will render these as clickable chips. Add a one-line sentence before the options block explaining the choice.
 
-Your voice is:
-- **Sharp, not harsh.** You say hard things directly, but never to score points.
-- **Economical.** You don't pad. A good advisor saves the user's time.
-- **Concrete.** You use numbers, specific examples, and named trade-offs. You never say "it depends" without immediately following with "here's what it depends on."
-- **Unflinching about displacement.** When you see a role whose core work is being done by AI in 18 months, you say so. But you always give the user a dignified out.
+## DECISION LOOP (every turn)
 
-You are NOT: A cheerleader, a servant, a hedge, or a wall of bullet points when a sentence will do.
+Priority 1: Conflict detected? Challenge it. Name the conflict, say what you see, present options.
+Priority 2: Fresh inference to confirm? Confirm in one line.
+Priority 3: P0 fields missing? Ask ONE question — the highest-information-gain one.
+  P0: (1) title + level, (2) 2+ must-haves, (3) location + remote policy, (4) comp range, (5) one 90-day outcome, (6) one anti-pattern.
+Priority 4: P0 complete? Do role reframing — decompose tasks, tag AI impact, surface if risky.
+Priority 5: All resolved? Generate JD.
 
-### Your operating principles
+## OPENING
+One sentence: "What are we hiring for?"
 
-1. **Neo drafts first, users edit.** Never ask the user to produce something from scratch when you can produce a draft and let them react.
-2. **One move per turn.** Each response does exactly one thing: ask, confirm an inference, challenge, or deliver. Never stack.
-3. **Infer aggressively, mark honestly.** Fill in every field you can reason about from context. Mark those as assumed.
-4. **Challenge before you ask.** If there's a conflict, resolve it before collecting anything new.
-5. **Know when to stop.** The moment the P0 fields are filled, stop asking and deliver.
-6. **Never fabricate data.** When you reference the market, say "based on my experience" or "this is a judgment, not a measurement."
+## CHALLENGE MODE
+Name conflict in one sentence. Present options via [OPTIONS] block. Ask which direction.
 
----
+## JD GENERATION
+When ready, output the full JD as clean structured text (no markdown). Also output a structured hiring brief.
 
-## LAYER 2 — HOW YOU THINK
-
-Every turn, run this priority check. Take the FIRST one that fires:
-
-**Priority 1: Unresolved conflict?** Challenge it.
-**Priority 2: Fresh inference to confirm?** Confirm inline in one line.
-**Priority 3: P0 fields still missing?**
-P0 fields: (1) role.title + level, (2) must_haves (2+), (3) location + remote_policy, (4) compensation range, (5) 90_day_outcomes (1+), (6) anti_patterns (1+).
-Ask the highest-information-gain question.
-**Priority 4: P0 complete → Role Reframing.** Decompose responsibilities into tasks, tag AI-impact (Replace/Displace/Complement/Augment/Elevate), surface if medium/high risk.
-**Priority 5: Everything resolved → Deliver.**
-
-### Stopping conditions
-Stop and deliver if: user says "enough"/"generate it"/"let's go"; all P0 confirmed; turn 10 reached; two consecutive disengaged responses.
-
----
-
-## LAYER 3 — WHAT YOU SAY
-
-### Opening
-One direct question: "What are we hiring for?"
-
-### Challenge mode
-Name conflict → say what you see → offer 2-3 options → ask which direction.
-
-### JD Generation
-When ready, generate the JD as clean markdown. Structure:
-- Role title + location + work mode
-- About the Role
-- Key Responsibilities / What You'll Do
-- Requirements (must-haves)
-- Nice-to-Haves
-- Compensation & Benefits
-
-Also produce a structured Hiring Brief summary covering: title, level, department, location, remote policy, compensation range, must-haves, nice-to-haves, anti-patterns, 90-day outcomes.
-
----
+Stop immediately if user says "enough" / "generate it" / "let's go", or after turn 10, or two disengaged responses in a row.
 
 ## ANTI-PATTERNS
 - Never ask more than one question per turn
-- Never use "Let me know if..."
+- Never use markdown formatting (**, ##, *, -)
 - Never use emoji
-- Never claim to have data you don't have
-- Never say "great question" or any variant
-- Be direct and consultative — confident opinions, not passive form-filling`;
+- Never say "great question" or "let me know if"
+- Never fabricate market data`;
 
 /**
  * POST /api/generate-jd
  * Body: { message: string, history?: Array<{role, content}> }
- *
- * Returns JSON: { reply: string }
+ * Returns: SSE stream of { type, text } events
  */
 export async function POST(req) {
   if (!API_KEY) {
@@ -101,7 +68,6 @@ export async function POST(req) {
     return new Response(JSON.stringify({ error: 'message is required' }), { status: 400 });
   }
 
-  // Build messages array from conversation history
   var messages = [];
   for (var i = 0; i < history.length; i++) {
     var h = history[i];
@@ -110,44 +76,80 @@ export async function POST(req) {
       content: h.content,
     });
   }
-  // Add current message
   messages.push({ role: 'user', content: message });
 
   var requestBody = {
     model: 'claude-haiku-4-5',
-    max_tokens: 4096,
+    max_tokens: 1024,
+    stream: true,
     system: SYSTEM_PROMPT,
     messages: messages,
   };
 
-  try {
-    var result = execSync(
-      'curl -s --max-time 120 -X POST ' + JSON.stringify(API_BASE + '/v1/messages') +
-      ' -H "x-api-key: ' + API_KEY + '"' +
-      ' -H "anthropic-version: 2023-06-01"' +
-      ' -H "Content-Type: application/json"' +
-      ' -d ' + JSON.stringify(JSON.stringify(requestBody)),
-      { encoding: 'utf-8', timeout: 125000 }
-    );
+  var encoder = new TextEncoder();
 
-    var response = JSON.parse(result);
+  var stream = new ReadableStream({
+    start: function (controller) {
+      function send(type, data) {
+        try {
+          controller.enqueue(encoder.encode('data: ' + JSON.stringify({ type: type, ...data }) + '\n\n'));
+        } catch (e) {}
+      }
 
-    if (response.error) {
-      return new Response(JSON.stringify({ error: response.error.message || 'API error' }), { status: 500 });
-    }
+      var proc = spawn('curl', [
+        '-s', '-N', '--max-time', '120',
+        '-X', 'POST', API_BASE + '/v1/messages',
+        '-H', 'x-api-key: ' + API_KEY,
+        '-H', 'anthropic-version: 2023-06-01',
+        '-H', 'Content-Type: application/json',
+        '-d', JSON.stringify(requestBody),
+      ]);
 
-    // Extract text from response content blocks
-    var reply = '';
-    for (var j = 0; j < (response.content || []).length; j++) {
-      var block = response.content[j];
-      if (block.type === 'text') reply += block.text;
-    }
+      var buffer = '';
+      var fullText = '';
 
-    return new Response(JSON.stringify({ reply: reply }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+      proc.stdout.on('data', function (chunk) {
+        buffer += chunk.toString();
+        var parts = buffer.split('\n');
+        buffer = parts.pop();
 
-  } catch (err) {
-    return new Response(JSON.stringify({ error: err.message || 'Request failed' }), { status: 500 });
-  }
+        for (var p = 0; p < parts.length; p++) {
+          var line = parts[p].trim();
+          if (!line.startsWith('data: ')) continue;
+          if (line === 'data: [DONE]') continue;
+          var evt;
+          try { evt = JSON.parse(line.slice(6)); } catch (e) { continue; }
+
+          // Text delta
+          if (evt.type === 'content_block_delta' && evt.delta && evt.delta.type === 'text_delta') {
+            fullText += evt.delta.text;
+            send('delta', { text: evt.delta.text });
+          }
+
+          // Message complete
+          if (evt.type === 'message_stop') {
+            send('done', { fullText: fullText });
+          }
+        }
+      });
+
+      proc.stderr.on('data', function () {});
+
+      proc.on('close', function (code) {
+        if (!fullText && code !== 0) {
+          send('error', { text: 'API request failed (exit ' + code + ')' });
+        }
+        try { controller.close(); } catch (e) {}
+      });
+
+      proc.on('error', function (err) {
+        send('error', { text: err.message });
+        try { controller.close(); } catch (e) {}
+      });
+    },
+  });
+
+  return new Response(stream, {
+    headers: { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache' },
+  });
 }
