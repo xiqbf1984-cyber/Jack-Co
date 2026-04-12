@@ -255,28 +255,33 @@ export default function ChatPanel({
         backgroundColor: 'var(--cream)',
         padding: compact ? '10px 16px 12px' : '12px 20px 16px',
         maxHeight: '55vh', overflowY: 'auto',
+        display: 'flex', flexDirection: 'column', gap: 8,
       }}>
-        {/* Chips (confirmed facts) — above the card stack */}
+        {/* Chips (confirmed facts) */}
         {latestUI && latestUI.components && latestUI.components.map(function (comp, idx) {
           if (comp.type === 'chips') return <DockChips key={idx} title={comp.title} items={comp.items} />;
+          return null;
+        })}
+
+        {/* CONFIRM — shows alone, no other interactive elements */}
+        {hasConfirm && latestUI.components.map(function (comp, idx) {
           if (comp.type === 'confirm') return <DockConfirm key={idx} text={comp.text} onSelect={handleDockSelect} />;
           return null;
         })}
 
-        {/* Paste area */}
-        {latestUI && latestUI.components && latestUI.components.map(function (comp, idx) {
+        {/* PASTE — shows alone with its own input */}
+        {!hasConfirm && hasPaste && latestUI.components.map(function (comp, idx) {
           if (comp.type === 'paste') return <DockPasteArea key={idx} placeholder={comp.placeholder} onSubmit={handleDockSelect} />;
           return null;
         })}
 
-        {/* Option cards + text input as one connected card stack */}
-        {!hasPaste && (
+        {/* OPTIONS + text input as connected card stack (only if no confirm/paste) */}
+        {!hasConfirm && !hasPaste && (
           <div style={{
             borderRadius: 12, overflow: 'hidden',
             border: '1px solid var(--border-default)',
             backgroundColor: '#fff',
           }}>
-            {/* Option title */}
             {hasOptions && latestUI.components.map(function (comp, idx) {
               if (comp.type !== 'options') return null;
               return (
@@ -296,11 +301,8 @@ export default function ChatPanel({
               );
             })}
 
-            {/* Divider between options and input */}
             {hasOptions && (
-              <div style={{
-                borderTop: '1px solid var(--border-light)',
-              }} />
+              <div style={{ borderTop: '1px solid var(--border-light)' }} />
             )}
 
             {/* Text input — connected to the bottom of the card stack */}

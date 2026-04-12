@@ -490,21 +490,27 @@ export default function RoleCreatePage() {
     setFollowUpRound(round);
     setIsTyping(true);
 
-    // callNeo streams — JD detection and canvas routing happen inside callNeo
-    callNeo(text, currentHistory.concat([{ role: 'user', content: text }])).then(function () {
-      // JD routing already handled during streaming
+    // Safety net: after 6 user messages, if no JD yet, force it
+    var forceJD = round >= 6 && !jdGenerated;
+    var messageToSend = forceJD
+      ? text + '\n\n[SYSTEM: This is turn ' + round + '. Generate the JD now with whatever you have. Use [JD_START]...[JD_END].]'
+      : text;
+
+    callNeo(messageToSend, currentHistory.concat([{ role: 'user', content: text }])).then(function (reply) {
+      // If still no JD after forced attempt, use local fallback
+      if (forceJD && !jdGenerated && !reply.includes('[JD_START]')) {
+        var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+        setJDContent(jd);
+        setJdGenerated(true);
+        setStage(2);
+      }
     }).catch(function (err) {
       console.error('Neo error, falling back to local:', err);
       setIsTyping(false);
-      var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
-      if (!nextQ || round >= 3) {
-        var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
-        setJDContent(jd); setJdGenerated(true);
-        if (stage < 2) setStage(2);
-        addAIMessage('Your JD is ready!');
-      } else {
-        addAIMessage(nextQ);
-      }
+      var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+      setJDContent(jd); setJdGenerated(true);
+      if (stage < 2) setStage(2);
+      addAIMessage('Your JD is ready!');
     });
   }
 

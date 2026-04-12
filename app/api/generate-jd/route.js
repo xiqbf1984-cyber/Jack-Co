@@ -66,17 +66,19 @@ First draft ready. Edit on the right, or tell me what to change.
 ## DECISION LOOP
 
 Priority 1: Conflict? Challenge with 2-3 options.
-Priority 2: Inference to confirm? CONFIRM component.
-Priority 3: P0 missing? Ask ONE question. Only add OPTIONS if the answer is multiple-choice.
+Priority 2: Inference to confirm? CONFIRM component ALONE — no other components.
+Priority 3: P0 missing? Ask ONE question.
   P0: title+level, 2+ must-haves, location+remote, comp range.
-Priority 4: After turn 5 OR P0 complete? Generate JD immediately.
+Priority 4: After turn 5 OR P0 complete? Generate JD immediately. Do NOT ask more questions.
 
 ## RULES
+- NEVER combine CONFIRM with OPTIONS in the same response. One interaction per turn.
 - Max 3 options, only for genuine multiple-choice.
-- NEVER show options like "Tell me more" or "Start over" — those are not real choices.
+- NEVER show fake options like "Tell me more" / "Start over" / "Something else".
 - Max 30 words of text.
 - NEVER use markdown outside [JD_START]...[JD_END].
-- After turn 5, stop asking and generate even if some fields are pending — infer what you can.`;
+- After 5 user messages, STOP ASKING and GENERATE THE JD. Infer anything missing.
+- If the user gives you enough info in one message, you can generate JD on turn 2 or 3.`;
 
 /**
  * POST /api/generate-jd
