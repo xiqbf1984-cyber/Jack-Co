@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, Save, Download, Link2, Plus, Play } from 'lucide-react';
+import { ArrowLeft, Download, Link2, Play } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
@@ -325,6 +325,27 @@ export default function RoleCreatePage() {
     };
   }, [stage]);
 
+  // Auto-save: when JD content changes, save the role
+  var autoSaveTimer = useRef(null);
+  useEffect(function () {
+    if (!jdContent.trim() || !extractedData) return;
+    clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(function () {
+      var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
+      if (!title) return;
+      addRole({
+        title: title,
+        dept: inferDepartment(extractedData || {}, allText),
+        salary: extractedData?.salary || 'TBD',
+        status: 'draft',
+        roleRef: matchedRole,
+        jd: jdContent,
+        sharableLink: sharableLink,
+      });
+    }, 3000);
+    return function () { clearTimeout(autoSaveTimer.current); };
+  }, [jdContent]);
+
   var doMatch = useCallback(function (text) {
     var result = matchRole(text);
     setMatchedRole(result.role);
@@ -643,43 +664,25 @@ export default function RoleCreatePage() {
           <ProgressIndicator currentStage={stage} />
         </div>
 
-        {/* Right: action buttons */}
+        {/* Right: action buttons (no Save — auto-saves) */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           {isCompact && (
             <>
-              {saveVersion > 0 && (
-                <span style={{
-                  fontFamily: 'var(--font-body)', fontSize: 11,
-                  color: 'var(--brown-light)',
-                }}>v{saveVersion}</span>
-              )}
-
               <div style={{
                 display: 'flex', alignItems: 'center',
                 border: '1px solid var(--border-default)',
                 borderRadius: 7, overflow: 'hidden',
               }}>
-                <button
-                  type="button" onClick={handleSaveRole} disabled={!jdContent.trim()}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    padding: '5px 10px', border: 'none', background: 'transparent',
-                    fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-                    color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
-                    cursor: !jdContent.trim() ? 'default' : 'pointer',
-                  }}
-                >Save</button>
-                <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
                 <button type="button" onClick={handleDownloadJD} disabled={!jdContent.trim()}
                   title="Download" style={{
-                    display: 'flex', alignItems: 'center', padding: '5px 7px',
+                    display: 'flex', alignItems: 'center', padding: '5px 8px',
                     border: 'none', background: 'transparent', cursor: !jdContent.trim() ? 'default' : 'pointer',
                     color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
                   }}><Download size={12} /></button>
                 <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
                 <button type="button" onClick={function () { handleShareJD(); }} disabled={!sharableLink}
                   title="Share" style={{
-                    display: 'flex', alignItems: 'center', padding: '5px 7px',
+                    display: 'flex', alignItems: 'center', padding: '5px 8px',
                     border: 'none', background: 'transparent', cursor: 'pointer',
                     color: 'var(--brown-soft)',
                   }}><Link2 size={12} /></button>
