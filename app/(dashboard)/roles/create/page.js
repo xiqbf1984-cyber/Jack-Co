@@ -354,8 +354,9 @@ export default function RoleCreatePage() {
     var decoder = new TextDecoder();
     var fullText = '';
     var buffer = '';
+    var jdMode = false;
 
-    // Add a placeholder AI message that we'll update as tokens arrive
+    // Add a placeholder AI message
     setMessages(function (prev) { return prev.concat([{ role: 'ai', content: '' }]); });
     setIsTyping(false);
 
@@ -370,11 +371,42 @@ export default function RoleCreatePage() {
         for (var k = 0; k < lines.length; k++) {
           var line = lines[k].trim();
           if (!line.startsWith('data: ')) continue;
-          try {
-            var evt = JSON.parse(line.slice(6));
-            if (evt.type === 'delta' && evt.text) {
-              fullText += evt.text;
-              // Update the last AI message in place
+          var evt;
+          try { evt = JSON.parse(line.slice(6)); } catch (e) { continue; }
+
+          if (evt.type === 'delta' && evt.text) {
+            fullText += evt.text;
+
+            // Detect [JD_START] — open right panel and stream to canvas
+            if (!jdMode && fullText.includes('[JD_START]')) {
+              jdMode = true;
+              if (stage < 2) setStage(2);
+              setJdGenerated(true);
+            }
+
+            if (jdMode) {
+              // Extract JD content between [JD_START] and [JD_END] (or end of stream)
+              var jdStart = fullText.indexOf('[JD_START]') + 10;
+              var jdEnd = fullText.indexOf('[JD_END]');
+              var jdSlice = jdEnd > -1 ? fullText.slice(jdStart, jdEnd) : fullText.slice(jdStart);
+              setJDContent(jdSlice.trim());
+
+              // Chat bubble shows text BEFORE [JD_START] + text AFTER [JD_END]
+              var chatText = fullText.slice(0, fullText.indexOf('[JD_START]')).trim();
+              if (jdEnd > -1) {
+                chatText += '\n' + fullText.slice(jdEnd + 8).trim();
+              }
+              chatText = chatText.trim();
+              if (chatText) {
+                var chatSnap = chatText;
+                setMessages(function (prev) {
+                  var copy = prev.slice();
+                  copy[copy.length - 1] = { role: 'ai', content: chatSnap };
+                  return copy;
+                });
+              }
+            } else {
+              // Normal chat — update the AI message bubble
               var snap = fullText;
               setMessages(function (prev) {
                 var copy = prev.slice();
@@ -382,14 +414,12 @@ export default function RoleCreatePage() {
                 return copy;
               });
             }
-            if (evt.type === 'done') {
-              fullText = evt.fullText || fullText;
-            }
-            if (evt.type === 'error') {
-              throw new Error(evt.text);
-            }
-          } catch (e) {
-            if (e.message && e.message !== 'Unexpected end of JSON input') throw e;
+          }
+          if (evt.type === 'done') {
+            fullText = evt.fullText || fullText;
+          }
+          if (evt.type === 'error') {
+            throw new Error(evt.text);
           }
         }
       }
@@ -397,11 +427,8 @@ export default function RoleCreatePage() {
     return fullText;
   }
 
-  // Check if response contains JD content (strip [UI] blocks before checking)
-  function looksLikeJD(text) {
-    var clean = text.replace(/\[UI\][\s\S]*?\[\/UI\]/g, '').trim();
-    var hasRoleKeywords = /about the role|what you.ll do|responsibilities|requirements|key responsibilities|role overview|compensation/i.test(clean);
-    return clean.length > 300 && hasRoleKeywords;
+  function hasJDBlock(text) {
+    return text.includes('[JD_START]') && text.includes('[JD_END]');
   }
 
   // Extract JD text from a response (strip [UI] blocks and markdown)
@@ -428,13 +455,9 @@ export default function RoleCreatePage() {
     setMessages([{ role: 'user', content: text }]);
     setIsTyping(true);
 
-    // callNeo streams the reply — it adds the AI message and updates it token by token
-    callNeo(text, []).then(function (reply) {
-      if (looksLikeJD(reply)) {
-        setJDContent(extractJDContent(reply));
-        setJdGenerated(true);
-        setStage(2);
-      }
+    // callNeo streams — JD detection and canvas routing happen inside callNeo
+    callNeo(text, []).then(function () {
+      // JD routing already handled during streaming
     }).catch(function (err) {
       console.error('Neo error, falling back to local:', err);
       setIsTyping(false);
@@ -467,13 +490,9 @@ export default function RoleCreatePage() {
     setFollowUpRound(round);
     setIsTyping(true);
 
-    // callNeo streams the reply — adds AI message and updates it token by token
-    callNeo(text, currentHistory.concat([{ role: 'user', content: text }])).then(function (reply) {
-      if (looksLikeJD(reply)) {
-        setJDContent(extractJDContent(reply));
-        setJdGenerated(true);
-        if (stage < 2) setStage(2);
-      }
+    // callNeo streams — JD detection and canvas routing happen inside callNeo
+    callNeo(text, currentHistory.concat([{ role: 'user', content: text }])).then(function () {
+      // JD routing already handled during streaming
     }).catch(function (err) {
       console.error('Neo error, falling back to local:', err);
       setIsTyping(false);

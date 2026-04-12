@@ -92,18 +92,42 @@ function DockConfirm({ text, onSelect }) {
         <button type="button" onClick={function () { onSelect?.('Yes, that\'s right'); }}
           style={{
             padding: '5px 14px', borderRadius: 7,
-            border: '1px solid var(--accent-green)',
-            backgroundColor: 'rgba(39,130,91,0.06)',
+            border: '1px solid var(--border-default)',
+            backgroundColor: 'transparent',
             fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-            color: 'var(--accent-green)', cursor: 'pointer',
-          }}>Yes</button>
+            color: 'var(--brown-soft)', cursor: 'pointer',
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={function (e) {
+            e.currentTarget.style.borderColor = 'var(--accent-green)';
+            e.currentTarget.style.backgroundColor = 'rgba(39,130,91,0.06)';
+            e.currentTarget.style.color = 'var(--accent-green)';
+          }}
+          onMouseLeave={function (e) {
+            e.currentTarget.style.borderColor = 'var(--border-default)';
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--brown-soft)';
+          }}
+        >Yes</button>
         <button type="button" onClick={function () { onSelect?.('No, that\'s not right'); }}
           style={{
             padding: '5px 14px', borderRadius: 7,
             border: '1px solid var(--border-default)', backgroundColor: 'transparent',
             fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
             color: 'var(--brown-soft)', cursor: 'pointer',
-          }}>No</button>
+            transition: 'all 0.15s ease',
+          }}
+          onMouseEnter={function (e) {
+            e.currentTarget.style.borderColor = 'var(--red)';
+            e.currentTarget.style.backgroundColor = 'rgba(192,57,43,0.04)';
+            e.currentTarget.style.color = 'var(--red)';
+          }}
+          onMouseLeave={function (e) {
+            e.currentTarget.style.borderColor = 'var(--border-default)';
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = 'var(--brown-soft)';
+          }}
+        >No</button>
       </div>
     </div>
   );
