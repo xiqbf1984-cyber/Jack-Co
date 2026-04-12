@@ -306,7 +306,7 @@ export default function RoleCreatePage() {
   useEffect(function () { setBodyEl(document.body); }, []);
 
   useEffect(function () {
-    if (stage < 2) return;
+    if (stage < 1) return;
     var check = function () {
       var el = document.getElementById('jd-canvas-panel');
       if (el) setJDPortalTarget(el);
@@ -317,7 +317,7 @@ export default function RoleCreatePage() {
   }, [stage]);
 
   useEffect(function () {
-    if (stage >= 2) {
+    if (stage >= 1) {
       window.dispatchEvent(new CustomEvent('jd-panel-toggle', { detail: { visible: true } }));
     }
     return function () {
@@ -569,7 +569,7 @@ export default function RoleCreatePage() {
     setShowShareModal(true);
   }
 
-  var isCompact = stage >= 2;
+  var isCompact = stage >= 1;
 
   var hiringBrief = useMemo(function () {
     if (!extractedData) return null;
@@ -718,8 +718,8 @@ export default function RoleCreatePage() {
         )}
       </div>
 
-      {/* JD Canvas */}
-      {stage >= 2 &&
+      {/* JD Canvas — always visible from stage 1 */}
+      {stage >= 1 &&
         jdPortalTarget &&
         createPortal(
           <JDCanvas
