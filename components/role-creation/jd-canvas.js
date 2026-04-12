@@ -4,7 +4,7 @@ import { useMemo, useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Check, Bold, Italic, List, Heading, Pencil, Eye } from 'lucide-react';
-import HiringBriefView from './hiring-brief-view';
+import HiringProfileView from './hiring-profile-view';
 
 /* ── Markdown renderer components ── */
 const markdownComponents = {
@@ -128,7 +128,7 @@ export default function JDCanvas({
 
   var TABS = [
     { key: 'jd', label: 'Job Description' },
-    { key: 'brief', label: 'Hiring Brief' },
+    { key: 'profile', label: 'Hiring Profile' },
   ];
 
   return (
@@ -293,10 +293,10 @@ export default function JDCanvas({
         </>
       )}
 
-      {/* Hiring Brief Tab Content */}
-      {activeTab === 'brief' && (
+      {/* Hiring Profile Tab Content */}
+      {activeTab === 'profile' && (
         <div className="flex-1 overflow-auto" style={{ minHeight: 0 }}>
-          <HiringBriefView hiringBrief={hiringBrief} onChange={onHiringBriefChange} />
+          <HiringProfileView hiringProfile={hiringBrief} onChange={onHiringBriefChange} />
         </div>
       )}
     </div>

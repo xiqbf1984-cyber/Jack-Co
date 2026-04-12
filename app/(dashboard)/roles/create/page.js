@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, Save, Download, Link2, Plus, Play } from 'lucide-react';
+import { ArrowLeft, Download, Link2, Play } from 'lucide-react';
 import { useAppStore } from '@/stores/app-store';
 import { matchRole } from '@/lib/constants';
 import SearchPage from '@/components/role-creation/search-page';
@@ -280,6 +280,8 @@ function ProgressIndicator({ currentStage }) {
 export default function RoleCreatePage() {
   var router = useRouter();
   var addRole = useAppStore(function (s) { return s.addRole; });
+  var updateRole = useAppStore(function (s) { return s.updateRole; });
+  var roles = useAppStore(function (s) { return s.roles; });
   var company = useAppStore(function (s) { return s.company; });
   var addNotification = useAppStore(function (s) { return s.addNotification; });
 
@@ -305,8 +307,32 @@ export default function RoleCreatePage() {
 
   useEffect(function () { setBodyEl(document.body); }, []);
 
+  // Restore from saved role if ?id= is in URL
+  var searchParams = useSearchParams();
   useEffect(function () {
-    if (stage < 2) return;
+    var roleId = searchParams.get('id');
+    if (!roleId) return;
+    var role = roles.find(function (r) { return String(r.id) === String(roleId); });
+    if (!role) return;
+    savedRoleId.current = role.id;
+    if (role.jd) setJDContent(role.jd);
+    if (role.chatHistory && role.chatHistory.length > 0) {
+      setMessages(role.chatHistory);
+      setStage(role.jd ? 2 : 1);
+    } else if (role.jd) {
+      setStage(2);
+    }
+    if (role.title) setDescription(role.title);
+    if (role.title) {
+      var analysis = analyzeInput(role.title + ' ' + (role.salary || '') + ' ' + (role.dept || ''));
+      setExtractedData(analysis.extracted);
+    }
+    doMatch(role.title || '');
+    setJdGenerated(!!role.jd);
+  }, []);
+
+  useEffect(function () {
+    if (stage < 1) return;
     var check = function () {
       var el = document.getElementById('jd-canvas-panel');
       if (el) setJDPortalTarget(el);
@@ -317,13 +343,47 @@ export default function RoleCreatePage() {
   }, [stage]);
 
   useEffect(function () {
-    if (stage >= 2) {
+    if (stage >= 1) {
       window.dispatchEvent(new CustomEvent('jd-panel-toggle', { detail: { visible: true } }));
     }
     return function () {
       window.dispatchEvent(new CustomEvent('jd-panel-toggle', { detail: { visible: false } }));
     };
   }, [stage]);
+
+  // Auto-save: debounced save when JD or messages change
+  var autoSaveTimer = useRef(null);
+  var savedRoleId = useRef(null);
+  useEffect(function () {
+    if (!jdContent.trim() && messages.length < 2) return;
+    clearTimeout(autoSaveTimer.current);
+    autoSaveTimer.current = setTimeout(function () {
+      var title = extractedData?.title || (matchedRole ? matchedRole.title : description.slice(0, 40));
+      if (!title) return;
+      var roleData = {
+        title: title,
+        dept: inferDepartment(extractedData || {}, allText),
+        salary: extractedData?.salary || 'TBD',
+        status: jdContent.trim() ? 'draft' : 'intake',
+        roleRef: matchedRole,
+        jd: jdContent,
+        sharableLink: sharableLink,
+        chatHistory: messages,
+        hiringProfile: hiringBrief,
+      };
+      if (savedRoleId.current) {
+        updateRole(savedRoleId.current, roleData);
+      } else {
+        addRole(roleData);
+        // Find the temp ID so we can update instead of add next time
+        var roles = useAppStore.getState().roles;
+        if (roles.length > 0 && roles[0].title === title) {
+          savedRoleId.current = roles[0].id;
+        }
+      }
+    }, 3000);
+    return function () { clearTimeout(autoSaveTimer.current); };
+  }, [jdContent, messages.length]);
 
   var doMatch = useCallback(function (text) {
     var result = matchRole(text);
@@ -354,8 +414,9 @@ export default function RoleCreatePage() {
     var decoder = new TextDecoder();
     var fullText = '';
     var buffer = '';
+    var jdMode = false;
 
-    // Add a placeholder AI message that we'll update as tokens arrive
+    // Add a placeholder AI message
     setMessages(function (prev) { return prev.concat([{ role: 'ai', content: '' }]); });
     setIsTyping(false);
 
@@ -370,11 +431,42 @@ export default function RoleCreatePage() {
         for (var k = 0; k < lines.length; k++) {
           var line = lines[k].trim();
           if (!line.startsWith('data: ')) continue;
-          try {
-            var evt = JSON.parse(line.slice(6));
-            if (evt.type === 'delta' && evt.text) {
-              fullText += evt.text;
-              // Update the last AI message in place
+          var evt;
+          try { evt = JSON.parse(line.slice(6)); } catch (e) { continue; }
+
+          if (evt.type === 'delta' && evt.text) {
+            fullText += evt.text;
+
+            // Detect [JD_START] — open right panel and stream to canvas
+            if (!jdMode && fullText.includes('[JD_START]')) {
+              jdMode = true;
+              if (stage < 2) setStage(2);
+              setJdGenerated(true);
+            }
+
+            if (jdMode) {
+              // Extract JD content between [JD_START] and [JD_END] (or end of stream)
+              var jdStart = fullText.indexOf('[JD_START]') + 10;
+              var jdEnd = fullText.indexOf('[JD_END]');
+              var jdSlice = jdEnd > -1 ? fullText.slice(jdStart, jdEnd) : fullText.slice(jdStart);
+              setJDContent(jdSlice.trim());
+
+              // Chat bubble shows text BEFORE [JD_START] + text AFTER [JD_END]
+              var chatText = fullText.slice(0, fullText.indexOf('[JD_START]')).trim();
+              if (jdEnd > -1) {
+                chatText += '\n' + fullText.slice(jdEnd + 8).trim();
+              }
+              chatText = chatText.trim();
+              if (chatText) {
+                var chatSnap = chatText;
+                setMessages(function (prev) {
+                  var copy = prev.slice();
+                  copy[copy.length - 1] = { role: 'ai', content: chatSnap };
+                  return copy;
+                });
+              }
+            } else {
+              // Normal chat — update the AI message bubble
               var snap = fullText;
               setMessages(function (prev) {
                 var copy = prev.slice();
@@ -382,14 +474,12 @@ export default function RoleCreatePage() {
                 return copy;
               });
             }
-            if (evt.type === 'done') {
-              fullText = evt.fullText || fullText;
-            }
-            if (evt.type === 'error') {
-              throw new Error(evt.text);
-            }
-          } catch (e) {
-            if (e.message && e.message !== 'Unexpected end of JSON input') throw e;
+          }
+          if (evt.type === 'done') {
+            fullText = evt.fullText || fullText;
+          }
+          if (evt.type === 'error') {
+            throw new Error(evt.text);
           }
         }
       }
@@ -397,10 +487,17 @@ export default function RoleCreatePage() {
     return fullText;
   }
 
-  // Check if response contains JD content
-  function looksLikeJD(text) {
-    var hasRoleKeywords = /about the role|what you.ll do|responsibilities|requirements|key responsibilities/i.test(text);
-    return text.length > 400 && hasRoleKeywords;
+  function hasJDBlock(text) {
+    return text.includes('[JD_START]') && text.includes('[JD_END]');
+  }
+
+  // Extract JD text from a response (strip [UI] blocks and markdown)
+  function extractJDContent(text) {
+    return text
+      .replace(/\[UI\][\s\S]*?\[\/UI\]/g, '')
+      .replace(/\*\*(.*?)\*\*/g, '$1')
+      .replace(/\*(.*?)\*/g, '$1')
+      .trim();
   }
 
   function handleSearchSubmit(text) {
@@ -418,13 +515,9 @@ export default function RoleCreatePage() {
     setMessages([{ role: 'user', content: text }]);
     setIsTyping(true);
 
-    // callNeo streams the reply — it adds the AI message and updates it token by token
-    callNeo(text, []).then(function (reply) {
-      if (looksLikeJD(reply)) {
-        setJDContent(reply);
-        setJdGenerated(true);
-        setStage(2);
-      }
+    // callNeo streams — JD detection and canvas routing happen inside callNeo
+    callNeo(text, []).then(function () {
+      // JD routing already handled during streaming
     }).catch(function (err) {
       console.error('Neo error, falling back to local:', err);
       setIsTyping(false);
@@ -457,25 +550,27 @@ export default function RoleCreatePage() {
     setFollowUpRound(round);
     setIsTyping(true);
 
-    // callNeo streams the reply — adds AI message and updates it token by token
-    callNeo(text, currentHistory.concat([{ role: 'user', content: text }])).then(function (reply) {
-      if (looksLikeJD(reply)) {
-        setJDContent(reply);
+    // Safety net: after 6 user messages, if no JD yet, force it
+    var forceJD = round >= 6 && !jdGenerated;
+    var messageToSend = forceJD
+      ? text + '\n\n[SYSTEM: This is turn ' + round + '. Generate the JD now with whatever you have. Use [JD_START]...[JD_END].]'
+      : text;
+
+    callNeo(messageToSend, currentHistory.concat([{ role: 'user', content: text }])).then(function (reply) {
+      // If still no JD after forced attempt, use local fallback
+      if (forceJD && !jdGenerated && !reply.includes('[JD_START]')) {
+        var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+        setJDContent(jd);
         setJdGenerated(true);
-        if (stage < 2) setStage(2);
+        setStage(2);
       }
     }).catch(function (err) {
       console.error('Neo error, falling back to local:', err);
       setIsTyping(false);
-      var nextQ = round < 3 ? getNextQuestion(analysis.coverage, analysis.extracted) : null;
-      if (!nextQ || round >= 3) {
-        var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
-        setJDContent(jd); setJdGenerated(true);
-        if (stage < 2) setStage(2);
-        addAIMessage('Your JD is ready!');
-      } else {
-        addAIMessage(nextQ);
-      }
+      var jd = generateJD(analysis.extracted, matchResult.role, company, newAllText);
+      setJDContent(jd); setJdGenerated(true);
+      if (stage < 2) setStage(2);
+      addAIMessage('Your JD is ready!');
     });
   }
 
@@ -540,7 +635,7 @@ export default function RoleCreatePage() {
     setShowShareModal(true);
   }
 
-  var isCompact = stage >= 2;
+  var isCompact = stage >= 1;
 
   var hiringBrief = useMemo(function () {
     if (!extractedData) return null;
@@ -581,80 +676,55 @@ export default function RoleCreatePage() {
       height: '100%',
       overflow: isCompact ? 'visible' : 'hidden',
     }}>
-      {/* Header — back + actions on top row */}
+      {/* Header — single row: back | progress | actions */}
       <div id="role-create-header" style={{
         flexShrink: 0, backgroundColor: 'var(--cream)', zIndex: 10, position: 'sticky', top: 0,
         width: isCompact ? 'var(--full-width-pct, 238%)' : '100%',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '10px 16px',
+        gap: 12,
       }}>
-        <div style={{
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '8px 16px',
-        }}>
-          {/* Left: back */}
-          <button
-            onClick={handleBack}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 5,
-              fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
-              background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-              flexShrink: 0,
-            }}
-          >
-            <ArrowLeft size={13} />
-            Back to Roles
-          </button>
+        {/* Left: back */}
+        <button
+          onClick={handleBack}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 5,
+            fontFamily: 'var(--font-body)', fontSize: 12, color: 'var(--brown-soft)',
+            background: 'none', border: 'none', cursor: 'pointer', padding: 0,
+            flexShrink: 0,
+          }}
+        >
+          <ArrowLeft size={13} />
+          Back to Roles
+        </button>
 
-          {/* Center: progress bar */}
-          <div style={{ flex: 1, maxWidth: 340, margin: '0 16px' }}>
-            <ProgressIndicator currentStage={stage} />
-          </div>
+        {/* Center: progress bar — wider */}
+        <div style={{ flex: 1, maxWidth: 480 }}>
+          <ProgressIndicator currentStage={stage} />
+        </div>
 
-          {/* Right: version + save group + primary action */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
-            {isCompact && (
-              <>
-              {saveVersion > 0 && (
-                <span style={{
-                  fontFamily: 'var(--font-body)', fontSize: 11,
-                  color: 'var(--brown-light)',
-                }}>v{saveVersion}</span>
-              )}
-
+        {/* Right: action buttons (no Save — auto-saves) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
+          {isCompact && (
+            <>
               <div style={{
                 display: 'flex', alignItems: 'center',
                 border: '1px solid var(--border-default)',
                 borderRadius: 7, overflow: 'hidden',
               }}>
-                <button
-                  type="button" onClick={handleSaveRole} disabled={!jdContent.trim()}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    padding: '5px 10px', border: 'none', background: 'transparent',
-                    fontFamily: 'var(--font-body)', fontSize: 11, fontWeight: 500,
-                    color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
-                    cursor: !jdContent.trim() ? 'default' : 'pointer',
-                  }}
-                >
-                  Save
-                </button>
-                <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
                 <button type="button" onClick={handleDownloadJD} disabled={!jdContent.trim()}
                   title="Download" style={{
-                    display: 'flex', alignItems: 'center', padding: '5px 7px',
+                    display: 'flex', alignItems: 'center', padding: '5px 8px',
                     border: 'none', background: 'transparent', cursor: !jdContent.trim() ? 'default' : 'pointer',
                     color: !jdContent.trim() ? 'var(--brown-light)' : 'var(--brown-soft)',
-                  }}>
-                  <Download size={12} />
-                </button>
+                  }}><Download size={12} /></button>
                 <div style={{ width: 1, height: 16, backgroundColor: 'var(--border-default)' }} />
                 <button type="button" onClick={function () { handleShareJD(); }} disabled={!sharableLink}
                   title="Share" style={{
-                    display: 'flex', alignItems: 'center', padding: '5px 7px',
+                    display: 'flex', alignItems: 'center', padding: '5px 8px',
                     border: 'none', background: 'transparent', cursor: 'pointer',
                     color: 'var(--brown-soft)',
-                  }}>
-                  <Link2 size={12} />
-                </button>
+                  }}><Link2 size={12} /></button>
               </div>
 
               <button
@@ -672,7 +742,6 @@ export default function RoleCreatePage() {
               </button>
             </>
           )}
-          </div>
         </div>
       </div>
 
@@ -695,8 +764,8 @@ export default function RoleCreatePage() {
         )}
       </div>
 
-      {/* JD Canvas */}
-      {stage >= 2 &&
+      {/* JD Canvas — always visible from stage 1 */}
+      {stage >= 1 &&
         jdPortalTarget &&
         createPortal(
           <JDCanvas
