@@ -1,0 +1,419 @@
+/* =============================================================
+ * NeoHuman Design System — Portable Tokens & Utilities
+ * -----------------------------------------------------------
+ * Drop-in CSS. Works in any project (React, Vue, vanilla, etc.).
+ * No Tailwind required — pure CSS variables + utility classes.
+ *
+ * Usage:
+ *   1. Import this file in your root layout / entry CSS:
+ *        @import './design-system/tokens.css';
+ *   2. Add `noise-texture` class to <body> for paper-grain layer.
+ *   3. Mount <FilmGrainOverlay /> for the film-grain layer.
+ *
+ * Palette: warm cream + brown serif + gold accent.
+ * Font: Libre Baskerville (auto-loaded below).
+ * ============================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+/* ==================== TOKENS ==================== */
+:root {
+  /* Fonts */
+  --font-body: 'Libre Baskerville', Georgia, serif;
+  --font-mono: 'DM Mono', 'Courier New', monospace;
+
+  /* Base Palette */
+  --cream: #f5f3ee;
+  --cream-sidebar: #eae6dd;
+  --cream-card: #ffffff;
+  --cream-card-hover: #faf9f6;
+  --cream-row-even: #f5f2ec;
+
+  /* Text */
+  --brown: #5d5446;
+  --brown-muted: #9f8d75;
+  --brown-soft: #8D837A;
+  --brown-light: #c4b896;
+
+  /* Buttons */
+  --btn-primary-from: #5C5248;
+  --btn-primary-to: #6B5F55;
+  --btn-hover-from: #7a6d61;
+  --btn-hover-to: #8B7A6F;
+  --btn-text: #FBF9F4;
+
+  /* Borders */
+  --border-default: #d5cdc0;
+  --border-light: #e2dbd0;
+  --border-hover: #b8a882;
+
+  /* Functional */
+  --gold: #8b6914;
+  --gold-light: #c4a332;
+  --accent-green: #27825b;
+  --red: #c0392b;
+  --blue: #5A8FB9;
+  --accent-gold: #D4A574;
+  --orange: #d4880f;
+
+  /* Shadows — layered for depth */
+  --shadow-card: 0 1px 2px rgba(0,0,0,.03), 0 2px 8px rgba(0,0,0,.04), 0 0 0 1px rgba(0,0,0,.02);
+  --shadow-card-hover: 0 4px 16px rgba(0,0,0,.08), 0 8px 32px rgba(0,0,0,.06), 0 0 0 1px rgba(139,105,20,.08);
+  --shadow-dropdown: 0 4px 12px rgba(0,0,0,.08), 0 12px 32px rgba(0,0,0,.1);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,.18);
+  --shadow-glow-idle: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03);
+  --shadow-glow-peak: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04);
+
+  /* Layout Spacing */
+  --page-padding-x: 40px;
+  --page-padding-y: 32px;
+  --page-max-width: 1400px;
+  --section-gap: 32px;
+  --card-gap: 16px;
+  --card-padding: 24px;
+  --row-padding-x: 20px;
+  --row-padding-y: 14px;
+  --header-mb: 24px;
+
+  /* Radius */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 14px;
+  --radius-2xl: 16px;
+  --radius-3xl: 18px;
+  --radius-pill: 18px;
+  --radius-full: 9999px;
+}
+
+/* ==================== BASE STYLES ==================== */
+.ds-reset * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--cream);
+  color: var(--brown);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ==================== SCROLLBAR ==================== */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #e6dfd4; border-radius: 3px; }
+
+/* ==================== NOISE TEXTURE ==================== */
+/* Subtle paper grain — apply to <body> or any wrapper.
+ * Pairs with <FilmGrainOverlay /> for layered effect. */
+.noise-texture {
+  position: relative;
+}
+.noise-texture::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 256px 256px;
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fi {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fsu {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fsd {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fadeScale {
+  from { opacity: 0; transform: scale(0.96); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes canvasIn {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes inputGlow {
+  0%, 100% { box-shadow: 0 0 12px rgba(139,105,20,.06), 0 2px 8px rgba(0,0,0,.03); }
+  50% { box-shadow: 0 0 28px rgba(139,105,20,.14), 0 2px 8px rgba(0,0,0,.04); }
+}
+
+@keyframes marquee-scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes dotBounce {
+  0%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+}
+
+@keyframes pillPop {
+  0% { transform: scale(0.85); opacity: 0; }
+  60% { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes highlightFade {
+  0% { background-color: rgba(139, 105, 20, 0.15); }
+  100% { background-color: transparent; }
+}
+
+/* ==================== ANIMATION UTILITIES ==================== */
+.animate-fi { animation: fi 0.3s ease-out; }
+.animate-fsu { animation: fsu 0.25s ease-out; }
+.animate-fsd { animation: fsd 0.15s ease-out; }
+.animate-fade-scale { animation: fadeScale 0.35s ease-out; }
+.animate-slide-up { animation: slideUp 0.2s ease-out; }
+.animate-canvas-in { animation: canvasIn 0.35s ease-out; }
+.animate-glow { animation: inputGlow 3s infinite; }
+.animate-blink { animation: blink 0.8s infinite; }
+.animate-highlight { animation: highlightFade 1.5s ease-out forwards; }
+
+/* ==================== TYPOGRAPHY ==================== */
+.font-display { font-family: var(--font-body); }
+.font-body { font-family: var(--font-body); }
+.font-mono { font-family: var(--font-mono); }
+
+.text-display-hero {
+  font-family: var(--font-body);
+  font-size: clamp(24px, 4vw, 36px);
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--brown);
+}
+
+.text-display-page {
+  font-family: var(--font-body);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--brown);
+}
+
+.text-display-section {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--brown);
+}
+
+.text-display-dialog {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--brown);
+}
+
+.text-body-lg {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--brown-muted);
+}
+
+.text-body-md {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+}
+
+.text-body-sm {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-body-xs {
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--brown-soft);
+}
+
+.text-mono-display {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.text-mono-data {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.text-mono-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--brown-soft);
+}
+
+.text-mono-tag {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ==================== HOVER UTILITIES ==================== */
+.hover-bg-dim:hover { background-color: rgba(0, 0, 0, 0.04); }
+.hover-shadow-card:hover { box-shadow: var(--shadow-card-hover); }
+.hover-shadow-card-var:hover { box-shadow: var(--shadow-card-hover); }
+.hover-bg-cream:hover { background-color: var(--cream); }
+.hover-bg-cream-card-hover:hover { background-color: var(--cream-card-hover); }
+.hover-bg-cream-row-even:hover { background-color: var(--cream-row-even); }
+.hover-border-hover:hover { border-color: var(--border-hover); }
+.hover-border-gold:hover { border-color: var(--gold); }
+.hover-scale-sm:hover { box-shadow: var(--shadow-card-hover); }
+.focus-border-hover:focus { border-color: var(--border-hover); }
+
+/* ==================== BUTTONS ==================== */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-to));
+  color: var(--btn-text);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(92,82,72,0.18);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, var(--btn-hover-from), var(--btn-hover-to));
+  box-shadow: 0 0 0 4px rgba(92,82,72,0.15);
+}
+
+.btn-primary:disabled {
+  background: #a0968c;
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--cream-card);
+  color: var(--brown);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-hover);
+  background: var(--cream);
+  box-shadow: var(--shadow-card);
+}
+
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background-color: var(--cream-card);
+  color: var(--brown);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  border-color: var(--border-hover);
+  background-color: var(--cream);
+  box-shadow: var(--shadow-card);
+}
+
+/* ==================== PAGE / FORM / TABLE ==================== */
+.page-container {
+  max-width: var(--page-max-width);
+  margin: 0 auto;
+  padding: var(--page-padding-y) var(--page-padding-x);
+}
+
+.form-label {
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--brown);
+  margin-bottom: 8px;
+  display: block;
+}
+
+.table-header {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--brown-muted);
+}
+
+.table-header-sortable {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+.table-header-sortable:hover {
+  color: var(--brown);
+}
